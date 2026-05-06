@@ -10,6 +10,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,28 +26,18 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          
-      - name: Cache Flutter dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pub-cache
-            .dart_tool
-            build
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
+          cache: true
 
-      - name: Clean project
-        run: flutter clean
-
-      - name: Install dependencies
+      - name: Get dependencies
         run: flutter pub get
 
       - name: Build Flutter Web
         run: flutter build web --release --base-href "/portfolio/"
 
-      - name: Upload build artifact
+      - name: Add SPA fallback (404.html)
+        run: cp build/web/index.html build/web/404.html
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
