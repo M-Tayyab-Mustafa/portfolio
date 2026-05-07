@@ -10,7 +10,7 @@ class FadeSlide extends StatefulWidget {
     super.key,
     required this.child,
     this.delay = Duration.zero,
-    this.duration = const Duration(milliseconds: 650),
+    this.duration = const Duration(milliseconds: 600),
     this.beginOffset = const Offset(0, 40),
     this.curve = Curves.easeOutCubic,
     this.visibilityThreshold = 0.08,
@@ -88,7 +88,7 @@ class ScaleFade extends StatefulWidget {
     super.key,
     required this.child,
     this.delay = Duration.zero,
-    this.duration = const Duration(milliseconds: 520),
+    this.duration = const Duration(milliseconds: 350),
     this.beginScale = 0.88,
     this.visibilityThreshold = 0.08,
   });
@@ -176,7 +176,7 @@ class _HoverCardState extends State<HoverCard>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 120),
     );
     _scale = Tween<double>(
       begin: 1.0,
@@ -211,7 +211,7 @@ class AnimatedCounter extends StatefulWidget {
     required this.suffix,
     this.style,
     this.delay = Duration.zero,
-    this.duration = const Duration(milliseconds: 1400),
+    this.duration = const Duration(milliseconds: 1000),
   });
 
   final int target;
@@ -293,7 +293,7 @@ class _PulsingDotState extends State<PulsingDot>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1100),
+      duration: const Duration(milliseconds: 800),
     )..repeat(reverse: true);
     _scale = Tween<double>(
       begin: 0.75,

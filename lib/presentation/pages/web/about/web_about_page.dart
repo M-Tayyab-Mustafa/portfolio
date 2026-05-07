@@ -198,7 +198,7 @@ class _WebAboutPageState extends State<WebAboutPage>
                   ),
                 ),
                 FadeSlide(
-                  delay: const Duration(milliseconds: 120),
+                  delay: const Duration(milliseconds: 100),
                   beginOffset: const Offset(-50, 0),
                   child: Text(
                     about.name,
@@ -211,7 +211,7 @@ class _WebAboutPageState extends State<WebAboutPage>
                   ),
                 ),
                 FadeSlide(
-                  delay: const Duration(milliseconds: 260),
+                  delay: const Duration(milliseconds: 240),
                   child: Padding(
                     padding: context.edgeInsets(top: 24),
                     child: Text(
@@ -223,7 +223,7 @@ class _WebAboutPageState extends State<WebAboutPage>
                   ),
                 ),
                 FadeSlide(
-                  delay: const Duration(milliseconds: 400),
+                  delay: const Duration(milliseconds: 380),
                   beginOffset: const Offset(0, 30),
                   child: Padding(
                     padding: context.edgeInsets(top: 32),
@@ -280,7 +280,7 @@ class _WebAboutPageState extends State<WebAboutPage>
         Expanded(
           flex: 5,
           child: FadeSlide(
-            delay: const Duration(milliseconds: 160),
+            delay: const Duration(milliseconds: 140),
             beginOffset: const Offset(50, 0),
             child: Center(
               child: AnimatedBuilder(

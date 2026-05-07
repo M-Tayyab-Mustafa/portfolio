@@ -4,14 +4,14 @@ import 'package:portfolio/presentation/widgets/heading.dart';
 import 'package:portfolio/domain/domain_exports.dart';
 import 'package:portfolio/utils/exports.dart';
 
-class WebExperiencePage extends StatefulWidget {
-  const WebExperiencePage({super.key});
+class TabletExperiencePage extends StatefulWidget {
+  const TabletExperiencePage({super.key});
 
   @override
-  State<WebExperiencePage> createState() => _WebExperiencePageState();
+  State<TabletExperiencePage> createState() => _TabletExperiencePageState();
 }
 
-class _WebExperiencePageState extends State<WebExperiencePage>
+class _TabletExperiencePageState extends State<TabletExperiencePage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _lineCtrl;
   late final Animation<double> _lineProgress;
@@ -22,7 +22,7 @@ class _WebExperiencePageState extends State<WebExperiencePage>
     context.read<ExperienceBloc>().add(const ExperienceStarted());
     _lineCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: const Duration(milliseconds: 1300),
     );
     _lineProgress = CurvedAnimation(parent: _lineCtrl, curve: Curves.easeInOut);
   }
@@ -36,7 +36,7 @@ class _WebExperiencePageState extends State<WebExperiencePage>
   void _onTimelineVisibilityChanged(VisibilityInfo info) {
     if (info.visibleFraction >= 0.05) {
       if (_lineCtrl.status == AnimationStatus.dismissed) {
-        Future.delayed(const Duration(milliseconds: 300), () {
+        Future.delayed(const Duration(milliseconds: 220), () {
           if (mounted) _lineCtrl.forward();
         });
       }
@@ -53,20 +53,22 @@ class _WebExperiencePageState extends State<WebExperiencePage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: context.edgeInsets(top: 60),
-              child: FadeSlide(child: const HeadingText(text: 'Experience')),
+              padding: context.edgeInsets(top: 48),
+              child: FadeSlide(
+                child: const TabletHeadingText(text: 'Experience'),
+              ),
             ),
             if (state.isLoading)
-              _buildShimmerSkeleton() // ✨ Shimmer loading state ✨
+              _buildShimmerSkeleton()
             else
               Padding(
-                padding: context.edgeInsets(top: 56, bottom: 80),
+                padding: context.edgeInsets(top: 40, bottom: 60),
                 child: VisibilityDetector(
-                  key: const Key('experience_timeline'),
+                  key: const Key('experience_timeline_tablet'),
                   onVisibilityChanged: _onTimelineVisibilityChanged,
                   child: Stack(
                     children: [
-                      // Growing timeline line
+                      // Growing timeline line – centred vertically on tablet
                       Positioned.fill(
                         child: Center(
                           child: AnimatedBuilder(
@@ -121,33 +123,28 @@ class _WebExperiencePageState extends State<WebExperiencePage>
     );
   }
 
-  /// Shimmer skeleton that mimics the experience timeline layout
   Widget _buildShimmerSkeleton() {
     final cs = Theme.of(context).colorScheme;
     const skeletonCardsCount = 2;
-
     final skeletonColor = cs.surfaceContainerHighest;
 
     return Padding(
-      padding: context.edgeInsets(top: 56, bottom: 80),
+      padding: context.edgeInsets(top: 40, bottom: 60),
       child: Shimmer.fromColors(
         baseColor: cs.surfaceContainerHighest,
         highlightColor: cs.surfaceContainerLow,
         child: Stack(
           children: [
-            // Timeline line
             Positioned.fill(
               child: Center(
                 child: Container(width: 2, color: cs.outlineVariant),
               ),
             ),
-
             Column(
               children: List.generate(skeletonCardsCount, (index) {
                 final invert = index.isOdd;
-
                 return Padding(
-                  padding: context.edgeInsets(vertical: 40),
+                  padding: context.edgeInsets(vertical: 28),
                   child: Row(
                     children: invert
                         ? [
@@ -175,12 +172,12 @@ class _WebExperiencePageState extends State<WebExperiencePage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(width: 100.w, height: 16.h, color: color),
+          Container(width: 80.w, height: 14.h, color: color),
           Padding(
-            padding: context.edgeInsets(top: 16, bottom: 10),
-            child: Container(width: 180.w, height: 28.h, color: color),
+            padding: context.edgeInsets(top: 12, bottom: 8),
+            child: Container(width: 140.w, height: 22.h, color: color),
           ),
-          Container(width: 120.w, height: 14.h, color: color),
+          Container(width: 100.w, height: 12.h, color: color),
         ],
       ),
     );
@@ -188,10 +185,11 @@ class _WebExperiencePageState extends State<WebExperiencePage>
 
   Widget _buildSkeletonDot(Color color) {
     return Padding(
-      padding: context.edgeInsets(horizontal: 60),
+      // Tablet: tighter horizontal gap around the dot
+      padding: context.edgeInsets(horizontal: 32),
       child: Container(
-        width: 13.r,
-        height: 13.r,
+        width: 12.r,
+        height: 12.r,
         decoration: BoxDecoration(shape: BoxShape.circle, color: color),
       ),
     );
@@ -201,11 +199,11 @@ class _WebExperiencePageState extends State<WebExperiencePage>
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(14.r),
           color: color,
         ),
         child: Padding(
-          padding: context.edgeInsets(horizontal: 20, vertical: 32),
+          padding: context.edgeInsets(horizontal: 16, vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: List.generate(
@@ -214,7 +212,7 @@ class _WebExperiencePageState extends State<WebExperiencePage>
                 padding: context.edgeInsets(bottom: 8),
                 child: Container(
                   width: double.infinity,
-                  height: 14.h,
+                  height: 12.h,
                   color: color,
                 ),
               ),
@@ -236,7 +234,7 @@ class _WebExperiencePageState extends State<WebExperiencePage>
     final infoPanel = Expanded(
       child: FadeSlide(
         delay: delay,
-        beginOffset: Offset(invert ? -50 : 50, 0),
+        beginOffset: Offset(invert ? -40 : 40, 0),
         child: Column(
           crossAxisAlignment: invert
               ? CrossAxisAlignment.start
@@ -244,17 +242,18 @@ class _WebExperiencePageState extends State<WebExperiencePage>
           children: [
             Text(
               exp.date,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: theme.textTheme.bodySmall?.copyWith(
                 fontFamily: AppTextStyles.nimbusMonoFontFamily,
                 color: cs.onSurfaceVariant,
               ),
             ),
             Padding(
-              padding: context.edgeInsets(top: 16, bottom: 10),
+              padding: context.edgeInsets(top: 12, bottom: 8),
               child: Text(
                 exp.title,
                 textAlign: invert ? TextAlign.start : TextAlign.end,
-                style: theme.textTheme.headlineMedium?.copyWith(
+                // Tablet: step down from headlineMedium → titleLarge
+                style: theme.textTheme.titleLarge?.copyWith(
                   fontFamily: AppTextStyles.interFontFamily,
                   fontWeight: FontWeight.bold,
                 ),
@@ -274,26 +273,27 @@ class _WebExperiencePageState extends State<WebExperiencePage>
     );
 
     final dot = Padding(
-      padding: context.edgeInsets(horizontal: 60),
+      // Tablet: reduced horizontal margin around dot
+      padding: context.edgeInsets(horizontal: 32),
       child: ScaleFade(
         delay: Duration(milliseconds: delay.inMilliseconds + 80),
-        child: PulsingDot(size: 13.r, color: cs.primary),
+        child: PulsingDot(size: 12.r, color: cs.primary),
       ),
     );
 
     final descPanel = Expanded(
       child: FadeSlide(
         delay: Duration(milliseconds: delay.inMilliseconds + 160),
-        beginOffset: Offset(invert ? 50 : -50, 0),
+        beginOffset: Offset(invert ? 40 : -40, 0),
         child: HoverCard(
           child: Card(
-            elevation: 15,
+            elevation: 12,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
+              borderRadius: BorderRadius.circular(14.r),
             ),
             child: Padding(
-              padding: context.edgeInsets(horizontal: 20, vertical: 32),
-              child: Text(exp.description, style: theme.textTheme.bodyMedium),
+              padding: context.edgeInsets(horizontal: 16, vertical: 24),
+              child: Text(exp.description, style: theme.textTheme.bodySmall),
             ),
           ),
         ),
@@ -301,7 +301,8 @@ class _WebExperiencePageState extends State<WebExperiencePage>
     );
 
     return Padding(
-      padding: context.edgeInsets(vertical: 40),
+      // Tablet: tighter vertical padding between cards
+      padding: context.edgeInsets(vertical: 28),
       child: Row(
         children: invert
             ? [descPanel, dot, infoPanel]
