@@ -21,6 +21,9 @@ class TabletContactPage extends StatelessWidget {
           child: HoverCard(
             hoverScale: 1.004,
             child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(14.r),
+              ),
               child: Padding(
                 padding: context.edgeInsets(
                   horizontal: 32,
@@ -35,11 +38,11 @@ class TabletContactPage extends StatelessWidget {
                       child: Text(
                         'Let\'s build your next mobile app.',
                         textAlign: TextAlign.center,
-                        style:
-                            Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                  fontFamily: AppTextStyles.interFontFamily,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              fontFamily: AppTextStyles.interFontFamily,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                     ),
                     FadeSlide(
@@ -49,10 +52,8 @@ class TabletContactPage extends StatelessWidget {
                         child: Text(
                           'Currently open for new opportunities and freelance projects.',
                           textAlign: TextAlign.center,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: cs.onSurfaceVariant,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: cs.onSurfaceVariant),
                         ),
                       ),
                     ),
@@ -64,8 +65,9 @@ class TabletContactPage extends StatelessWidget {
                         hintText: 'John Doe',
                         label: 'Name',
                         validator: Validators.name,
-                        controller:
-                            context.read<ContactBloc>().nameTextController,
+                        controller: context
+                            .read<ContactBloc>()
+                            .nameTextController,
                       ),
                     ),
                     FadeSlide(
@@ -75,8 +77,9 @@ class TabletContactPage extends StatelessWidget {
                         label: 'Email',
                         margin: context.edgeInsets(top: 20),
                         validator: Validators.email,
-                        controller:
-                            context.read<ContactBloc>().emailTextController,
+                        controller: context
+                            .read<ContactBloc>()
+                            .emailTextController,
                       ),
                     ),
 
@@ -88,8 +91,9 @@ class TabletContactPage extends StatelessWidget {
                         maxLine: 7,
                         label: 'Message',
                         validator: Validators.message,
-                        controller:
-                            context.read<ContactBloc>().messageTextController,
+                        controller: context
+                            .read<ContactBloc>()
+                            .messageTextController,
                       ),
                     ),
                     FadeSlide(
@@ -99,8 +103,8 @@ class TabletContactPage extends StatelessWidget {
                         child: HoverCard(
                           child: AppButton(
                             onTap: () => context.read<ContactBloc>().add(
-                                  const SendMessageEvent(),
-                                ),
+                              const SendMessageEvent(),
+                            ),
                             margin: context.edgeInsets(top: 24),
                             // Tablet: full-width button feels more native
                             width: double.infinity,

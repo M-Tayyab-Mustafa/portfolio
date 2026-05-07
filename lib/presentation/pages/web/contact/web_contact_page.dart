@@ -20,6 +20,9 @@ class WebContactPage extends StatelessWidget {
           child: HoverCard(
             hoverScale: 1.004,
             child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(16.r),
+              ),
               child: SizedBox(
                 width: 800.w,
                 child: Padding(

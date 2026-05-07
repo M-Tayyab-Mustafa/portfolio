@@ -21,6 +21,9 @@ class MobileContactPage extends StatelessWidget {
           child: HoverCard(
             hoverScale: 1.002,
             child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(12.r),
+              ),
               child: Padding(
                 padding: context.edgeInsets(
                   horizontal: 20,

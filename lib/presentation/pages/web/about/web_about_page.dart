@@ -118,21 +118,23 @@ class _WebAboutPageState extends State<WebAboutPage>
 
                   Row(
                     children: [
-                      Container(
-                        width: 160.w,
-                        height: 48.h,
-                        decoration: BoxDecoration(
-                          color: placeholderColor,
-                          borderRadius: BorderRadius.circular(8.r),
+                      Expanded(
+                        child: Container(
+                          height: 48.h,
+                          decoration: BoxDecoration(
+                            color: placeholderColor,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
                         ),
                       ),
                       SizedBox(width: 16.w),
-                      Container(
-                        width: 140.w,
-                        height: 48.h,
-                        decoration: BoxDecoration(
-                          color: placeholderColor,
-                          borderRadius: BorderRadius.circular(8.r),
+                      Expanded(
+                        child: Container(
+                          height: 48.h,
+                          decoration: BoxDecoration(
+                            color: placeholderColor,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
                         ),
                       ),
                     ],
