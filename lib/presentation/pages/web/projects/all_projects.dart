@@ -27,7 +27,7 @@ class _AllProjectsPageState extends State<AllProjectsPage> {
     return BlocBuilder<ProjectsBloc, ProjectsState>(
       builder: (context, state) {
         if (state.isLoadingAll) {
-          return _buildShimmerSkeleton(); // ✨ Shimmer loading state ✨
+          return _buildShimmerSkeleton();
         }
         return Center(
           child: ConstrainedBox(
@@ -64,10 +64,9 @@ class _AllProjectsPageState extends State<AllProjectsPage> {
     );
   }
 
-  /// Shimmer skeleton that mimics the all projects layout
   Widget _buildShimmerSkeleton() {
     final cs = Theme.of(context).colorScheme;
-    const placeholderCount = 6; // Show 6 placeholder cards (typical grid)
+    const placeholderCount = 6;
 
     return Center(
       child: ConstrainedBox(
@@ -77,7 +76,6 @@ class _AllProjectsPageState extends State<AllProjectsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Heading placeholder
               Container(
                 width: 200.w,
                 height: 36.h,
@@ -103,17 +101,15 @@ class _AllProjectsPageState extends State<AllProjectsPage> {
     );
   }
 
-  /// Placeholder project card mimicking the real ProjectCard layout
   Widget _buildSkeletonCard() {
     final cs = Theme.of(context).colorScheme;
     final skeletonColor = cs.surfaceContainerHighest;
 
     return SizedBox(
-      width: 380.w, // Adjust based on your actual ProjectCard width
+      width: 380.w,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image placeholder
           Container(
             height: 220.h,
             width: double.infinity,

@@ -20,22 +20,10 @@ class CSliverAppBar extends StatelessWidget {
     final isDark = AppThemeScope.isDark(context);
     return SliverAppBar(
       floating: true,
-      leadingWidth: 250.w,
-      leading: Center(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CImage(
-              path: Constants.logoPath,
-              size: 32,
-              margin: context.edgeInsets(right: 12),
-            ),
-            Text('Tayyab.dev', style: Theme.of(context).textTheme.displaySmall),
-          ],
-        ),
-      ),
+      leadingWidth: _getLeadingWidth(context: context),
+      leading: _buildLeading(context: context),
       centerTitle: true,
-      title: _buildSections(context: context),
+      title: _buildTitle(context: context),
       actionsPadding: context.edgeInsets(right: 30),
       actions: [
         Padding(
@@ -45,7 +33,7 @@ class CSliverAppBar extends StatelessWidget {
             splashRadius: 22,
             onPressed: () => AppThemeScope.toggle(context),
             icon: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
+              duration: const Duration(milliseconds: 160),
               transitionBuilder: (child, anim) =>
                   ScaleTransition(scale: anim, child: child),
               child: Icon(
@@ -57,6 +45,66 @@ class CSliverAppBar extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  double _getLeadingWidth({required BuildContext context}) {
+    if (ResponsiveBreakpoints.of(context).isMobile) {
+      return 80.w;
+    } else if (ResponsiveBreakpoints.of(context).isTablet) {
+      if (MediaQuery.sizeOf(context).width >= 760) {
+        return 250.w;
+      } else {
+        return 80.w;
+      }
+    } else {
+      return 250.w;
+    }
+  }
+
+  Widget? _buildLeading({required BuildContext context}) {
+    if (ResponsiveBreakpoints.of(context).isMobile) {
+      return _buildDrawerOption(context: context);
+    } else if (ResponsiveBreakpoints.of(context).isTablet) {
+      if (MediaQuery.sizeOf(context).width >= 760) {
+        return _buildLeadingTitle(context: context);
+      } else {
+        return _buildDrawerOption(context: context);
+      }
+    } else {
+      return _buildLeadingTitle(context: context);
+    }
+  }
+
+  Widget _buildTitle({required BuildContext context}) {
+    if (ResponsiveBreakpoints.of(context).isTablet) {
+      if (MediaQuery.sizeOf(context).width >= 760) {
+        return _buildSections(context: context);
+      } else {
+        return _buildLeadingTitle(context: context);
+      }
+    } else {
+      return _buildSections(context: context);
+    }
+  }
+
+  Widget _buildLeadingTitle({required BuildContext context}) {
+    return Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CImage(
+            path: Constants.logoPath,
+            size: 32,
+            margin: context.edgeInsets(right: 12),
+          ),
+          Text('Tayyab.dev', style: Theme.of(context).textTheme.displaySmall),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerOption({required BuildContext context}) {
+    return Container();
   }
 
   Widget _buildSections({required BuildContext context}) {
@@ -154,17 +202,17 @@ class _AnimatedMenuItemState extends State<_AnimatedMenuItem> {
         behavior: HitTestBehavior.opaque,
         child: AnimatedScale(
           scale: isActive ? 1.05 : 1,
-          duration: const Duration(milliseconds: 180),
+          duration: const Duration(milliseconds: 120),
           curve: Curves.easeOutCubic,
           child: AnimatedSlide(
             offset: isActive ? const Offset(0, -0.04) : Offset.zero,
-            duration: const Duration(milliseconds: 180),
+            duration: const Duration(milliseconds: 120),
             curve: Curves.easeOutCubic,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 180),
+                  duration: const Duration(milliseconds: 120),
                   curve: Curves.easeOutCubic,
                   style:
                       textStyle?.copyWith(
@@ -178,7 +226,7 @@ class _AnimatedMenuItemState extends State<_AnimatedMenuItem> {
                 Padding(
                   padding: context.edgeInsets(top: 5),
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
+                    duration: const Duration(milliseconds: 160),
                     curve: Curves.easeOutCubic,
                     width: isActive ? textPainter.width + 16.w : 0,
                     height: 1,

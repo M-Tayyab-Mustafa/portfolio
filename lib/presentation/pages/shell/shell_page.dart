@@ -1,13 +1,22 @@
-import 'package:portfolio/presentation/blocs/contact/_bloc.dart';
 import 'package:portfolio/presentation/blocs/shell/_bloc.dart';
-import 'package:portfolio/presentation/pages/web/about/page.dart';
-import 'package:portfolio/presentation/pages/web/contact/page.dart';
-import 'package:portfolio/presentation/pages/web/experience/page.dart';
-import 'package:portfolio/presentation/pages/web/projects/page.dart';
-import 'package:portfolio/presentation/pages/web/skills/page.dart';
 import 'package:portfolio/presentation/widgets/appbar.dart';
+import 'package:portfolio/presentation/widgets/footer.dart';
 import 'package:portfolio/presentation/widgets/image.dart';
 import 'package:portfolio/utils/exports.dart';
+
+/// Tablet Layout
+import 'package:portfolio/presentation/pages/tablet/about/tablet_about_page.dart';
+import 'package:portfolio/presentation/pages/tablet/contact/tablet_contact_page.dart';
+import 'package:portfolio/presentation/pages/tablet/experience/tablet_experience_page.dart';
+import 'package:portfolio/presentation/pages/tablet/projects/tablet_projects_page.dart';
+import 'package:portfolio/presentation/pages/tablet/skills/tablet_skills_page.dart';
+
+/// Web Layout
+import 'package:portfolio/presentation/pages/web/about/web_about_page.dart';
+import 'package:portfolio/presentation/pages/web/contact/web_contact_page.dart';
+import 'package:portfolio/presentation/pages/web/experience/web_experience_page.dart';
+import 'package:portfolio/presentation/pages/web/projects/web_projects_page.dart';
+import 'package:portfolio/presentation/pages/web/skills/web_skills_page.dart';
 
 part 'mobile_layout.dart';
 part 'tablet_layout.dart';

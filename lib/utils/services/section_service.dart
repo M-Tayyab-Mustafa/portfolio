@@ -25,7 +25,7 @@ class SectionService {
 
     await Scrollable.ensureVisible(
       context,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
   }

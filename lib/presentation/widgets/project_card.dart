@@ -9,6 +9,22 @@ class ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (ResponsiveBreakpoints.of(context).isMobile) {
+      return _MobileCard(project: project);
+    } else if (ResponsiveBreakpoints.of(context).isTablet) {
+      return _TabletCard(project: project);
+    } else {
+      return _WebCard(project: project);
+    }
+  }
+}
+
+class _WebCard extends StatelessWidget {
+  const _WebCard({required this.project});
+  final ProjectEntity project;
+
+  @override
+  Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final hasImage = project.image.isNotEmpty;
 
@@ -30,9 +46,6 @@ class ProjectCard extends StatelessWidget {
                   height: 220.h,
                   width: double.infinity,
                   path: project.image,
-                  type: project.image.startsWith('http')
-                      ? ImageType.network
-                      : ImageType.asset,
                   fit: BoxFit.cover,
                 ),
               Divider(thickness: 2, color: cs.inverseSurface),
@@ -113,5 +126,124 @@ class ProjectCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _TabletCard extends StatelessWidget {
+  const _TabletCard({required this.project});
+  final ProjectEntity project;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final hasImage = project.image.isNotEmpty;
+
+    return Card(
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.circular(16.r),
+      ),
+      child: SizedBox(
+        width: 340.w,
+        height: 400.h,
+        child: ClipRRect(
+          borderRadius: BorderRadiusGeometry.circular(14.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (hasImage)
+                CImage(
+                  height: 180.h,
+                  width: double.infinity,
+                  path: project.image,
+                  fit: BoxFit.cover,
+                ),
+              Divider(thickness: 2, color: cs.inverseSurface),
+              Expanded(
+                child: Padding(
+                  padding: context.edgeInsets(
+                    top: 12,
+                    horizontal: 14,
+                    bottom: 14,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        project.title,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontFamily: AppTextStyles.interFontFamily,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: context.edgeInsets(vertical: 8),
+                          child: Text(
+                            project.description,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: context.edgeInsets(bottom: 12, top: 6),
+                        child: Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: project.skills.map((s) {
+                            return DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4.r),
+                                border: BoxBorder.all(color: cs.primary),
+                              ),
+                              child: Padding(
+                                padding: context.edgeInsets(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                child: Text(
+                                  s,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        fontFamily:
+                                            AppTextStyles.nimbusMonoFontFamily,
+                                      ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      if (project.playStoreLink != null)
+                        LinkButton(
+                          title: 'VIEW ON PLAY STORE',
+                          url: project.playStoreLink!,
+                        )
+                      else if (project.appStoreLink != null)
+                        LinkButton(
+                          title: 'VIEW ON APP STORE',
+                          url: project.appStoreLink!,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileCard extends StatelessWidget {
+  const _MobileCard({required this.project});
+  final ProjectEntity project;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

@@ -32,7 +32,7 @@ class WebContactPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FadeSlide(
-                        delay: const Duration(milliseconds: 200),
+                        delay: const Duration(milliseconds: 190),
                         child: Text(
                           'Let\'s build your next mobile app.',
                           textAlign: TextAlign.center,
@@ -44,7 +44,7 @@ class WebContactPage extends StatelessWidget {
                         ),
                       ),
                       FadeSlide(
-                        delay: const Duration(milliseconds: 300),
+                        delay: const Duration(milliseconds: 180),
                         child: Padding(
                           padding: context.edgeInsets(top: 8, bottom: 56),
                           child: Text(
@@ -56,7 +56,7 @@ class WebContactPage extends StatelessWidget {
                         ),
                       ),
                       FadeSlide(
-                        delay: const Duration(milliseconds: 380),
+                        delay: const Duration(milliseconds: 260),
                         child: Row(
                           children: [
                             Expanded(
@@ -86,7 +86,7 @@ class WebContactPage extends StatelessWidget {
                         ),
                       ),
                       FadeSlide(
-                        delay: const Duration(milliseconds: 460),
+                        delay: const Duration(milliseconds: 300),
                         child: CTextField(
                           hintText: 'Tell me about your project...',
                           margin: context.edgeInsets(top: 28),
@@ -99,7 +99,7 @@ class WebContactPage extends StatelessWidget {
                         ),
                       ),
                       FadeSlide(
-                        delay: const Duration(milliseconds: 540),
+                        delay: const Duration(milliseconds: 400),
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: HoverCard(
