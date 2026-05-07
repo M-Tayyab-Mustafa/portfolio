@@ -1,5 +1,6 @@
 import 'package:portfolio/presentation/blocs/shell/_bloc.dart';
 import 'package:portfolio/presentation/widgets/appbar.dart';
+import 'package:portfolio/presentation/widgets/drawer.dart';
 import 'package:portfolio/presentation/widgets/footer.dart';
 import 'package:portfolio/presentation/widgets/image.dart';
 import 'package:portfolio/utils/exports.dart';
@@ -66,6 +67,7 @@ class _ShellPageState extends State<ShellPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const AppDrawer(),
       body: Stack(
         children: [
           Positioned.fill(
