@@ -244,6 +244,108 @@ class _MobileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final cs = Theme.of(context).colorScheme;
+    final hasImage = project.image.isNotEmpty;
+
+    return Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.circular(14.r),
+      ),
+      child: ClipRRect(
+        // Mobile: no fixed height — card grows with content
+        borderRadius: BorderRadiusGeometry.circular(14.r),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (hasImage)
+              CImage(
+                // Mobile: shorter thumbnail
+                height: 160.h,
+                width: double.infinity,
+                path: project.image,
+                fit: BoxFit.cover,
+              ),
+            Divider(thickness: 2, color: cs.inverseSurface, height: 2),
+            Padding(
+              padding: context.edgeInsets(top: 12, horizontal: 14, bottom: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Title
+                  Text(
+                    project.title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontFamily: AppTextStyles.interFontFamily,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  // Description
+                  Padding(
+                    padding: context.edgeInsets(vertical: 8),
+                    child: Text(
+                      project.description,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        height: 1.55,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+
+                  // Skill chips
+                  Padding(
+                    padding: context.edgeInsets(bottom: 12, top: 4),
+                    child: Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: project.skills.map((s) {
+                        return DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4.r),
+                            border: BoxBorder.all(color: cs.primary),
+                          ),
+                          child: Padding(
+                            padding: context.edgeInsets(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            child: Text(
+                              s,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    fontFamily:
+                                        AppTextStyles.nimbusMonoFontFamily,
+                                    fontSize: 10.sp,
+                                  ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+
+                  // Store link
+                  if (project.playStoreLink != null)
+                    LinkButton(
+                      title: 'VIEW ON PLAY STORE',
+                      url: project.playStoreLink!,
+                    )
+                  else if (project.appStoreLink != null)
+                    LinkButton(
+                      title: 'VIEW ON APP STORE',
+                      url: project.appStoreLink!,
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
