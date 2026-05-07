@@ -103,3 +103,58 @@ class TabletHeadingText extends StatelessWidget {
     );
   }
 }
+
+class MobileHeadingText extends StatelessWidget {
+  const MobileHeadingText({
+    super.key,
+    required this.text,
+    this.trailing,
+    this.onTapTrailing,
+  });
+  final String text;
+  final String? trailing;
+  final VoidCallback? onTapTrailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                text,
+                // Mobile: step down from headlineLarge → headlineMedium
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: AppTextStyles.interFontFamily,
+                ),
+              ),
+              Padding(
+                padding: context.edgeInsets(top: 5),
+                // Mobile: shorter accent divider
+                child: SizedBox(width: 48.w, child: Divider(thickness: 2)),
+              ),
+            ],
+          ),
+        ),
+        if (trailing != null)
+          InkWell(
+            borderRadius: BorderRadius.circular(8.r),
+            onTap: onTapTrailing,
+            child: Padding(
+              padding: context.edgeInsets(horizontal: 10, vertical: 6),
+              child: Text(
+                trailing!,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
