@@ -94,23 +94,19 @@ class _WebSkillsPageState extends State<WebSkillsPage> {
                       delay: Duration(milliseconds: 300 + idx * 100),
                       style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontFamily: AppTextStyles.interFontFamily,
                       ),
                     )
                   : Text(
                       a.title,
                       style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontFamily: AppTextStyles.interFontFamily,
                       ),
                     ),
             ),
             Text(
               a.subtitle,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontFamily: AppTextStyles.nimbusMonoFontFamily,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
             ),
           ],
         ),
@@ -180,7 +176,6 @@ class _WebSkillsPageState extends State<WebSkillsPage> {
                 skill.title,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppTextStyles.interFontFamily,
                 ),
               ),
             ),
@@ -197,9 +192,7 @@ class _WebSkillsPageState extends State<WebSkillsPage> {
                     padding: context.edgeInsets(horizontal: 12, vertical: 6),
                     child: Text(
                       s,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontFamily: AppTextStyles.nimbusMonoFontFamily,
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(),
                     ),
                   ),
                 );

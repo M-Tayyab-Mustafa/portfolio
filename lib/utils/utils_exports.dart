@@ -6,7 +6,6 @@ import 'package:portfolio/presentation/blocs/projects/_bloc.dart';
 import 'package:portfolio/presentation/blocs/shell/_bloc.dart';
 import 'package:portfolio/presentation/blocs/skills/_bloc.dart';
 import 'package:portfolio/presentation/pages/shell/shell_page.dart';
-import 'package:portfolio/presentation/pages/web/projects/all_projects.dart';
 import 'dart:developer' as developer;
 
 part 'constants.dart';

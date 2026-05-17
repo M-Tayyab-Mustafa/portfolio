@@ -24,7 +24,6 @@ class HeadingText extends StatelessWidget {
                 text,
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppTextStyles.interFontFamily,
                 ),
               ),
               Padding(
@@ -76,7 +75,6 @@ class TabletHeadingText extends StatelessWidget {
                 // Tablet: step down from displayMedium → headlineLarge
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppTextStyles.interFontFamily,
                 ),
               ),
               Padding(
@@ -129,7 +127,6 @@ class MobileHeadingText extends StatelessWidget {
                 // Mobile: step down from headlineLarge → headlineMedium
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppTextStyles.interFontFamily,
                 ),
               ),
               Padding(

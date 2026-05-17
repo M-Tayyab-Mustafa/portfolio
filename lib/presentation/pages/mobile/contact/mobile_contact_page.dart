@@ -40,7 +40,6 @@ class MobileContactPage extends StatelessWidget {
                         'Let\'s build your next mobile app.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontFamily: AppTextStyles.interFontFamily,
                           fontWeight: FontWeight.bold,
                           // Mobile: one step smaller than headlineMedium
                           fontSize: 20.sp,

@@ -37,6 +37,5 @@ class ProjectsBloc extends Bloc<ProjectsEvent, ProjectsState> {
     emit(state.copyWith(allProjects: projects, isLoadingAll: false));
   }
 
-  void _onViewAll(ViewAllProjects event, Emitter<ProjectsState> emit) =>
-      event.context.go(AppRoutes.allProjects);
+  void _onViewAll(ViewAllProjects event, Emitter<ProjectsState> emit) {}
 }

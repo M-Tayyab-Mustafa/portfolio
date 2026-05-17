@@ -122,28 +122,21 @@ class _MobileSkillsPageState extends State<MobileSkillsPage> {
                         suffix: suffix,
                         delay: Duration(milliseconds: 280 + idx * 90),
                         style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: AppTextStyles.interFontFamily,
-                            ),
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       )
                     : Text(
                         a.title,
                         style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: AppTextStyles.interFontFamily,
-                            ),
+                            ?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
               ),
               Text(
                 a.subtitle,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontFamily: AppTextStyles.nimbusMonoFontFamily,
-                  fontSize: 10.sp,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(fontSize: 10.sp),
               ),
             ],
           ),
@@ -193,7 +186,6 @@ class _MobileSkillsPageState extends State<MobileSkillsPage> {
                     skill.title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontFamily: AppTextStyles.interFontFamily,
                     ),
                   ),
                 ),
@@ -215,10 +207,9 @@ class _MobileSkillsPageState extends State<MobileSkillsPage> {
                     padding: context.edgeInsets(horizontal: 9, vertical: 4),
                     child: Text(
                       s,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontFamily: AppTextStyles.nimbusMonoFontFamily,
-                        fontSize: 10.sp,
-                      ),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(fontSize: 10.sp),
                     ),
                   ),
                 );

@@ -94,27 +94,19 @@ class _TabletSkillsPageState extends State<TabletSkillsPage> {
                         suffix: suffix,
                         delay: Duration(milliseconds: 300 + idx * 100),
                         style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: AppTextStyles.interFontFamily,
-                            ),
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       )
                     : Text(
                         a.title,
                         style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: AppTextStyles.interFontFamily,
-                            ),
+                            ?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
               ),
               Text(
                 a.subtitle,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontFamily: AppTextStyles.nimbusMonoFontFamily,
-                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(),
               ),
             ],
           ),
@@ -185,10 +177,9 @@ class _TabletSkillsPageState extends State<TabletSkillsPage> {
               padding: context.edgeInsets(vertical: 12),
               child: Text(
                 skill.title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: AppTextStyles.interFontFamily,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
             Wrap(
@@ -204,9 +195,7 @@ class _TabletSkillsPageState extends State<TabletSkillsPage> {
                     padding: context.edgeInsets(horizontal: 10, vertical: 5),
                     child: Text(
                       s,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontFamily: AppTextStyles.nimbusMonoFontFamily,
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(),
                     ),
                   ),
                 );

@@ -2,7 +2,6 @@ import 'package:portfolio/presentation/blocs/shell/_bloc.dart';
 import 'package:portfolio/presentation/widgets/appbar.dart';
 import 'package:portfolio/presentation/widgets/drawer.dart';
 import 'package:portfolio/presentation/widgets/footer.dart';
-import 'package:portfolio/presentation/widgets/image.dart';
 import 'package:portfolio/utils/exports.dart';
 
 /// Web Layout
@@ -68,26 +67,11 @@ class _ShellPageState extends State<ShellPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const AppDrawer(),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: CImage(
-              path: AppThemeScope.isDark(context)
-                  ? Constants.darkBackground
-                  : Constants.lightBackground,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-          ),
-
-          CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              CSliverAppBar(),
-              SliverToBoxAdapter(child: _buildBody()),
-            ],
-          ),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          CSliverAppBar(),
+          SliverToBoxAdapter(child: _buildBody()),
         ],
       ),
     );

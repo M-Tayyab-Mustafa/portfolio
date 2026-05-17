@@ -24,6 +24,5 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
   void _onContactMe(ContactMe event, Emitter<AboutState> emit) =>
       event.context.go(AppRoutes.contact);
 
-  void _onViewAllProjects(ViewAllProjects event, Emitter<AboutState> emit) =>
-      event.context.go(AppRoutes.allProjects);
+  void _onViewAllProjects(ViewAllProjects event, Emitter<AboutState> emit) {}
 }

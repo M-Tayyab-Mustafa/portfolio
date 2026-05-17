@@ -39,18 +39,6 @@ final routerConfig = GoRouter(
         GoRoute(path: AppRoutes.contact, pageBuilder: (_, _) => _page()),
       ],
     ),
-    GoRoute(
-      path: AppRoutes.allProjects,
-      pageBuilder: (_, _) => MaterialPage(
-        child: BlocProvider(
-          create: (_) => ProjectsBloc(
-            getFeaturedProjects: Injection.getFeaturedProjects,
-            getAllProjects: Injection.getAllProjects,
-          ),
-          child: const AllProjectsPage(),
-        ),
-      ),
-    ),
   ],
 );
 

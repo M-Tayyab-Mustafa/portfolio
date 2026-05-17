@@ -36,7 +36,6 @@ class CTextField extends StatelessWidget {
               label,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: colorScheme.onSurfaceVariant,
-                fontFamily: AppTextStyles.nimbusMonoFontFamily,
               ),
             ),
           ),

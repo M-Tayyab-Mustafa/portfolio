@@ -112,7 +112,7 @@ class AppTheme {
       cardColor: surface,
       dividerColor: divider,
       disabledColor: textMuted.withAlpha(115),
-      fontFamily: AppTextStyles.interFontFamily,
+
       textTheme: textTheme,
       primaryTextTheme: textTheme,
       appBarTheme: AppBarTheme(

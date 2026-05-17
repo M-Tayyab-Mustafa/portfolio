@@ -62,10 +62,7 @@ class _WebCard extends StatelessWidget {
                       Text(
                         project.title,
                         style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontFamily: AppTextStyles.interFontFamily,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Expanded(
                         child: Padding(
@@ -96,11 +93,7 @@ class _WebCard extends StatelessWidget {
                                 ),
                                 child: Text(
                                   s,
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(
-                                        fontFamily:
-                                            AppTextStyles.nimbusMonoFontFamily,
-                                      ),
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
                             );
@@ -172,7 +165,6 @@ class _TabletCard extends StatelessWidget {
                       Text(
                         project.title,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontFamily: AppTextStyles.interFontFamily,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -205,11 +197,7 @@ class _TabletCard extends StatelessWidget {
                                 ),
                                 child: Text(
                                   s,
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(
-                                        fontFamily:
-                                            AppTextStyles.nimbusMonoFontFamily,
-                                      ),
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
                               ),
                             );
@@ -278,7 +266,6 @@ class _MobileCard extends StatelessWidget {
                   Text(
                     project.title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontFamily: AppTextStyles.interFontFamily,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -316,12 +303,9 @@ class _MobileCard extends StatelessWidget {
                             ),
                             child: Text(
                               s,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    fontFamily:
-                                        AppTextStyles.nimbusMonoFontFamily,
-                                    fontSize: 10.sp,
-                                  ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(fontSize: 10.sp),
                             ),
                           ),
                         );

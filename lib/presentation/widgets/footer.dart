@@ -28,10 +28,9 @@ class FooterWidget extends StatelessWidget {
         padding: context.edgeInsets(horizontal: 12, vertical: 4),
         child: Text(
           text,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontFamily: AppTextStyles.nimbusMonoFontFamily,
-            color: colorScheme.onSecondary,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: colorScheme.onSecondary),
         ),
       ),
     );
@@ -51,10 +50,9 @@ class FooterWidget extends StatelessWidget {
         children: [
           Text(
             '© 2023 MUHAMMAD TAYYAB. BUILT WITH FLUTTER & PRECISION.',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontFamily: AppTextStyles.nimbusMonoFontFamily,
-              color: colorScheme.onSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: colorScheme.onSecondary),
           ),
           Padding(
             padding: context.edgeInsets(top: 8),
@@ -105,10 +103,9 @@ class FooterWidget extends StatelessWidget {
           Expanded(
             child: Text(
               '© 2023 MUHAMMAD TAYYAB. BUILT WITH FLUTTER & PRECISION.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontFamily: AppTextStyles.nimbusMonoFontFamily,
-                color: colorScheme.onSecondary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: colorScheme.onSecondary),
             ),
           ),
 

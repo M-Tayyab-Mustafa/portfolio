@@ -39,10 +39,7 @@ class TabletContactPage extends StatelessWidget {
                         'Let\'s build your next mobile app.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontFamily: AppTextStyles.interFontFamily,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
                     FadeSlide(

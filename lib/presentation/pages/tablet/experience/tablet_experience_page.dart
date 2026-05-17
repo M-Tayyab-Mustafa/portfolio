@@ -243,7 +243,6 @@ class _TabletExperiencePageState extends State<TabletExperiencePage>
             Text(
               exp.date,
               style: theme.textTheme.bodySmall?.copyWith(
-                fontFamily: AppTextStyles.nimbusMonoFontFamily,
                 color: cs.onSurfaceVariant,
               ),
             ),
@@ -254,7 +253,6 @@ class _TabletExperiencePageState extends State<TabletExperiencePage>
                 textAlign: invert ? TextAlign.start : TextAlign.end,
                 // Tablet: step down from headlineMedium → titleLarge
                 style: theme.textTheme.titleLarge?.copyWith(
-                  fontFamily: AppTextStyles.interFontFamily,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -242,7 +242,6 @@ class _WebExperiencePageState extends State<WebExperiencePage>
             Text(
               exp.date,
               style: theme.textTheme.bodyMedium?.copyWith(
-                fontFamily: AppTextStyles.nimbusMonoFontFamily,
                 color: cs.onSurfaceVariant,
               ),
             ),
@@ -252,7 +251,6 @@ class _WebExperiencePageState extends State<WebExperiencePage>
                 exp.title,
                 textAlign: invert ? TextAlign.start : TextAlign.end,
                 style: theme.textTheme.headlineMedium?.copyWith(
-                  fontFamily: AppTextStyles.interFontFamily,
                   fontWeight: FontWeight.bold,
                 ),
               ),

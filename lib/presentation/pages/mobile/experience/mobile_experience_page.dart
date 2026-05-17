@@ -221,7 +221,6 @@ class _MobileExperiencePageState extends State<MobileExperiencePage>
                   child: Text(
                     exp.date,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      fontFamily: AppTextStyles.nimbusMonoFontFamily,
                       color: cs.onSurfaceVariant,
                     ),
                   ),
@@ -235,7 +234,6 @@ class _MobileExperiencePageState extends State<MobileExperiencePage>
                   child: Text(
                     exp.title,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontFamily: AppTextStyles.interFontFamily,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
