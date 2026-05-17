@@ -1,3 +1,4 @@
+import 'package:portfolio/di/app_theme_scope.dart';
 import 'package:portfolio/presentation/blocs/shell/_bloc.dart';
 import 'package:portfolio/presentation/widgets/appbar_menu_item.dart';
 import 'package:portfolio/presentation/widgets/image.dart';

@@ -27,7 +27,6 @@ class AppTextStyles {
   static TextStyle get displayLarge => TextStyle(
     fontSize: 48.sp,
     fontWeight: FontWeight.w700,
-    color: AppColors.textPrimary,
     height: 1.1,
     letterSpacing: 0,
   );
@@ -35,7 +34,7 @@ class AppTextStyles {
   static TextStyle get displayMedium => TextStyle(
     fontSize: 40.sp,
     fontWeight: FontWeight.w700,
-    color: AppColors.textPrimary,
+
     height: 1.16,
     letterSpacing: 0,
   );
@@ -43,7 +42,7 @@ class AppTextStyles {
   static TextStyle get displaySmall => TextStyle(
     fontSize: 32.sp,
     fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+
     height: 1.2,
     letterSpacing: 0,
   );
@@ -52,7 +51,7 @@ class AppTextStyles {
   static TextStyle get headlineLarge => TextStyle(
     fontSize: 32.sp,
     fontWeight: FontWeight.w700,
-    color: AppColors.textPrimary,
+
     height: 1.2,
     letterSpacing: 0,
   );
@@ -60,7 +59,7 @@ class AppTextStyles {
   static TextStyle get headlineMedium => TextStyle(
     fontSize: 24.sp,
     fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+
     height: 1.32,
     letterSpacing: 0,
   );
@@ -68,7 +67,7 @@ class AppTextStyles {
   static TextStyle get headlineSmall => TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+
     height: 1.36,
     letterSpacing: 0,
   );
@@ -77,7 +76,7 @@ class AppTextStyles {
   static TextStyle get bodyLarge => TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w400,
-    color: AppColors.textPrimary,
+
     height: 1.6,
     letterSpacing: 0,
   );
@@ -85,7 +84,7 @@ class AppTextStyles {
   static TextStyle get bodyMedium => TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w400,
-    color: AppColors.textPrimary,
+
     height: 1.6,
     letterSpacing: 0,
   );
@@ -93,7 +92,7 @@ class AppTextStyles {
   static TextStyle get bodySmall => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
-    color: AppColors.textPrimary,
+
     height: 1.55,
     letterSpacing: 0,
   );
@@ -102,7 +101,7 @@ class AppTextStyles {
   static TextStyle get labelLarge => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+
     height: 1,
     letterSpacing: 0,
   );
@@ -110,7 +109,7 @@ class AppTextStyles {
   static TextStyle get labelMedium => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-    color: AppColors.textPrimary,
+
     height: 1,
     letterSpacing: 0,
   );
@@ -118,7 +117,7 @@ class AppTextStyles {
   static TextStyle get labelSmall => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-    color: AppColors.textPrimary,
+
     height: 1,
     letterSpacing: 0,
   );
@@ -127,7 +126,7 @@ class AppTextStyles {
   static TextStyle get titleLarge => TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeight.w700,
-    color: AppColors.textPrimary,
+
     height: 1.45,
     letterSpacing: 0,
   );
@@ -135,7 +134,7 @@ class AppTextStyles {
   static TextStyle get titleMedium => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+
     height: 1.45,
     letterSpacing: 0,
   );
@@ -143,7 +142,7 @@ class AppTextStyles {
   static TextStyle get titleSmall => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
-    color: AppColors.textPrimary,
+
     height: 1.45,
     letterSpacing: 0,
   );

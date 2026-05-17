@@ -76,7 +76,7 @@ class _TabletSkillsPageState extends State<TabletSkillsPage> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.r),
-        side: const BorderSide(color: Colors.transparent),
+        side: const BorderSide(color: AppColors.transparent),
       ),
       child: Padding(
         padding: context.edgeInsets(vertical: 24, horizontal: 16),
@@ -164,7 +164,7 @@ class _TabletSkillsPageState extends State<TabletSkillsPage> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.r),
-        side: const BorderSide(color: Colors.transparent),
+        side: const BorderSide(color: AppColors.transparent),
       ),
       child: Padding(
         padding: context.edgeInsets(all: 24),

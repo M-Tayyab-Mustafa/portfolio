@@ -162,7 +162,7 @@ class _ArcPainter extends CustomPainter {
     // ✅ Glow uses theme's primary color
     final glowPaint = Paint()
       ..shader = RadialGradient(
-        colors: [glowColor.withValues(alpha: 0.25), Colors.transparent],
+        colors: [glowColor.withValues(alpha: 0.25), AppColors.transparent],
       ).createShader(Rect.fromCircle(center: center, radius: size.width / 2))
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18);
     canvas.drawCircle(center, size.width / 2, glowPaint);

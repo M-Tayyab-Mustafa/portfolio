@@ -1,44 +1,5 @@
 part of 'package:portfolio/utils/utils_exports.dart';
 
-class AppThemeScope extends InheritedNotifier<ValueNotifier<ThemeMode>> {
-  const AppThemeScope({
-    super.key,
-    required ValueNotifier<ThemeMode> themeMode,
-    required super.child,
-  }) : super(notifier: themeMode);
-
-  static ThemeMode modeOf(BuildContext context) {
-    return _notifierOf(context, listen: true).value;
-  }
-
-  static void toggle(BuildContext context) {
-    final scope = _notifierOf(context);
-    final brightness = Theme.of(context).brightness;
-    scope.value = brightness == Brightness.dark
-        ? ThemeMode.light
-        : ThemeMode.dark;
-  }
-
-  static bool isDark(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark;
-  }
-
-  static ValueNotifier<ThemeMode> _notifierOf(
-    BuildContext context, {
-    bool listen = false,
-  }) {
-    final AppThemeScope? scope;
-    if (listen) {
-      scope = context.dependOnInheritedWidgetOfExactType<AppThemeScope>();
-    } else {
-      final element = context
-          .getElementForInheritedWidgetOfExactType<AppThemeScope>();
-      scope = element?.widget as AppThemeScope?;
-    }
-    return scope!.notifier!;
-  }
-}
-
 class AppTheme {
   AppTheme._();
 
@@ -120,13 +81,13 @@ class AppTheme {
         centerTitle: false,
         backgroundColor: surface.withValues(alpha: 0.8),
         foregroundColor: textPrimary,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColors.transparent,
         titleTextStyle: textTheme.titleLarge,
       ),
       cardTheme: CardThemeData(
         elevation: 0,
         color: surface,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColors.transparent,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.r),
@@ -134,31 +95,6 @@ class AppTheme {
         ),
       ),
       dividerTheme: DividerThemeData(color: divider, thickness: 1, space: 1),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style:
-            ElevatedButton.styleFrom(
-              elevation: 0,
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.textOnPrimary,
-              disabledBackgroundColor: surfaceElevated,
-              disabledForegroundColor: textMuted,
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-              textStyle: textTheme.labelLarge,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-            ).copyWith(
-              overlayColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.pressed)) {
-                  return AppColors.textOnPrimary.withAlpha(41);
-                }
-                if (states.contains(WidgetState.hovered)) {
-                  return AppColors.textOnPrimary.withAlpha(20);
-                }
-                return null;
-              }),
-            ),
-      ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: textPrimary,
@@ -204,10 +140,7 @@ class AppTheme {
         ),
       ),
       iconTheme: IconThemeData(color: textSecondary, size: 20),
-      progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: AppColors.electricBlue,
-        linearTrackColor: surfaceVariant,
-      ),
+
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: cursorColor,
         selectionColor: cursorColor.withAlpha(82),

@@ -1,3 +1,4 @@
+import 'package:portfolio/di/app_theme_scope.dart';
 import 'package:portfolio/utils/exports.dart';
 
 class App extends StatefulWidget {

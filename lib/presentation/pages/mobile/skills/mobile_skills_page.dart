@@ -104,7 +104,7 @@ class _MobileSkillsPageState extends State<MobileSkillsPage> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14.r),
-        side: const BorderSide(color: Colors.transparent),
+        side: const BorderSide(color: AppColors.transparent),
       ),
       child: Padding(
         padding: context.edgeInsets(vertical: 20, horizontal: 12),
@@ -169,7 +169,7 @@ class _MobileSkillsPageState extends State<MobileSkillsPage> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14.r),
-        side: const BorderSide(color: Colors.transparent),
+        side: const BorderSide(color: AppColors.transparent),
       ),
       child: Padding(
         padding: context.edgeInsets(all: 18),

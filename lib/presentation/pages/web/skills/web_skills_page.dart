@@ -76,7 +76,7 @@ class _WebSkillsPageState extends State<WebSkillsPage> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.r),
-        side: const BorderSide(color: Colors.transparent),
+        side: const BorderSide(color: AppColors.transparent),
       ),
       child: Padding(
         padding: context.edgeInsets(vertical: 32, horizontal: 18),
@@ -161,7 +161,7 @@ class _WebSkillsPageState extends State<WebSkillsPage> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.r),
-        side: const BorderSide(color: Colors.transparent),
+        side: const BorderSide(color: AppColors.transparent),
       ),
       child: Padding(
         padding: context.edgeInsets(all: 32),
