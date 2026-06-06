@@ -23,8 +23,8 @@ class AnimatedMenuItemState extends State<AnimatedMenuItem> {
   Widget build(BuildContext context) {
     final isActive = widget.isSelected || _isHovered;
     final theme = Theme.of(context);
-    final textStyle = theme.textTheme.titleSmall?.copyWith(
-      fontWeight: FontWeight.bold,
+    final textStyle = theme.textTheme.titleMedium?.copyWith(
+      fontFamily: AppTextStyles.jetBrainsMono,
     );
 
     final textPainter = TextPainter(
@@ -54,13 +54,11 @@ class AnimatedMenuItemState extends State<AnimatedMenuItem> {
                 AnimatedDefaultTextStyle(
                   duration: const Duration(milliseconds: 120),
                   curve: Curves.easeOutCubic,
-                  style:
-                      textStyle?.copyWith(
-                        color: isActive
-                            ? theme.colorScheme.onSurface
-                            : theme.colorScheme.onSurfaceVariant,
-                      ) ??
-                      TextStyle(color: theme.colorScheme.onSurface),
+                  style: textStyle!.copyWith(
+                    color: isActive
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurfaceVariant,
+                  ),
                   child: Text(widget.title),
                 ),
                 Padding(
@@ -69,12 +67,12 @@ class AnimatedMenuItemState extends State<AnimatedMenuItem> {
                     duration: const Duration(milliseconds: 160),
                     curve: Curves.easeOutCubic,
                     width: isActive ? textPainter.width + 16.w : 0,
-                    height: 1,
+                    height: 2.h,
                     decoration: BoxDecoration(
-                      color: widget.isSelected
+                      color: isActive
                           ? theme.colorScheme.primary
                           : theme.colorScheme.onSurfaceVariant,
-                      borderRadius: BorderRadius.circular(99),
+                      borderRadius: BorderRadius.circular(99.r),
                     ),
                   ),
                 ),

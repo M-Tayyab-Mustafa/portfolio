@@ -73,8 +73,8 @@ class AppTheme {
       cardColor: surface,
       dividerColor: divider,
       disabledColor: textMuted.withAlpha(115),
-
       textTheme: textTheme,
+      fontFamily: AppTextStyles.hankenGrotesk,
       primaryTextTheme: textTheme,
       appBarTheme: AppBarTheme(
         elevation: 0,

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-// ─── FadeSlide ────────────────────────────────────────────────
-/// Fades + slides in when scrolled into view.
-/// Automatically RESETS when scrolled completely out, so it replays
-/// every time the user scrolls back to this position.
 class FadeSlide extends StatefulWidget {
   const FadeSlide({
     super.key,
@@ -58,14 +54,12 @@ class _FadeSlideState extends State<FadeSlide>
   void _onVisibilityChanged(VisibilityInfo info) {
     if (!mounted) return;
     if (info.visibleFraction >= widget.visibilityThreshold) {
-      // Only forward if not already playing / played
       if (_ctrl.status == AnimationStatus.dismissed) {
         Future.delayed(widget.delay, () {
           if (mounted) _ctrl.forward();
         });
       }
     } else if (info.visibleFraction == 0.0) {
-      // Completely out of view → reset so it animates again on next scroll
       _ctrl.reset();
     }
   }
@@ -81,8 +75,6 @@ class _FadeSlideState extends State<FadeSlide>
   );
 }
 
-// ─── ScaleFade ────────────────────────────────────────────────
-/// Scales from [beginScale] and fades in. Resets when out of view.
 class ScaleFade extends StatefulWidget {
   const ScaleFade({
     super.key,
@@ -155,8 +147,6 @@ class _ScaleFadeState extends State<ScaleFade>
   );
 }
 
-// ─── HoverCard ────────────────────────────────────────────────
-/// Lifts slightly on hover — no visibility detection needed.
 class HoverCard extends StatefulWidget {
   const HoverCard({super.key, required this.child, this.hoverScale = 1.025});
   final Widget child;
@@ -202,8 +192,6 @@ class _HoverCardState extends State<HoverCard>
   );
 }
 
-// ─── AnimatedCounter ─────────────────────────────────────────
-/// Counts from 0 to [target]. Resets when out of view.
 class AnimatedCounter extends StatefulWidget {
   const AnimatedCounter({
     super.key,
@@ -272,8 +260,6 @@ class _AnimatedCounterState extends State<AnimatedCounter>
   );
 }
 
-// ─── PulsingDot ───────────────────────────────────────────────
-/// Always-pulsing circle for timeline nodes.
 class PulsingDot extends StatefulWidget {
   const PulsingDot({super.key, this.size = 12, this.color});
   final double size;

@@ -3,6 +3,9 @@ part of 'package:portfolio/utils/utils_exports.dart';
 class AppTextStyles {
   AppTextStyles._();
 
+  static final String hankenGrotesk = GoogleFonts.hankenGrotesk().fontFamily!;
+  static final String jetBrainsMono = GoogleFonts.jetBrainsMono().fontFamily!;
+
   static TextTheme textTheme(Color textColor) {
     return TextTheme(
       displayLarge: displayLarge.copyWith(color: textColor),
@@ -74,9 +77,8 @@ class AppTextStyles {
 
   // Body
   static TextStyle get bodyLarge => TextStyle(
-    fontSize: 16.sp,
+    fontSize: 18.sp,
     fontWeight: FontWeight.w400,
-
     height: 1.6,
     letterSpacing: 0,
   );
@@ -84,7 +86,6 @@ class AppTextStyles {
   static TextStyle get bodyMedium => TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w400,
-
     height: 1.6,
     letterSpacing: 0,
   );
@@ -92,7 +93,6 @@ class AppTextStyles {
   static TextStyle get bodySmall => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
-
     height: 1.55,
     letterSpacing: 0,
   );
@@ -101,7 +101,6 @@ class AppTextStyles {
   static TextStyle get labelLarge => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
-
     height: 1,
     letterSpacing: 0,
   );
@@ -109,7 +108,6 @@ class AppTextStyles {
   static TextStyle get labelMedium => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-
     height: 1,
     letterSpacing: 0,
   );
@@ -117,7 +115,6 @@ class AppTextStyles {
   static TextStyle get labelSmall => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-
     height: 1,
     letterSpacing: 0,
   );
@@ -126,7 +123,6 @@ class AppTextStyles {
   static TextStyle get titleLarge => TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeight.w700,
-
     height: 1.45,
     letterSpacing: 0,
   );
@@ -134,7 +130,6 @@ class AppTextStyles {
   static TextStyle get titleMedium => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w600,
-
     height: 1.45,
     letterSpacing: 0,
   );
@@ -142,7 +137,6 @@ class AppTextStyles {
   static TextStyle get titleSmall => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w600,
-
     height: 1.45,
     letterSpacing: 0,
   );

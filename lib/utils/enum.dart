@@ -1,3 +1,3 @@
 part of 'utils_exports.dart';
 
-enum ImageType { network, asset, file }
+enum ImageType { network, asset }

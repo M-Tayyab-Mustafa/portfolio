@@ -1,8 +1,6 @@
 import 'package:portfolio/presentation/blocs/about/_bloc.dart';
-import 'package:portfolio/presentation/widgets/animated_section.dart';
-import 'package:portfolio/presentation/widgets/button.dart';
-import 'package:portfolio/presentation/widgets/image.dart';
 import 'package:portfolio/domain/domain_exports.dart';
+import 'package:portfolio/presentation/widgets/button.dart';
 import 'package:portfolio/utils/exports.dart';
 
 class WebAboutPage extends StatefulWidget {
@@ -14,40 +12,21 @@ class WebAboutPage extends StatefulWidget {
 
 class _WebAboutPageState extends State<WebAboutPage>
     with SingleTickerProviderStateMixin {
-  final double _screenHeight =
-      PlatformDispatcher.instance.views.first.physicalSize.height /
-      PlatformDispatcher.instance.views.first.devicePixelRatio;
-
-  late final AnimationController _borderCtrl;
-
   @override
   void initState() {
     super.initState();
     context.read<AboutBloc>().add(const AboutStarted());
-    _borderCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 6),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _borderCtrl.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: _screenHeight - kToolbarHeight,
-      child: BlocBuilder<AboutBloc, AboutState>(
-        builder: (context, state) {
-          if (state.isLoading || state.about == null) {
-            return _buildShimmerSkeleton();
-          }
-          return _buildContent(state.about!);
-        },
-      ),
+    return BlocBuilder<AboutBloc, AboutState>(
+      builder: (context, state) {
+        if (state.isLoading || state.about == null) {
+          return _buildShimmerSkeleton();
+        }
+        return _buildContent(state.about!);
+      },
     );
   }
 
@@ -61,170 +40,294 @@ class _WebAboutPageState extends State<WebAboutPage>
   }
 
   Widget _buildContent(AboutEntity about) {
+    final double screenHeight =
+        PlatformDispatcher.instance.views.first.physicalSize.height /
+        PlatformDispatcher.instance.views.first.devicePixelRatio;
     final colorScheme = Theme.of(context).colorScheme;
-    final imageSize = Size(400.w, 400.h);
 
-    return Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(
-          flex: 5,
-          child: Padding(
-            padding: context.edgeInsets(left: 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FadeSlide(
-                  beginOffset: const Offset(-50, 0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 25.w,
-                        child: Divider(
-                          color: colorScheme.primary,
-                          thickness: 2.h,
-                        ),
-                      ),
-                      Padding(
-                        padding: context.edgeInsets(left: 8),
-                        child: Text(
-                          about.badge,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 2,
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                FadeSlide(
-                  delay: const Duration(milliseconds: 100),
-                  beginOffset: const Offset(-50, 0),
-                  child: Text(
-                    about.name,
-                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      fontSize: 64.sp,
-                      letterSpacing: 2,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                FadeSlide(
-                  delay: const Duration(milliseconds: 240),
-                  child: Padding(
-                    padding: context.edgeInsets(top: 24),
-                    child: Text(
-                      about.bio,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                ),
-                FadeSlide(
-                  delay: const Duration(milliseconds: 380),
-                  beginOffset: const Offset(0, 30),
-                  child: Padding(
-                    padding: context.edgeInsets(top: 32),
-                    child: Row(
-                      children: [
-                        HoverCard(
-                          child: AppButton(
-                            onTap: () => context.read<AboutBloc>().add(
-                              ViewAllProjects(context: context),
+        SizedBox(
+          height: screenHeight,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Padding(
+                padding: context.edgeInsets(horizontal: 30),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: colorScheme.primary.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(6.r),
+                              border: Border.all(color: colorScheme.primary),
                             ),
-                            margin: context.edgeInsets(right: 16),
-                            child: Row(
+                            child: Padding(
+                              padding: context.edgeInsets(
+                                vertical: 4,
+                                horizontal: 12,
+                              ),
+                              child: Text(
+                                'STATUS: ONLINE',
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      fontFamily: AppTextStyles.jetBrainsMono,
+                                      color: colorScheme.primary,
+                                    ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: context.edgeInsets(vertical: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Padding(
-                                  padding: context.edgeInsets(right: 8),
-                                  child: Text(
-                                    'VIEW PROJECTS',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge
-                                        ?.copyWith(
-                                          color: colorScheme.onPrimary,
-                                        ),
-                                  ),
+                                Text(
+                                  about.name.trim(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
-                                Icon(
-                                  CupertinoIcons.arrow_right,
-                                  size: Theme.of(
-                                    context,
-                                  ).textTheme.labelLarge?.fontSize,
-                                  color: colorScheme.onPrimary,
+                                Text(
+                                  about.badge,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall
+                                      ?.copyWith(
+                                        fontSize: 34,
+                                        color: colorScheme.primary,
+                                      ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        HoverCard(
-                          child: AppButton(
-                            onTap: () => context.read<AboutBloc>().add(
-                              ContactMe(context: context),
+                          Padding(
+                            padding: context.edgeInsets(top: 8, bottom: 16),
+                            child: Text(
+                              about.bio,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
-                            color: colorScheme.surface,
-                            title: 'CONTACT ME',
+                          ),
+                          Padding(
+                            padding: context.edgeInsets(top: 16),
+                            child: Row(
+                              children: [
+                                AppButton(
+                                  title: 'INITIALIZE_PROJECT',
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        color: colorScheme.primaryContainer,
+                                        fontFamily: AppTextStyles.jetBrainsMono,
+                                      ),
+                                ),
+                                AppButton(
+                                  margin: context.edgeInsets(left: 16),
+                                  showShadow: false,
+                                  title: 'VIEW_SOURCE',
+                                  borderColor: colorScheme.primary,
+                                  color: AppColors.transparent,
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        color: colorScheme.primary,
+                                        fontFamily: AppTextStyles.jetBrainsMono,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            boxShadow: [
+                              BoxShadow(
+                                color: colorScheme.primary.withValues(
+                                  alpha: 0.08,
+                                ),
+                                spreadRadius: 1,
+                                blurRadius: 16,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 80.w,
+                                child: Divider(color: colorScheme.primary),
+                              ),
+                              Padding(
+                                padding: context.edgeInsets(
+                                  horizontal: 32,
+                                  vertical: 26,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: context.edgeInsets(bottom: 16),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Row(
+                                              children: [
+                                                DecoratedBox(
+                                                  decoration: BoxDecoration(
+                                                    color: colorScheme.error,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 16,
+                                                    width: 16,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: context.edgeInsets(
+                                                    horizontal: 8,
+                                                  ),
+                                                  child: DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      color: colorScheme
+                                                          .onSurfaceVariant,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: SizedBox(
+                                                      height: 16,
+                                                      width: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                                DecoratedBox(
+                                                  decoration: BoxDecoration(
+                                                    color: colorScheme.outline,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 16,
+                                                    width: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Text(
+                                            'sys_kernel.tsx',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                  color: colorScheme.secondary,
+                                                  fontFamily: AppTextStyles
+                                                      .jetBrainsMono,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(),
+                                    Padding(
+                                      padding: context.edgeInsets(
+                                        top: 32,
+                                        bottom: 16,
+                                      ),
+                                      child: _buildTerminalText(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ),
-
-        Expanded(
-          flex: 5,
-          child: FadeSlide(
-            delay: const Duration(milliseconds: 140),
-            beginOffset: const Offset(50, 0),
-            child: Center(
-              child: AnimatedBuilder(
-                animation: _borderCtrl,
-                builder: (_, child) => Container(
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: DecoratedBox(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18.r),
-                    gradient: SweepGradient(
-                      transform: GradientRotation(_borderCtrl.value * 6.28318),
-                      colors: [
-                        Theme.of(context).colorScheme.primary,
-                        Theme.of(context).colorScheme.inversePrimary,
-                        Theme.of(context).colorScheme.inversePrimary,
-                        Theme.of(context).colorScheme.primary,
-                      ],
-                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withValues(alpha: 0.08),
+                        spreadRadius: screenHeight * 0.2,
+                        blurRadius: screenHeight * 0.8,
+                      ),
+                    ],
                   ),
-                  padding: const EdgeInsets.all(3),
-                  child: child,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18.r),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                    ),
-                    child: CImage(
-                      height: imageSize.height,
-                      width: imageSize.width,
-                      path: about.imageUrl,
-                      fit: BoxFit.cover,
-                    ),
+                  child: SizedBox(
+                    height: screenHeight * 0.3,
+                    width: screenHeight * 0.3,
                   ),
                 ),
               ),
-            ),
+            ],
+          ),
+        ),
+        Container(
+          width: MediaQuery.sizeOf(context).width,
+          color: Theme.of(context).scaffoldBackgroundColor,
+          height: screenHeight,
+          child: Row(
+            children: [
+              Expanded(child: Container()),
+              Expanded(child: Container()),
+            ],
           ),
         ),
       ],
     );
+  }
+
+  Widget _buildTerminalText() {
+    final secondaryTextStyle = Theme.of(
+      context,
+    ).textTheme.titleMedium?.copyWith(fontFamily: AppTextStyles.jetBrainsMono);
+    final primaryTextStyle = secondaryTextStyle?.copyWith(
+      color: Theme.of(context).colorScheme.primary,
+    );
+
+    final textSpans = [
+      TextSpan(text: 'const ', style: primaryTextStyle),
+      TextSpan(text: 'Architect = () => {\n', style: secondaryTextStyle),
+      TextSpan(text: '  const ', style: primaryTextStyle),
+      TextSpan(
+        text: '[performance, setPerformance] = useState(\'MAX\');\n',
+        style: secondaryTextStyle,
+      ),
+      TextSpan(text: '\n', style: secondaryTextStyle),
+      TextSpan(text: '  return', style: primaryTextStyle),
+      TextSpan(text: ' (\n', style: secondaryTextStyle),
+      TextSpan(text: '    <', style: secondaryTextStyle),
+      TextSpan(text: 'Ecosystem', style: primaryTextStyle),
+      TextSpan(text: '>\n', style: secondaryTextStyle),
+      TextSpan(text: '      <', style: secondaryTextStyle),
+      TextSpan(text: 'Service ', style: primaryTextStyle),
+      TextSpan(text: 'type="Distributed" />\n', style: secondaryTextStyle),
+      TextSpan(text: '      <', style: secondaryTextStyle),
+      TextSpan(text: 'Performance ', style: primaryTextStyle),
+      TextSpan(text: 'metric={performance} />\n', style: secondaryTextStyle),
+      TextSpan(text: '    </', style: secondaryTextStyle),
+      TextSpan(text: 'Ecosystem', style: primaryTextStyle),
+      TextSpan(text: '>\n', style: secondaryTextStyle),
+      TextSpan(text: '  );\n', style: secondaryTextStyle),
+      TextSpan(text: '};\n', style: secondaryTextStyle),
+    ];
+    return RichText(text: TextSpan(children: textSpans));
   }
 }

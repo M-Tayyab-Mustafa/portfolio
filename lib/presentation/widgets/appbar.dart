@@ -1,7 +1,6 @@
 import 'package:portfolio/di/app_theme_scope.dart';
 import 'package:portfolio/presentation/blocs/shell/_bloc.dart';
 import 'package:portfolio/presentation/widgets/appbar_menu_item.dart';
-import 'package:portfolio/presentation/widgets/image.dart';
 import 'package:portfolio/utils/exports.dart';
 
 class CSliverAppBar extends StatelessWidget {
@@ -9,7 +8,7 @@ class CSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (MediaQuery.sizeOf(context).width < 760) {
+    if (MediaQuery.sizeOf(context).width <= 768) {
       return _simpleAppBar(context: context);
     } else {
       return _buildWebAppBar(context: context);
@@ -19,6 +18,7 @@ class CSliverAppBar extends StatelessWidget {
   SliverAppBar _buildWebAppBar({required BuildContext context}) {
     return SliverAppBar(
       floating: true,
+      toolbarHeight: 80.h,
       leadingWidth: 200.w,
       centerTitle: true,
       leading: _buildTitle(context: context),
@@ -61,35 +61,14 @@ class CSliverAppBar extends StatelessWidget {
   }
 
   Widget _buildTitle({required BuildContext context}) {
+    final theme = Theme.of(context);
     return Center(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CImage(
-            path: Constants.logoPath,
-            size: 30,
-            margin: context.edgeInsets(right: 12),
-          ),
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Tayyab',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                TextSpan(
-                  text: '.dev',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      child: Text(
+        'Tayyab.dev',
+        style: theme.textTheme.headlineLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: theme.colorScheme.primary,
+        ),
       ),
     );
   }

@@ -16,18 +16,23 @@ class _WebLayoutState extends State<WebLayout> {
         Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1440),
-            child: Padding(
-              padding: context.edgeInsets(horizontal: 30),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  WebAboutPage(key: SectionService.about),
-                  WebSkillsPage(key: SectionService.skills),
-                  WebExperiencePage(key: SectionService.experience),
-                  WebProjectsPage(key: SectionService.projects),
-                  WebContactPage(key: SectionService.contact),
-                ],
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                WebAboutPage(key: SectionService.about),
+                Padding(
+                  padding: context.edgeInsets(horizontal: 30),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      WebSkillsPage(key: SectionService.skills),
+                      WebExperiencePage(key: SectionService.experience),
+                      WebProjectsPage(key: SectionService.projects),
+                      WebContactPage(key: SectionService.contact),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),

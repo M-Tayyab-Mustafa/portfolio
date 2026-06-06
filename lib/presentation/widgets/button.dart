@@ -18,6 +18,10 @@ class AppButton extends StatelessWidget {
     this.padding,
     this.radius,
     this.titleColor,
+    this.boxShadow,
+    this.borderColor,
+    this.showShadow = true,
+    this.showBorder = true,
   });
   final Color? color;
   final Widget? child;
@@ -31,6 +35,10 @@ class AppButton extends StatelessWidget {
   final TextStyle? style;
   final EdgeInsets? margin;
   final EdgeInsets? padding;
+  final BoxShadow? boxShadow;
+  final Color? borderColor;
+  final bool showShadow;
+  final bool showBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -52,18 +60,25 @@ class AppButton extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: buttonRadius,
             color: backgroundColor,
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.shadow,
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-            border: Border.all(
-              color: isPrimary
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.outlineVariant,
-            ),
+            boxShadow: !showShadow
+                ? null
+                : [
+                    boxShadow ??
+                        BoxShadow(
+                          color: theme.colorScheme.shadow,
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                  ],
+            border: showBorder
+                ? Border.all(
+                    color:
+                        borderColor ??
+                        (isPrimary
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.outlineVariant),
+                  )
+                : null,
           ),
           alignment: Alignment.center,
           padding: padding ?? context.edgeInsets(vertical: 12, horizontal: 32),

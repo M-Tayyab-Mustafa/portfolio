@@ -1,15 +1,6 @@
 import 'package:portfolio/utils/exports.dart';
 
-import 'platform_file_image_stub.dart'
-    if (dart.library.io) 'platform_file_image_io.dart';
-
-/// Provides reusable UI for image.
-///
-/// This file was re-documented without changing implementation behavior.
-
-/// Defines the cImage type.
 class CImage extends StatelessWidget {
-  /// Creates a cImage instance.
   const CImage({
     super.key,
     required this.path,
@@ -49,16 +40,12 @@ class CImage extends StatelessWidget {
   final Border? border;
   final BoxShape shape;
 
-  /// Returns height.
   double? get _height => size?.dm ?? height?.h;
 
-  /// Returns width.
   double? get _width => size?.dm ?? width?.w;
 
-  /// Returns is circle.
   bool get _isCircle => shape == BoxShape.circle;
 
-  /// Returns type.
   ImageType get _type {
     if (type != null) return type!;
     if (path.startsWith('assets/')) {
@@ -68,14 +55,12 @@ class CImage extends StatelessWidget {
     return ImageType.network;
   }
 
-  /// Builds the widget subtree for this component.
   @override
   Widget build(BuildContext context) {
     final child = Padding(
       padding: padding ?? EdgeInsets.zero,
       child: Center(child: _buildImage()),
     );
-
     return Padding(
       padding: margin ?? EdgeInsets.zero,
       child: GestureDetector(
@@ -83,14 +68,11 @@ class CImage extends StatelessWidget {
         child: Container(
           height: _height,
           width: _width,
-
           decoration: BoxDecoration(
             shape: shape,
-
             borderRadius: !_isCircle ? borderRadius ?? BorderRadius.zero : null,
             border: enableBorder ? border ?? const Border() : null,
           ),
-
           child: _isCircle
               ? ClipOval(clipBehavior: clipBehavior, child: child)
               : ClipRRect(
@@ -104,22 +86,11 @@ class CImage extends StatelessWidget {
     );
   }
 
-  /// Handles build image.
   Widget _buildImage() {
     final h = _height;
     final w = _width;
 
     return switch (_type) {
-      ImageType.file => buildPlatformFileImage(
-        path: path,
-        isSvg: path.isSvg,
-        fit: fit ?? BoxFit.contain,
-        colorBlendMode: colorBlendMode,
-        color: color,
-        height: h,
-        width: w,
-      ),
-
       ImageType.asset =>
         path.isSvg
             ? SvgPicture.asset(
@@ -156,25 +127,20 @@ class CImage extends StatelessWidget {
     };
   }
 
-  /// Handles build shimmer placeholder.
   Widget _buildPlaceholder({
     double? width,
     double? height,
     BorderRadius? radius,
   }) {
-    final cs = Theme.of(navigatorKey.currentContext!).colorScheme;
-
-    final baseColor = cs.surfaceContainerHighest;
-    final highlightColor = cs.surfaceContainerLow;
-
+    final colorScheme = Theme.of(navigatorKey.currentContext!).colorScheme;
     return Shimmer.fromColors(
-      baseColor: baseColor,
-      highlightColor: highlightColor,
+      baseColor: colorScheme.surfaceContainerHighest,
+      highlightColor: colorScheme.surfaceContainerLow,
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: baseColor,
+          color: colorScheme.surfaceContainerHighest,
           borderRadius: radius ?? BorderRadius.circular(8),
         ),
       ),
