@@ -18,7 +18,7 @@ class ExperienceBloc extends Bloc<ExperienceEvent, ExperienceState> {
     Emitter<ExperienceState> emit,
   ) async {
     emit(state.copyWith(isLoading: true));
-    final experiences = await _getExperiences();
+    final experiences = (await _getExperiences()).reversed.toList();
     emit(state.copyWith(experiences: experiences, isLoading: false));
   }
 }
