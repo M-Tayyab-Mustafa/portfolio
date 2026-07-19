@@ -1,9 +1,0 @@
-export 'package:portfolio/domain/entities/about_entity.dart';
-export 'package:portfolio/domain/entities/skill_entity.dart';
-export 'package:portfolio/domain/entities/experience_entity.dart';
-export 'package:portfolio/domain/entities/project_entity.dart';
-export 'package:portfolio/domain/repositories/portfolio_repository.dart';
-export 'package:portfolio/domain/usecases/get_about_usecase.dart';
-export 'package:portfolio/domain/usecases/get_skills_usecase.dart';
-export 'package:portfolio/domain/usecases/get_experiences_usecase.dart';
-export 'package:portfolio/domain/usecases/get_projects_usecase.dart';
