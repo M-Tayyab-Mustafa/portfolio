@@ -1,10 +1,21 @@
-import 'package:portfolio/domain/domain_exports.dart';
+import 'package:portfolio/shared/models/portfolio_models.dart';
 
-abstract class PortfolioRepository {
-  Future<AboutEntity> getAbout();
-  Future<List<SkillAnalyticEntity>> getSkillAnalytics();
-  Future<List<TechnicalSkillEntity>> getTechnicalSkills();
-  Future<List<ExperienceEntity>> getExperiences();
-  Future<List<ProjectEntity>> getFeaturedProjects();
-  Future<List<ProjectEntity>> getAllProjects();
+abstract interface class PortfolioRepository {
+  Stream<PortfolioContent> watchContent();
+}
+
+class PortfolioContentNotFoundException implements Exception {
+  const PortfolioContentNotFoundException();
+
+  @override
+  String toString() => 'PortfolioContentNotFoundException';
+}
+
+class PortfolioRepositoryInitializationException implements Exception {
+  const PortfolioRepositoryInitializationException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => message;
 }

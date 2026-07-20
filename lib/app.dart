@@ -1,36 +1,50 @@
-import 'package:portfolio/utils/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/core/routing/app_router.dart';
+import 'package:portfolio/core/theme/app_theme.dart';
+import 'package:portfolio/domain/repositories/portfolio_repository.dart';
+import 'package:portfolio/presentation/blocs/content/portfolio_content_bloc.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
-class App extends StatefulWidget {
-  const App({super.key});
+class App extends StatelessWidget {
+  const App({required this.repository, super.key});
 
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  final ValueNotifier<ThemeMode> _themeMode = ValueNotifier(ThemeMode.system);
-
-  @override
-  void dispose() {
-    _themeMode.dispose();
-    super.dispose();
-  }
+  final PortfolioRepository repository;
 
   @override
   Widget build(BuildContext context) {
-    return AppThemeScope(
-      themeMode: _themeMode,
-      child: ValueListenableBuilder<ThemeMode>(
-        valueListenable: _themeMode,
-        builder: (context, themeMode, _) {
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            routerConfig: routerConfig,
-            theme: AppTheme.light(context),
-            darkTheme: AppTheme.dark(context),
-            themeMode: themeMode,
-          );
-        },
+    return RepositoryProvider.value(
+      value: repository,
+      child: BlocProvider(
+        create: (context) =>
+            PortfolioContentBloc(context.read<PortfolioRepository>())
+              ..add(const PortfolioContentStarted()),
+        child: const _AppView(),
+      ),
+    );
+  }
+}
+
+class _AppView extends StatelessWidget {
+  const _AppView();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'Muhammad Tayyab — Senior Flutter Developer',
+      debugShowCheckedModeBanner: false,
+      routerConfig: appRouter,
+      theme: AppTheme.dark,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
+      builder: (context, child) => ResponsiveBreakpoints.builder(
+        breakpoints: const [
+          Breakpoint(start: 0, end: 899, name: 'UNSUPPORTED'),
+          Breakpoint(start: 900, end: 1199, name: 'SMALL_DESKTOP'),
+          Breakpoint(start: 1200, end: 1599, name: DESKTOP),
+          Breakpoint(start: 1600, end: double.infinity, name: 'WIDE_DESKTOP'),
+        ],
+        child: child!,
       ),
     );
   }

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Muhammad Tayyab M slash slash T lettermark</title>
+  <defs>
+    <radialGradient id="ambient" cx="50%" cy="45%" r="70%">
+      <stop offset="0" stop-color="#E50914" stop-opacity=".18"/>
+      <stop offset=".58" stop-color="#0C0C0C" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="top-line" x1="0" x2="1">
+      <stop stop-color="#E50914"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity=".3"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="#080808"/>
+  <rect width="512" height="512" fill="url(#ambient)"/>
+  <rect x="40" y="40" width="432" height="432" rx="58" fill="#0C0C0C" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="4"/>
+  <rect x="96" y="104" width="320" height="7" rx="3.5" fill="url(#top-line)"/>
+  <text x="256" y="314" text-anchor="middle" fill="#FFFFFF" font-family="Menlo, Monaco, monospace" font-size="112" font-weight="900" letter-spacing="-10">M<tspan fill="#E50914">//</tspan>T</text>
+  <circle cx="416" cy="416" r="10" fill="#E50914"/>
+</svg>
