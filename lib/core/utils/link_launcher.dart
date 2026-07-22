@@ -1,13 +1,28 @@
+import 'package:flutter/foundation.dart';
+import 'package:portfolio/core/utils/google_drive_url.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 abstract final class LinkLauncher {
   static Future<bool> open(String rawUrl) async {
-    final uri = Uri.tryParse(rawUrl);
-    if (uri == null || !_isAllowed(uri)) return false;
+    final normalizedUrl = rawUrl.trim();
+    final uri = Uri.tryParse(normalizedUrl);
+    if (uri == null || !_isAllowed(uri)) {
+      debugPrint('LinkLauncher rejected invalid URL: "$normalizedUrl"');
+      return false;
+    }
 
     try {
-      return await launchUrl(uri, mode: LaunchMode.platformDefault);
-    } on Exception {
+      final launched = await launchUrl(uri, mode: LaunchMode.platformDefault);
+      if (!launched) {
+        debugPrint('LinkLauncher could not open URL: "$uri"');
+      }
+      return launched;
+    } on Object catch (error, stackTrace) {
+      debugPrint('LinkLauncher failed to open URL: "$uri", error=$error');
+      debugPrintStack(
+        label: 'LinkLauncher failure stack trace',
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
@@ -16,28 +31,8 @@ abstract final class LinkLauncher {
   ///
   /// Firestore can store either the standard Google Drive sharing link or an
   /// already-direct download URL. Other valid HTTPS file URLs are preserved.
-  static Future<bool> download(String rawUrl) => open(_downloadUrl(rawUrl));
-
-  static String _downloadUrl(String rawUrl) {
-    final uri = Uri.tryParse(rawUrl.trim());
-    if (uri == null || uri.host.toLowerCase() != 'drive.google.com') {
-      return rawUrl;
-    }
-
-    String? fileId;
-    final pathSegments = uri.pathSegments;
-    final fileIndex = pathSegments.indexOf('d');
-    if (fileIndex >= 0 && fileIndex + 1 < pathSegments.length) {
-      fileId = pathSegments[fileIndex + 1];
-    }
-    fileId ??= uri.queryParameters['id'];
-    if (fileId == null || fileId.trim().isEmpty) return rawUrl;
-
-    return Uri.https('drive.google.com', '/uc', {
-      'export': 'download',
-      'id': fileId,
-    }).toString();
-  }
+  static Future<bool> download(String rawUrl) =>
+      open(GoogleDriveUrl.downloadSource(rawUrl));
 
   static bool _isAllowed(Uri uri) {
     switch (uri.scheme.toLowerCase()) {
