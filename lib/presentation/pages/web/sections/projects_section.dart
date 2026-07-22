@@ -1,27 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/animations/reveal_on_scroll.dart';
+import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
 import 'package:portfolio/shared/models/portfolio_models.dart';
+import 'package:portfolio/shared/widgets/app_button.dart';
 import 'package:portfolio/shared/widgets/app_icon.dart';
 import 'package:portfolio/shared/widgets/hover_surface.dart';
 import 'package:portfolio/shared/widgets/portfolio_image.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_container.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_header.dart';
 
-class ProjectsSection extends StatelessWidget {
-  const ProjectsSection({required this.content, super.key});
+class ProjectsSection extends StatefulWidget {
+  const ProjectsSection({
+    required this.content,
+    super.key,
+    this.showAllProjects = false,
+  });
 
   final PortfolioContent content;
+  final bool showAllProjects;
+
+  @override
+  State<ProjectsSection> createState() => _ProjectsSectionState();
+}
+
+class _ProjectsSectionState extends State<ProjectsSection> {
+  static const _initialProjectLimit = 6;
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProjectsCubit, ProjectsState>(
       builder: (context, state) {
+        final projects = widget.showAllProjects
+            ? state.visibleProjects
+            : state.visibleProjects.take(_initialProjectLimit).toList();
+        final hasMoreProjects =
+            state.visibleProjects.length > _initialProjectLimit;
         return SectionContainer(
           ambientAlignment: Alignment.bottomCenter,
           ambientOpacity: .06,
@@ -29,42 +56,57 @@ class ProjectsSection extends StatelessWidget {
             children: [
               RevealOnScroll(
                 child: SectionHeader(
-                  eyebrow: content.heading('projects').eyebrow,
-                  title: content.heading('projects').title,
-                  accentTitle: content.heading('projects').accentTitle,
+                  eyebrow: widget.showAllProjects
+                      ? 'COMPLETE DIGITAL ARCHIVE'
+                      : widget.content.heading('projects').eyebrow,
+                  title: widget.showAllProjects
+                      ? 'All'
+                      : widget.content.heading('projects').title,
+                  accentTitle: widget.showAllProjects
+                      ? 'Projects Gallery'
+                      : widget.content.heading('projects').accentTitle,
                 ),
               ),
-              const SizedBox(height: 48),
-              RevealOnScroll(
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final category in ProjectCategory.values)
-                      if (category == ProjectCategory.all ||
-                          state.allProjects.any(
-                            (project) => project.category == category,
-                          ))
-                        _FilterButton(
-                          label: content.categoryLabel(category),
-                          selected: category == state.selectedCategory,
-                          onPressed: () => context
-                              .read<ProjectsCubit>()
-                              .selectCategory(category),
-                        ),
-                  ],
+              if (widget.showAllProjects) ...[
+                const SizedBox(height: 18),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 720),
+                  child: const Text(
+                    'Explore the complete showcase of production applications, packages, integrations, and UI engineering built with Flutter.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                      height: 1.7,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 48),
+                _ProjectArchiveControls(
+                  content: widget.content,
+                  state: state,
+                  searchController: _searchController,
+                ),
+              ] else ...[
+                const SizedBox(height: 48),
+                RevealOnScroll(
+                  child: _ProjectFilters(content: widget.content, state: state),
+                ),
+              ],
               const SizedBox(height: 54),
               if (state.visibleProjects.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 70),
-                  child: Text(
-                    'No projects are currently published in this category.',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                )
+                widget.showAllProjects
+                    ? _EmptyProjectArchive(
+                        searchController: _searchController,
+                        searchQuery: state.searchQuery,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 70),
+                        child: Text(
+                          'No projects are currently published in this category.',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      )
               else
                 LayoutBuilder(
                   builder: (context, constraints) {
@@ -97,7 +139,7 @@ class ProjectsSection extends StatelessWidget {
                         spacing: gap,
                         runSpacing: gap,
                         children: [
-                          for (final entry in state.visibleProjects.indexed)
+                          for (final entry in projects.indexed)
                             SizedBox(
                               width: cardWidth,
                               child: RevealOnScroll(
@@ -108,7 +150,7 @@ class ProjectsSection extends StatelessWidget {
                                   milliseconds: (entry.$1 % columns) * 70,
                                 ),
                                 child: _ProjectCard(
-                                  content: content,
+                                  content: widget.content,
                                   project: entry.$2,
                                 ),
                               ),
@@ -118,10 +160,377 @@ class ProjectsSection extends StatelessWidget {
                     );
                   },
                 ),
+              if (!widget.showAllProjects && hasMoreProjects) ...[
+                const SizedBox(height: 64),
+                RevealOnScroll(
+                  child: _ViewAllProjectsButton(
+                    projectCount: state.allProjects.length,
+                    onPressed: () => context.push(PortfolioRoute.projectsPath),
+                  ),
+                ),
+              ],
+              if (widget.showAllProjects) ...[
+                const SizedBox(height: 80),
+                const _ProjectsCallToAction(),
+              ],
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class _ViewAllProjectsButton extends StatefulWidget {
+  const _ViewAllProjectsButton({
+    required this.projectCount,
+    required this.onPressed,
+  });
+
+  final int projectCount;
+  final VoidCallback onPressed;
+
+  @override
+  State<_ViewAllProjectsButton> createState() => _ViewAllProjectsButtonState();
+}
+
+class _ViewAllProjectsButtonState extends State<_ViewAllProjectsButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: AnimatedScale(
+        scale: _hovered ? 1.02 : 1,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          decoration: BoxDecoration(
+            color: _hovered ? AppColors.accent : AppColors.surface,
+            border: Border.all(
+              color: _hovered ? AppColors.accent : AppColors.borderStrong,
+            ),
+            borderRadius: BorderRadius.circular(AppLayout.radius),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xCC000000),
+                blurRadius: 28,
+                offset: Offset(0, 12),
+              ),
+            ],
+          ),
+          child: TextButton(
+            onPressed: widget.onPressed,
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.textPrimary,
+              backgroundColor: AppColors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              minimumSize: const Size(48, 48),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppLayout.radius),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.35,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('VIEW ALL PROJECTS (${widget.projectCount})'),
+                const SizedBox(width: 12),
+                AnimatedSlide(
+                  offset: _hovered ? const Offset(.38, 0) : Offset.zero,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                  child: AppIcon(
+                    'arrowLongRight',
+                    size: 16,
+                    color: _hovered ? AppColors.textPrimary : AppColors.accent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyProjectArchive extends StatelessWidget {
+  const _EmptyProjectArchive({
+    required this.searchController,
+    required this.searchQuery,
+  });
+
+  final TextEditingController searchController;
+  final String searchQuery;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppLayout.radius),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
+        child: Column(
+          children: [
+            const Icon(
+              Icons.filter_alt_off_outlined,
+              color: AppColors.accent,
+              size: 44,
+            ),
+            const SizedBox(height: 18),
+            const Text(
+              'NO PROJECTS FOUND',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              searchQuery.trim().isEmpty
+                  ? 'No projects match the selected category.'
+                  : 'No projects match “${searchQuery.trim()}”. Try another search or category.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 24),
+            AppButton(
+              label: 'Reset all filters',
+              compact: true,
+              onPressed: () {
+                searchController.clear();
+                final cubit = context.read<ProjectsCubit>();
+                cubit.search('');
+                cubit.selectCategory(ProjectCategory.all);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProjectFilters extends StatelessWidget {
+  const _ProjectFilters({required this.content, required this.state});
+
+  final PortfolioContent content;
+  final ProjectsState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final category in ProjectCategory.values)
+          if (category == ProjectCategory.all ||
+              state.allProjects.any((project) => project.category == category))
+            _FilterButton(
+              label: content.categoryLabel(category),
+              selected: category == state.selectedCategory,
+              onPressed: () =>
+                  context.read<ProjectsCubit>().selectCategory(category),
+            ),
+      ],
+    );
+  }
+}
+
+class _ProjectArchiveControls extends StatelessWidget {
+  const _ProjectArchiveControls({
+    required this.content,
+    required this.state,
+    required this.searchController,
+  });
+
+  final PortfolioContent content;
+  final ProjectsState state;
+  final TextEditingController searchController;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppLayout.radius),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x66000000),
+            blurRadius: 30,
+            offset: Offset(0, 12),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                SizedBox(
+                  width: 390,
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: context.read<ProjectsCubit>().search,
+                    style: const TextStyle(fontSize: 12),
+                    decoration: InputDecoration(
+                      hintText: 'Search projects by name, technology, tag...',
+                      prefixIcon: const Icon(Icons.search, size: 18),
+                      suffixIcon: state.searchQuery.isEmpty
+                          ? null
+                          : IconButton(
+                              tooltip: 'Clear search',
+                              onPressed: () {
+                                searchController.clear();
+                                context.read<ProjectsCubit>().search('');
+                              },
+                              icon: const Icon(Icons.close, size: 17),
+                            ),
+                      filled: true,
+                      fillColor: AppColors.background,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                      border: const OutlineInputBorder(),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.borderStrong),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColors.accent),
+                      ),
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                const AppIcon('layers', size: 16, color: AppColors.accent),
+                const SizedBox(width: 8),
+                Text(
+                  'Showing ${state.visibleProjects.length} of ${state.allProjects.length} Projects',
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontFamily: 'monospace',
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 22),
+            const Divider(height: 1),
+            const SizedBox(height: 18),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 13, right: 14),
+                  child: Text(
+                    'FILTER:',
+                    style: TextStyle(
+                      color: AppColors.textMuted,
+                      fontFamily: 'monospace',
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final category in ProjectCategory.values)
+                        if (category == ProjectCategory.all ||
+                            state.allProjects.any(
+                              (project) => project.category == category,
+                            ))
+                          _FilterButton(
+                            label: content.categoryLabel(category),
+                            count: category == ProjectCategory.all
+                                ? state.allProjects.length
+                                : state.allProjects
+                                      .where(
+                                        (project) =>
+                                            project.category == category,
+                                      )
+                                      .length,
+                            selected: category == state.selectedCategory,
+                            onPressed: () => context
+                                .read<ProjectsCubit>()
+                                .selectCategory(category),
+                          ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProjectsCallToAction extends StatelessWidget {
+  const _ProjectsCallToAction();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppLayout.radius),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Row(
+          children: [
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'HAVE A PROJECT IN MIND?',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    "Let's collaborate to bring your digital vision to life.",
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            AppButton(
+              label: 'Back to portfolio',
+              variant: AppButtonVariant.outline,
+              compact: true,
+              onPressed: () => context.go(PortfolioSection.projects.path),
+            ),
+            const SizedBox(width: 12),
+            AppButton(
+              label: 'Get in touch',
+              compact: true,
+              onPressed: () => context.go(PortfolioSection.contact.path),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -131,11 +540,13 @@ class _FilterButton extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onPressed,
+    this.count,
   });
 
   final String label;
   final bool selected;
   final VoidCallback onPressed;
+  final int? count;
 
   @override
   Widget build(BuildContext context) {
@@ -176,13 +587,36 @@ class _FilterButton extends StatelessWidget {
           );
         }),
       ),
-      child: Text(
-        label.toUpperCase(),
-        style: const TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 1.05,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 1.05,
+            ),
+          ),
+          if (count case final value?) ...[
+            const SizedBox(width: 8),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: selected
+                    ? AppColors.background.withValues(alpha: .3)
+                    : AppColors.elevatedSurface,
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                child: Text(
+                  '$value',
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 9),
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

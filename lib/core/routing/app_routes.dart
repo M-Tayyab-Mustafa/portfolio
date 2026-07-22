@@ -20,6 +20,8 @@ enum PortfolioSection {
 }
 
 abstract final class PortfolioRoute {
+  static const projectsName = 'allProjects';
+  static const projectsPath = '/all-projects';
   static const caseStudyName = 'caseStudy';
   static const caseStudyPath = '/case-study/:slug';
   static const testimonialSubmissionName = 'testimonialSubmission';

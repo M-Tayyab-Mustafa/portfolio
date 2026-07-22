@@ -21,6 +21,10 @@ class ExperienceSection extends StatelessWidget {
     final milestones = content.experiences
         .where((item) => item.kind == ExperienceKind.milestone)
         .toList(growable: false);
+    final configuredHeading = content.heading('experience');
+    final heading = milestones.isEmpty
+        ? const (title: 'Professional', accentTitle: 'Experience')
+        : const (title: 'Experience &', accentTitle: 'Milestones');
 
     return SectionContainer(
       background: AppColors.surface,
@@ -30,9 +34,9 @@ class ExperienceSection extends StatelessWidget {
         children: [
           RevealOnScroll(
             child: SectionHeader(
-              eyebrow: content.heading('experience').eyebrow,
-              title: content.heading('experience').title,
-              accentTitle: content.heading('experience').accentTitle,
+              eyebrow: configuredHeading.eyebrow,
+              title: heading.title,
+              accentTitle: heading.accentTitle,
             ),
           ),
           SizedBox(height: compact ? 66 : 84),
@@ -50,7 +54,7 @@ class ExperienceSection extends StatelessWidget {
               SizedBox(width: compact ? 42 : 66),
               Expanded(
                 child: _TimelineColumn(
-                  title: 'Education',
+                  title: 'Career Milestones',
                   iconName: 'milestone',
                   items: milestones,
                   slideFromLeft: false,

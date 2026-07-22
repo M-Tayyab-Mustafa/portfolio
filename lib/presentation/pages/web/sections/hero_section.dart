@@ -234,15 +234,40 @@ class _HeroPortraitState extends State<_HeroPortrait> {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            Positioned.fill(
-              child: DecoratedBox(
+            Positioned(
+              left: -52,
+              top: -52,
+              width: width + 132,
+              height: height + 132,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
+                    radius: .72,
                     colors: [
-                      AppColors.accent.withValues(alpha: _hovered ? .26 : .18),
+                      AppColors.accent.withValues(alpha: _hovered ? .12 : .09),
+                      AppColors.accent.withValues(alpha: _hovered ? .05 : .03),
                       AppColors.transparent,
                     ],
+                    stops: const [0, .48, 1],
                   ),
+                  borderRadius: BorderRadius.circular(80),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.accent.withValues(
+                        alpha: _hovered ? .09 : .06,
+                      ),
+                      blurRadius: _hovered ? 48 : 40,
+                      spreadRadius: _hovered ? 4 : 2,
+                    ),
+                    BoxShadow(
+                      color: AppColors.accent.withValues(
+                        alpha: _hovered ? .07 : .04,
+                      ),
+                      blurRadius: 20,
+                      spreadRadius: 0,
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/shared/models/portfolio_models.dart';
+import 'package:portfolio/shared/widgets/portfolio_image.dart';
 
 class BrandLogo extends StatefulWidget {
   const BrandLogo({
@@ -62,8 +63,8 @@ class _BrandLogoState extends State<BrandLogo> {
                       : const [],
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: Image.asset(
-                  widget.profile.logoAsset,
+                child: PortfolioImage(
+                  source: widget.profile.logoAsset,
                   fit: BoxFit.cover,
                   errorBuilder: (_, _, _) => const ColoredBox(
                     color: AppColors.surface,
