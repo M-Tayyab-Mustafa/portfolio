@@ -311,6 +311,10 @@ class PortfolioProject {
     required this.code,
     required this.imageUrl,
     required this.appStoreUrl,
+    required this.playStoreUrl,
+    required this.pubDevUrl,
+    required this.liveUrl,
+    required this.projectType,
     required this.sourceUrl,
     required this.caseStudy,
     required this.featured,
@@ -334,6 +338,10 @@ class PortfolioProject {
       code: _string(map['code']),
       imageUrl: _string(map['imageUrl']),
       appStoreUrl: _nullableString(map['appStoreUrl']),
+      playStoreUrl: _nullableString(map['playStoreUrl']),
+      pubDevUrl: _nullableString(map['pubDevUrl']),
+      liveUrl: _nullableString(map['liveUrl']),
+      projectType: _string(map['projectType']),
       sourceUrl: _nullableString(map['sourceUrl']),
       caseStudy: _map(map['caseStudy']).isEmpty
           ? ProjectCaseStudy.empty
@@ -356,6 +364,10 @@ class PortfolioProject {
   final String code;
   final String imageUrl;
   final String? appStoreUrl;
+  final String? playStoreUrl;
+  final String? pubDevUrl;
+  final String? liveUrl;
+  final String projectType;
   final String? sourceUrl;
   final ProjectCaseStudy caseStudy;
   final bool featured;
@@ -375,6 +387,10 @@ class PortfolioProject {
     'code': code,
     'imageUrl': imageUrl,
     'appStoreUrl': appStoreUrl,
+    'playStoreUrl': playStoreUrl,
+    'pubDevUrl': pubDevUrl,
+    'liveUrl': liveUrl,
+    'projectType': projectType,
     'sourceUrl': sourceUrl,
     'caseStudy': caseStudy.toMap(),
     'featured': featured,
