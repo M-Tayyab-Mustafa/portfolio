@@ -128,18 +128,40 @@ class _AboutCopy extends StatelessWidget {
           },
         ),
         const SizedBox(height: 32),
-        AppButton(
-          label: 'Explore my GitHub',
-          icon: const AppIcon(
-            'external',
-            size: 17,
-            color: AppColors.textPrimary,
-          ),
-          onPressed: () => context.read<ExternalLinkCubit>().open(
-            url: content.link(PortfolioLinkKey.github),
-            label: 'GitHub',
-            failureTemplate: '{label} could not be opened.',
-          ),
+        Wrap(
+          spacing: 14,
+          runSpacing: 14,
+          children: [
+            AppButton(
+              label: 'Explore my GitHub',
+              icon: const AppIcon(
+                'external',
+                size: 17,
+                color: AppColors.textPrimary,
+              ),
+              onPressed: () => context.read<ExternalLinkCubit>().open(
+                url: content.link(PortfolioLinkKey.github),
+                label: 'GitHub',
+                failureTemplate: '{label} could not be opened.',
+              ),
+            ),
+            AppButton(
+              label: 'Download resume',
+              variant: AppButtonVariant.outline,
+              icon: const AppIcon(
+                'arrowDown',
+                size: 17,
+                color: AppColors.textPrimary,
+              ),
+              onPressed: content.link(PortfolioLinkKey.resumeUrl).trim().isEmpty
+                  ? null
+                  : () => context.read<ExternalLinkCubit>().download(
+                      url: content.link(PortfolioLinkKey.resumeUrl),
+                      label: 'Resume',
+                      failureTemplate: '{label} could not be downloaded.',
+                    ),
+            ),
+          ],
         ),
         const SizedBox(height: 40),
         const Divider(height: 1),

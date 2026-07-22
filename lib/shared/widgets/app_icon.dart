@@ -70,6 +70,7 @@ class AppIcon extends StatelessWidget {
     'code',
     'database',
     'devices',
+    'download',
     'email',
     'external',
     'flutter',

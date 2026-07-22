@@ -28,6 +28,7 @@ import 'package:portfolio/shared/widgets/app_button.dart';
 import 'package:portfolio/shared/widgets/app_icon.dart';
 import 'package:portfolio/shared/widgets/app_toast.dart';
 import 'package:portfolio/shared/widgets/brand_loader.dart';
+import 'package:portfolio/shared/widgets/persistent_resume_button.dart';
 
 class PortfolioPage extends StatelessWidget {
   const PortfolioPage({required this.initialSection, super.key});
@@ -434,6 +435,14 @@ class _PortfolioViewState extends State<_PortfolioView> {
                       ),
                     ),
                   ),
+            ),
+            Positioned(
+              left: 28,
+              bottom: 28,
+              child: PersistentResumeButton(
+                resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
+                ownerName: content.profile.fullName,
+              ),
             ),
           ],
         ),

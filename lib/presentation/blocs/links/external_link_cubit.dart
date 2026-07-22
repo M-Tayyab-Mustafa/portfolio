@@ -25,4 +25,19 @@ class ExternalLinkCubit extends Cubit<ExternalLinkState> {
       ),
     );
   }
+
+  Future<void> download({
+    required String url,
+    required String label,
+    required String failureTemplate,
+  }) async {
+    final downloaded = await LinkLauncher.download(url);
+    if (downloaded || isClosed) return;
+    emit(
+      ExternalLinkState(
+        feedbackId: state.feedbackId + 1,
+        failureMessage: failureTemplate.replaceAll('{label}', label),
+      ),
+    );
+  }
 }
