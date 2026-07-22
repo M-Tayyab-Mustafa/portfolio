@@ -4,6 +4,7 @@ import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/presentation/pages/web/pages/case_study_page.dart';
 import 'package:portfolio/presentation/pages/web/pages/not_found_page.dart';
 import 'package:portfolio/presentation/pages/web/pages/portfolio_page.dart';
+import 'package:portfolio/presentation/pages/web/pages/projects_page.dart';
 import 'package:portfolio/presentation/pages/web/pages/testimonial_submission_page.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -18,6 +19,33 @@ final GoRouter appRouter = GoRouter(
           child: PortfolioPage(initialSection: section),
         ),
       ),
+    GoRoute(
+      path: PortfolioRoute.projectsPath,
+      name: PortfolioRoute.projectsName,
+      pageBuilder: (context, state) => CustomTransitionPage<void>(
+        key: state.pageKey,
+        transitionDuration: const Duration(milliseconds: 420),
+        reverseTransitionDuration: const Duration(milliseconds: 320),
+        child: const ProjectsPage(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          final curved = CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+            reverseCurve: Curves.easeInCubic,
+          );
+          return FadeTransition(
+            opacity: curved,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(.04, 0),
+                end: Offset.zero,
+              ).animate(curved),
+              child: child,
+            ),
+          );
+        },
+      ),
+    ),
     GoRoute(
       path: PortfolioRoute.caseStudyPath,
       name: PortfolioRoute.caseStudyName,

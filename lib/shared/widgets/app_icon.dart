@@ -55,6 +55,7 @@ class AppIcon extends StatelessWidget {
     'architecture',
     'arrowDown',
     'arrowLeft',
+    'arrowLongRight',
     'arrowRight',
     'arrowUp',
     'automation',
