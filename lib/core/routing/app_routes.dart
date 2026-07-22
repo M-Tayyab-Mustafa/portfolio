@@ -21,13 +21,14 @@ enum PortfolioSection {
 
 abstract final class PortfolioRoute {
   static const projectsName = 'allProjects';
-  static const projectsPath = '/all-projects';
+  // `/portfolio` is supplied by the GitHub Pages base href at build time.
+  static const projectsPath = '/projects/all-projects';
   static const caseStudyName = 'caseStudy';
-  static const caseStudyPath = '/case-study/:slug';
+  static const caseStudyPath = '/projects/:slug';
   static const testimonialSubmissionName = 'testimonialSubmission';
-  static const testimonialSubmissionPath = '/submit-testimonial';
+  static const testimonialSubmissionPath = '/testimonials/submit-testimonial';
 
   static String caseStudyLocation(String slug) {
-    return '/case-study/${Uri.encodeComponent(slug)}';
+    return '/projects/${Uri.encodeComponent(slug)}';
   }
 }

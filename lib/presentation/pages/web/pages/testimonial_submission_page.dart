@@ -6,12 +6,14 @@ import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/data/services/email_js_contact_message_sender.dart';
 import 'package:portfolio/presentation/blocs/content/portfolio_content_bloc.dart';
 import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
+import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
 import 'package:portfolio/shared/models/portfolio_models.dart';
 import 'package:portfolio/shared/widgets/app_button.dart';
 import 'package:portfolio/shared/widgets/app_icon.dart';
 import 'package:portfolio/shared/widgets/app_toast.dart';
 import 'package:portfolio/shared/widgets/brand_loader.dart';
 import 'package:portfolio/shared/widgets/brand_logo.dart';
+import 'package:portfolio/shared/widgets/persistent_resume_button.dart';
 
 class TestimonialSubmissionPage extends StatelessWidget {
   const TestimonialSubmissionPage({super.key});
@@ -203,6 +205,14 @@ class _SubmissionViewState extends State<_SubmissionView> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Positioned(
+              left: 28,
+              bottom: 28,
+              child: PersistentResumeButton(
+                resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
+                ownerName: content.profile.fullName,
               ),
             ),
           ],
@@ -539,19 +549,7 @@ class _SubmissionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          TextButton.icon(
-            onPressed: onBack,
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.textSecondary,
-              textStyle: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1.45,
-              ),
-            ),
-            icon: const AppIcon('arrowLeft', size: 16),
-            label: const Text('BACK TO PORTFOLIO'),
-          ),
+          PortfolioBackButton(onPressed: onBack),
           BrandLogo(
             profile: content.profile,
             semanticLabel: 'Muhammad Tayyab, go to the portfolio home section',

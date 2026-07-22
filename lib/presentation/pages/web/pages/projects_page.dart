@@ -10,10 +10,12 @@ import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
 import 'package:portfolio/presentation/pages/web/sections/projects_section.dart';
+import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
 import 'package:portfolio/shared/models/portfolio_models.dart';
 import 'package:portfolio/shared/widgets/app_icon.dart';
 import 'package:portfolio/shared/widgets/app_toast.dart';
 import 'package:portfolio/shared/widgets/brand_loader.dart';
+import 'package:portfolio/shared/widgets/persistent_resume_button.dart';
 
 class ProjectsPage extends StatelessWidget {
   const ProjectsPage({super.key});
@@ -100,6 +102,14 @@ class _ProjectsPageView extends StatelessWidget {
             SingleChildScrollView(
               child: ProjectsSection(content: content, showAllProjects: true),
             ),
+            Positioned(
+              left: 28,
+              bottom: 28,
+              child: PersistentResumeButton(
+                resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
+                ownerName: content.profile.fullName,
+              ),
+            ),
           ],
         ),
       ),
@@ -135,7 +145,7 @@ class _ProjectsHeader extends StatelessWidget {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: _ArchiveBackButton(onPressed: () => context.pop()),
+                    child: PortfolioBackButton(onPressed: () => context.pop()),
                   ),
                 ),
                 _ArchiveBrandLogo(
@@ -193,70 +203,6 @@ class _ProjectsHeader extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ArchiveBackButton extends StatefulWidget {
-  const _ArchiveBackButton({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  State<_ArchiveBackButton> createState() => _ArchiveBackButtonState();
-}
-
-class _ArchiveBackButtonState extends State<_ArchiveBackButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border.all(
-            color: _hovered ? AppColors.accent : AppColors.borderStrong,
-          ),
-          borderRadius: BorderRadius.circular(AppLayout.radius),
-        ),
-        child: TextButton(
-          onPressed: widget.onPressed,
-          style: TextButton.styleFrom(
-            foregroundColor: _hovered
-                ? AppColors.textPrimary
-                : AppColors.textSecondary,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            minimumSize: const Size(48, 40),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedSlide(
-                offset: _hovered ? const Offset(-.25, 0) : Offset.zero,
-                duration: const Duration(milliseconds: 300),
-                child: const AppIcon(
-                  'arrowLeft',
-                  size: 15,
-                  color: AppColors.accent,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                'BACK TO PORTFOLIO',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ],
           ),
         ),
       ),

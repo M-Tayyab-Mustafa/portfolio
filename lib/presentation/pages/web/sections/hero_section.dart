@@ -245,8 +245,10 @@ class _HeroPortraitState extends State<_HeroPortrait> {
                   gradient: RadialGradient(
                     radius: .72,
                     colors: [
-                      AppColors.accent.withValues(alpha: _hovered ? .12 : .09),
-                      AppColors.accent.withValues(alpha: _hovered ? .05 : .03),
+                      AppColors.accent.withValues(alpha: _hovered ? .065 : .04),
+                      AppColors.accent.withValues(
+                        alpha: _hovered ? .025 : .012,
+                      ),
                       AppColors.transparent,
                     ],
                     stops: const [0, .48, 1],
@@ -255,16 +257,16 @@ class _HeroPortraitState extends State<_HeroPortrait> {
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.accent.withValues(
-                        alpha: _hovered ? .09 : .06,
+                        alpha: _hovered ? .045 : .025,
                       ),
-                      blurRadius: _hovered ? 48 : 40,
-                      spreadRadius: _hovered ? 4 : 2,
+                      blurRadius: _hovered ? 38 : 32,
+                      spreadRadius: _hovered ? 2 : 1,
                     ),
                     BoxShadow(
                       color: AppColors.accent.withValues(
-                        alpha: _hovered ? .07 : .04,
+                        alpha: _hovered ? .035 : .018,
                       ),
-                      blurRadius: 20,
+                      blurRadius: 16,
                       spreadRadius: 0,
                     ),
                   ],
