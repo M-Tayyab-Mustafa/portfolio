@@ -269,52 +269,37 @@ class _ProjectCard extends StatelessWidget {
                       ),
                       const Divider(height: 1),
                       const SizedBox(height: 12),
-                      Row(
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: TextButton(
-                                onPressed: () =>
-                                    context.read<ExternalLinkCubit>().open(
-                                      url: project.url,
-                                      label: project.destinationLabel,
-                                      failureTemplate:
-                                          '{label} could not be opened.',
-                                    ),
-                                style: TextButton.styleFrom(
-                                  foregroundColor: AppColors.textPrimary,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
+                          for (final action in _actionsFor(project))
+                            TextButton.icon(
+                              onPressed: () =>
+                                  context.read<ExternalLinkCubit>().open(
+                                    url: action.$2,
+                                    label: action.$1,
+                                    failureTemplate:
+                                        '{label} could not be opened.',
                                   ),
-                                  minimumSize: const Size(48, 42),
-                                  alignment: Alignment.centerLeft,
+                              icon: const AppIcon('external', size: 15),
+                              label: Text(action.$1.toUpperCase()),
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.textPrimary,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 9,
+                                  vertical: 8,
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const AppIcon('external', size: 16),
-                                    const SizedBox(width: 8),
-                                    Flexible(
-                                      child: Text(
-                                        project.destinationLabel.toUpperCase(),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w800,
-                                          letterSpacing: 1,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                minimumSize: const Size(48, 40),
+                                textStyle: const TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: .7,
                                 ),
                               ),
                             ),
-                          ),
                           if (project.caseStudy.isAvailable) ...[
-                            const SizedBox(width: 12),
                             OutlinedButton.icon(
                               onPressed: () => context
                                   .read<PortfolioNavigationCubit>()
@@ -368,6 +353,26 @@ class _ProjectCard extends StatelessWidget {
       ),
     );
   }
+
+  List<(String, String)> _actionsFor(PortfolioProject project) {
+    final actions = <(String, String)>[];
+    void add(String label, String? url) {
+      final value = url?.trim() ?? '';
+      if (value.isNotEmpty && !actions.any((action) => action.$2 == value)) {
+        actions.add((label, value));
+      }
+    }
+
+    add('View Repo', project.sourceUrl);
+    add('View on Play Store', project.playStoreUrl);
+    add('View on App Store', project.appStoreUrl);
+    add('View on pub.dev', project.pubDevUrl);
+    add('Visit Website', project.liveUrl);
+    if (actions.isEmpty && project.url.trim().isNotEmpty) {
+      add(project.destinationLabel, project.url);
+    }
+    return actions;
+  }
 }
 
 class _ProjectArtwork extends StatelessWidget {
@@ -401,7 +406,7 @@ class _ProjectArtwork extends StatelessWidget {
                   child: PortfolioImage(
                     source: project.imageUrl,
                     fit: BoxFit.cover,
-                    semanticLabel: project.title,
+                    semanticLabel: '${project.title} project thumbnail',
                   ),
                 )
               else
@@ -424,7 +429,11 @@ class _ProjectArtwork extends StatelessWidget {
                       vertical: 6,
                     ),
                     child: Text(
-                      categoryLabel.toUpperCase(),
+                      (project.projectType.trim().isNotEmpty &&
+                                  project.projectType != 'Application'
+                              ? project.projectType
+                              : categoryLabel)
+                          .toUpperCase(),
                       style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 8,
