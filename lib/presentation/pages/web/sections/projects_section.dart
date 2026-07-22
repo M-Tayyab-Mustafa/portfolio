@@ -196,6 +196,7 @@ class _ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryAction = _primaryActionFor(project);
     return HoverSurface(
       padding: EdgeInsets.zero,
       builder: (context, hovered) => Stack(
@@ -269,22 +270,50 @@ class _ProjectCard extends StatelessWidget {
                       ),
                       const Divider(height: 1),
                       const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      Row(
                         children: [
-                          for (final action in _actionsFor(project))
+                          OutlinedButton.icon(
+                            onPressed: () => context
+                                .read<PortfolioNavigationCubit>()
+                                .openCaseStudy(project.slug),
+                            icon: const AppIcon('external', size: 15),
+                            label: const Text('CASE STUDY'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.textSecondary,
+                              side: BorderSide(
+                                color: hovered
+                                    ? AppColors.accent.withValues(alpha: .45)
+                                    : AppColors.borderStrong,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 13,
+                                vertical: 10,
+                              ),
+                              minimumSize: const Size(48, 40),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppLayout.radius,
+                                ),
+                              ),
+                              textStyle: const TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: .9,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          if (primaryAction != null)
                             TextButton.icon(
                               onPressed: () =>
                                   context.read<ExternalLinkCubit>().open(
-                                    url: action.$2,
-                                    label: action.$1,
+                                    url: primaryAction.$2,
+                                    label: primaryAction.$1,
                                     failureTemplate:
                                         '{label} could not be opened.',
                                   ),
                               icon: const AppIcon('external', size: 15),
-                              label: Text(action.$1.toUpperCase()),
+                              label: Text(primaryAction.$1.toUpperCase()),
                               style: TextButton.styleFrom(
                                 foregroundColor: AppColors.textPrimary,
                                 padding: const EdgeInsets.symmetric(
@@ -299,38 +328,6 @@ class _ProjectCard extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          if (project.caseStudy.isAvailable) ...[
-                            OutlinedButton.icon(
-                              onPressed: () => context
-                                  .read<PortfolioNavigationCubit>()
-                                  .openCaseStudy(project.slug),
-                              icon: const AppIcon('external', size: 15),
-                              label: Text('CASE STUDY'),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.textSecondary,
-                                side: BorderSide(
-                                  color: hovered
-                                      ? AppColors.accent.withValues(alpha: .45)
-                                      : AppColors.borderStrong,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 13,
-                                  vertical: 10,
-                                ),
-                                minimumSize: const Size(48, 40),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    AppLayout.radius,
-                                  ),
-                                ),
-                                textStyle: const TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: .9,
-                                ),
-                              ),
-                            ),
-                          ],
                         ],
                       ),
                     ],
@@ -354,24 +351,16 @@ class _ProjectCard extends StatelessWidget {
     );
   }
 
-  List<(String, String)> _actionsFor(PortfolioProject project) {
-    final actions = <(String, String)>[];
-    void add(String label, String? url) {
+  (String, String)? _primaryActionFor(PortfolioProject project) {
+    (String, String)? action(String label, String? url) {
       final value = url?.trim() ?? '';
-      if (value.isNotEmpty && !actions.any((action) => action.$2 == value)) {
-        actions.add((label, value));
-      }
+      return value.isEmpty ? null : (label, value);
     }
 
-    add('View Repo', project.sourceUrl);
-    add('View on Play Store', project.playStoreUrl);
-    add('View on App Store', project.appStoreUrl);
-    add('View on pub.dev', project.pubDevUrl);
-    add('Visit Website', project.liveUrl);
-    if (actions.isEmpty && project.url.trim().isNotEmpty) {
-      add(project.destinationLabel, project.url);
-    }
-    return actions;
+    return action('Play Store', project.playStoreUrl) ??
+        action('App Store', project.appStoreUrl) ??
+        action('pub.dev', project.pubDevUrl) ??
+        action('View Repo', project.sourceUrl);
   }
 }
 

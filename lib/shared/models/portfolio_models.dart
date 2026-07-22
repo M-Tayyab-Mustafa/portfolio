@@ -271,6 +271,33 @@ class ProjectCaseStudy {
     enabled: false,
   );
 
+  factory ProjectCaseStudy.forProject({
+    required String title,
+    required String description,
+    required String details,
+    required String projectType,
+    required List<String> technologies,
+  }) {
+    final scope = details.isNotEmpty ? details : description;
+    final kind = projectType.isNotEmpty ? projectType : 'Flutter project';
+    final technologySummary = technologies.isEmpty
+        ? 'Flutter'
+        : technologies.join(', ');
+
+    return ProjectCaseStudy(
+      role: 'Flutter Developer',
+      timeline: 'Project implementation',
+      challenge: scope.isNotEmpty
+          ? 'The use case for $title: $scope'
+          : 'The use case was to deliver $title as a focused $kind experience.',
+      solution:
+          'The project addresses this use case through maintainable Flutter '
+          'flows built with $technologySummary.',
+      results: const [],
+      architecture: technologies,
+    );
+  }
+
   final String role;
   final String timeline;
   final String challenge;
@@ -325,12 +352,20 @@ class PortfolioProject {
   factory PortfolioProject.fromMap(Map<String, dynamic> map) {
     final title = _string(map['title']);
     final configuredSlug = _string(map['slug']);
+    final description = _string(map['description']);
+    final details = _string(map['details']);
+    final tags = _strings(map['tags']);
+    final projectType = _string(map['projectType']);
+    final configuredCaseStudy = _map(map['caseStudy']);
+    final parsedCaseStudy = configuredCaseStudy.isEmpty
+        ? ProjectCaseStudy.empty
+        : ProjectCaseStudy.fromMap(configuredCaseStudy);
     return PortfolioProject(
       slug: configuredSlug.isEmpty ? _slugify(title) : configuredSlug,
       title: title,
-      description: _string(map['description']),
-      details: _string(map['details']),
-      tags: _strings(map['tags']),
+      description: description,
+      details: details,
+      tags: tags,
       category: ProjectCategory.fromName(_string(map['category'])),
       url: _string(map['url']),
       destinationLabel: _string(map['destinationLabel']),
@@ -341,11 +376,17 @@ class PortfolioProject {
       playStoreUrl: _nullableString(map['playStoreUrl']),
       pubDevUrl: _nullableString(map['pubDevUrl']),
       liveUrl: _nullableString(map['liveUrl']),
-      projectType: _string(map['projectType']),
+      projectType: projectType,
       sourceUrl: _nullableString(map['sourceUrl']),
-      caseStudy: _map(map['caseStudy']).isEmpty
-          ? ProjectCaseStudy.empty
-          : ProjectCaseStudy.fromMap(_map(map['caseStudy'])),
+      caseStudy: parsedCaseStudy.isAvailable
+          ? parsedCaseStudy
+          : ProjectCaseStudy.forProject(
+              title: title,
+              description: description,
+              details: details,
+              projectType: projectType,
+              technologies: tags,
+            ),
       featured: _boolean(map['featured']),
       order: _integer(map['order']),
       enabled: _boolean(map['enabled']),

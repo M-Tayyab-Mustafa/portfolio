@@ -388,9 +388,7 @@ class _ProjectSpecs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final caseStudy = project.caseStudy;
-    final sourceUrl = project.sourceUrl;
-    final showSource =
-        sourceUrl != null && sourceUrl.isNotEmpty && sourceUrl != project.url;
+    final actions = _actionsFor(project);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -445,41 +443,39 @@ class _ProjectSpecs extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          const Divider(height: 1),
-          const SizedBox(height: 18),
-          if (showSource)
-            Row(
-              children: [
-                Expanded(
-                  child: _ExternalAction(
-                    label: project.destinationLabel,
-                    url: project.url,
-                    iconName: 'external',
-                    primary: true,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _ExternalAction(
-                    label: 'Source',
-                    url: sourceUrl,
-                    iconName: 'github',
-                    primary: false,
-                  ),
-                ),
-              ],
-            )
-          else
-            _ExternalAction(
-              label: project.destinationLabel,
-              url: project.url,
-              iconName: project.sourceUrl == null ? 'external' : 'github',
-              primary: true,
-            ),
+          if (actions.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            const Divider(height: 1),
+            const SizedBox(height: 18),
+            for (var index = 0; index < actions.length; index++) ...[
+              _ExternalAction(
+                label: actions[index].$1,
+                url: actions[index].$2,
+                iconName: actions[index].$3,
+                primary: index == 0,
+              ),
+              if (index < actions.length - 1) const SizedBox(height: 10),
+            ],
+          ],
         ],
       ),
     );
+  }
+
+  List<(String, String, String)> _actionsFor(PortfolioProject project) {
+    final actions = <(String, String, String)>[];
+    void add(String label, String? url, String iconName) {
+      final value = url?.trim() ?? '';
+      if (value.isNotEmpty && !actions.any((action) => action.$2 == value)) {
+        actions.add((label, value, iconName));
+      }
+    }
+
+    add('View repository', project.sourceUrl, 'github');
+    add('View on Play Store', project.playStoreUrl, 'external');
+    add('View on App Store', project.appStoreUrl, 'external');
+    add('View on pub.dev', project.pubDevUrl, 'external');
+    return actions;
   }
 }
 
