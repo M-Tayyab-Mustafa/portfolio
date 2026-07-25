@@ -335,48 +335,46 @@ class _PortfolioViewState extends State<_PortfolioView> {
         backgroundColor: AppColors.background,
         body: Stack(
           children: [
-            SelectionArea(
-              child: Scrollbar(
+            Scrollbar(
+              controller: _scrollController,
+              child: RevealScrollScope(
                 controller: _scrollController,
-                child: RevealScrollScope(
+                child: SingleChildScrollView(
                   controller: _scrollController,
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    primary: false,
-                    child: Column(
-                      children: [
-                        KeyedSubtree(
-                          key: _sectionKeys[PortfolioSection.home],
-                          child: HeroSection(content: content),
-                        ),
-                        KeyedSubtree(
-                          key: _sectionKeys[PortfolioSection.about],
-                          child: AboutSection(content: content),
-                        ),
-                        KeyedSubtree(
-                          key: _sectionKeys[PortfolioSection.skills],
-                          child: SkillsSection(content: content),
-                        ),
-                        KeyedSubtree(
-                          key: _sectionKeys[PortfolioSection.services],
-                          child: ServicesSection(content: content),
-                        ),
-                        KeyedSubtree(
-                          key: _sectionKeys[PortfolioSection.projects],
-                          child: ProjectsSection(content: content),
-                        ),
-                        KeyedSubtree(
-                          key: _sectionKeys[PortfolioSection.experience],
-                          child: ExperienceSection(content: content),
-                        ),
-                        TestimonialsSection(content: content),
-                        KeyedSubtree(
-                          key: _sectionKeys[PortfolioSection.contact],
-                          child: ContactSection(content: content),
-                        ),
-                        PortfolioFooter(key: _footerKey, content: content),
-                      ],
-                    ),
+                  primary: false,
+                  child: Column(
+                    children: [
+                      KeyedSubtree(
+                        key: _sectionKeys[PortfolioSection.home],
+                        child: HeroSection(content: content),
+                      ),
+                      KeyedSubtree(
+                        key: _sectionKeys[PortfolioSection.about],
+                        child: AboutSection(content: content),
+                      ),
+                      KeyedSubtree(
+                        key: _sectionKeys[PortfolioSection.skills],
+                        child: SkillsSection(content: content),
+                      ),
+                      KeyedSubtree(
+                        key: _sectionKeys[PortfolioSection.services],
+                        child: ServicesSection(content: content),
+                      ),
+                      KeyedSubtree(
+                        key: _sectionKeys[PortfolioSection.projects],
+                        child: ProjectsSection(content: content),
+                      ),
+                      KeyedSubtree(
+                        key: _sectionKeys[PortfolioSection.experience],
+                        child: ExperienceSection(content: content),
+                      ),
+                      TestimonialsSection(content: content),
+                      KeyedSubtree(
+                        key: _sectionKeys[PortfolioSection.contact],
+                        child: ContactSection(content: content),
+                      ),
+                      PortfolioFooter(key: _footerKey, content: content),
+                    ],
                   ),
                 ),
               ),
@@ -423,7 +421,7 @@ class _PortfolioViewState extends State<_PortfolioView> {
             ),
             Positioned(
               right: 30,
-              bottom: 28,
+              bottom: _resumeButtonBottom,
               child:
                   BlocSelector<
                     PortfolioNavigationCubit,

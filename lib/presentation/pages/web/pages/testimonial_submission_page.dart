@@ -114,108 +114,106 @@ class _SubmissionViewState extends State<_SubmissionView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SelectionArea(
-        child: Stack(
-          children: [
-            const Positioned(
-              left: -150,
-              top: -150,
-              child: _AmbientGlow(size: 500, opacity: .15),
-            ),
-            const Positioned(
-              right: -150,
-              bottom: -150,
-              child: _AmbientGlow(size: 450, opacity: .1),
-            ),
-            SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: _SubmissionHeader(content: content, onBack: _back),
+      body: Stack(
+        children: [
+          const Positioned(
+            left: -150,
+            top: -150,
+            child: _AmbientGlow(size: 500, opacity: .15),
+          ),
+          const Positioned(
+            right: -150,
+            bottom: -150,
+            child: _AmbientGlow(size: 450, opacity: .1),
+          ),
+          SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: _SubmissionHeader(content: content, onBack: _back),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 52,
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 52,
-                    ),
-                    sliver: SliverToBoxAdapter(
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 1240),
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              final mainPanel = AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 400),
-                                transitionBuilder: (child, animation) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: SlideTransition(
-                                      position: Tween<Offset>(
-                                        begin: const Offset(-.025, 0),
-                                        end: Offset.zero,
-                                      ).animate(animation),
-                                      child: child,
-                                    ),
-                                  );
-                                },
-                                child: _success
-                                    ? _SuccessPanel(
-                                        key: const ValueKey('success'),
-                                        onBack: _back,
-                                        onReset: _reset,
-                                      )
-                                    : _buildForm(),
-                              );
-                              final preview = _TestimonialPreview(
-                                name: _nameController.text,
-                                role: _roleController.text,
-                                company: _companyController.text,
-                                feedback: _feedbackController.text,
-                                rating: _rating,
-                              );
-                              if (constraints.maxWidth < 900) {
-                                return Column(
-                                  children: [
-                                    mainPanel,
-                                    const SizedBox(height: 48),
-                                    preview,
-                                  ],
+                  sliver: SliverToBoxAdapter(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1240),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final mainPanel = AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 400),
+                              transitionBuilder: (child, animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: SlideTransition(
+                                    position: Tween<Offset>(
+                                      begin: const Offset(-.025, 0),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                    child: child,
+                                  ),
                                 );
-                              }
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                              },
+                              child: _success
+                                  ? _SuccessPanel(
+                                      key: const ValueKey('success'),
+                                      onBack: _back,
+                                      onReset: _reset,
+                                    )
+                                  : _buildForm(),
+                            );
+                            final preview = _TestimonialPreview(
+                              name: _nameController.text,
+                              role: _roleController.text,
+                              company: _companyController.text,
+                              feedback: _feedbackController.text,
+                              rating: _rating,
+                            );
+                            if (constraints.maxWidth < 900) {
+                              return Column(
                                 children: [
-                                  Expanded(flex: 7, child: mainPanel),
-                                  const SizedBox(width: 52),
-                                  Expanded(flex: 5, child: preview),
+                                  mainPanel,
+                                  const SizedBox(height: 48),
+                                  preview,
                                 ],
                               );
-                            },
-                          ),
+                            }
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(flex: 7, child: mainPanel),
+                                const SizedBox(width: 52),
+                                Expanded(flex: 5, child: preview),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),
                   ),
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: _SubmissionFooter(content: content, onBack: _back),
-                    ),
+                ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: _SubmissionFooter(content: content, onBack: _back),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Positioned(
-              left: 28,
-              bottom: 28,
-              child: PersistentResumeButton(
-                resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
-                ownerName: content.profile.fullName,
-              ),
+          ),
+          Positioned(
+            left: 28,
+            bottom: 28,
+            child: PersistentResumeButton(
+              resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
+              ownerName: content.profile.fullName,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -549,11 +547,7 @@ class _SubmissionHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           PortfolioBackButton(onPressed: onBack),
-          BrandLogo(
-            profile: content.profile,
-            semanticLabel: 'Muhammad Tayyab, go to the portfolio home section',
-            onPressed: onBack,
-          ),
+          BrandLogo(profile: content.profile, semanticLabel: 'Muhammad Tayyab'),
         ],
       ),
     );

@@ -126,23 +126,21 @@ class _CaseStudyView extends StatelessWidget {
                   children: [
                     _CaseStudyHeader(project: project),
                     Expanded(
-                      child: SelectionArea(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.only(bottom: 48),
-                          child: Center(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 1120),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: AppLayout.horizontalPadding(
-                                    MediaQuery.sizeOf(context).width,
-                                  ),
-                                  vertical: 40,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.only(bottom: 48),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 1120),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: AppLayout.horizontalPadding(
+                                  MediaQuery.sizeOf(context).width,
                                 ),
-                                child: _CaseStudyBody(
-                                  content: content,
-                                  project: project,
-                                ),
+                                vertical: 40,
+                              ),
+                              child: _CaseStudyBody(
+                                content: content,
+                                project: project,
                               ),
                             ),
                           ),

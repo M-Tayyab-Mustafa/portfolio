@@ -76,41 +76,39 @@ class _ProjectsPageView extends StatelessWidget {
         preferredSize: const Size.fromHeight(72),
         child: _ProjectsHeader(content: content),
       ),
-      body: SelectionArea(
-        child: Stack(
-          children: [
-            Positioned(
-              top: -220,
-              left: MediaQuery.sizeOf(context).width / 2 - 400,
-              child: IgnorePointer(
-                child: Container(
-                  width: 800,
-                  height: 400,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        AppColors.accent.withValues(alpha: .1),
-                        AppColors.transparent,
-                      ],
-                    ),
+      body: Stack(
+        children: [
+          Positioned(
+            top: -220,
+            left: MediaQuery.sizeOf(context).width / 2 - 400,
+            child: IgnorePointer(
+              child: Container(
+                width: 800,
+                height: 400,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.accent.withValues(alpha: .1),
+                      AppColors.transparent,
+                    ],
                   ),
                 ),
               ),
             ),
-            SingleChildScrollView(
-              child: ProjectsSection(content: content, showAllProjects: true),
+          ),
+          SingleChildScrollView(
+            child: ProjectsSection(content: content, showAllProjects: true),
+          ),
+          Positioned(
+            left: 28,
+            bottom: 28,
+            child: PersistentResumeButton(
+              resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
+              ownerName: content.profile.fullName,
             ),
-            Positioned(
-              left: 28,
-              bottom: 28,
-              child: PersistentResumeButton(
-                resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
-                ownerName: content.profile.fullName,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

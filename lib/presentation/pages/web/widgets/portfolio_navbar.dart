@@ -61,13 +61,8 @@ class PortfolioNavbar extends StatelessWidget {
                   children: [
                     BrandLogo(
                       profile: content.profile,
-                      semanticLabel:
-                          'Muhammad Tayyab, go to the portfolio home section',
+                      semanticLabel: 'Muhammad Tayyab',
                       compact: compact,
-                      enableHover: false,
-                      onPressed: () => context
-                          .read<PortfolioNavigationCubit>()
-                          .navigateTo(PortfolioSection.home),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -155,12 +150,28 @@ class _NavLinkState extends State<_NavLink> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              widget.label.toUpperCase(),
-              style: TextStyle(
-                fontSize: widget.compact ? 9.5 : 11,
-                fontWeight: FontWeight.w700,
-                letterSpacing: widget.compact ? .45 : .75,
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, .22),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              ),
+              child: Text(
+                widget.label.toUpperCase(),
+                key: ValueKey(widget.active),
+                style: TextStyle(
+                  fontSize: widget.compact ? 9.5 : 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: widget.compact ? .45 : .75,
+                ),
               ),
             ),
             const SizedBox(height: 5),
