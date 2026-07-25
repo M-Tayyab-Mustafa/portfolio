@@ -4,7 +4,7 @@ import 'dart:developer' as developer;
 
 import 'package:http/http.dart' as http;
 import 'package:portfolio/domain/services/contact_message_sender.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
 
 class EmailJsContactMessageSender implements ContactMessageSender {
   EmailJsContactMessageSender({http.Client? client}) : _client = client;

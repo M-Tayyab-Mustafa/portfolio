@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
 
 class NotFoundPage extends StatelessWidget {
   const NotFoundPage({required this.path, super.key});

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/animations/reveal_on_scroll.dart';
-import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_container.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_header.dart';
+
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class TestimonialsSection extends StatefulWidget {
   const TestimonialsSection({required this.content, super.key});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   State<TestimonialsSection> createState() => _TestimonialsSectionState();
@@ -49,6 +49,7 @@ class _TestimonialsSectionState extends State<TestimonialsSection> {
       ambientOpacity: .065,
       child: Column(
         children: [
+          const SizedBox(height: 40),
           RevealOnScroll(
             child: SectionHeader(
               eyebrow: heading.eyebrow,
@@ -56,7 +57,7 @@ class _TestimonialsSectionState extends State<TestimonialsSection> {
               accentTitle: heading.accentTitle,
             ),
           ),
-          const SizedBox(height: 58),
+          const SizedBox(height: 98),
           RevealOnScroll(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1024),
@@ -153,11 +154,7 @@ class _TestimonialsSectionState extends State<TestimonialsSection> {
               ],
             ),
           ],
-          const SizedBox(height: 48),
-          _SubmitFeedbackButton(
-            onPressed: () =>
-                context.push(PortfolioRoute.testimonialSubmissionPath),
-          ),
+          const SizedBox(height: 150),
         ],
       ),
     );
@@ -196,9 +193,10 @@ class _TestimonialCard extends StatelessWidget {
             ),
           ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var index = 0; index < 5; index++)
                     Icon(
@@ -213,6 +211,7 @@ class _TestimonialCard extends StatelessWidget {
               const SizedBox(height: 22),
               Text(
                 '“${testimonial.content}”',
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 19,
@@ -222,6 +221,7 @@ class _TestimonialCard extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
                     radius: 24,
@@ -303,73 +303,6 @@ class _EmptyTestimonials extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SubmitFeedbackButton extends StatefulWidget {
-  const _SubmitFeedbackButton({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  State<_SubmitFeedbackButton> createState() => _SubmitFeedbackButtonState();
-}
-
-class _SubmitFeedbackButtonState extends State<_SubmitFeedbackButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: AnimatedScale(
-        scale: _hovered ? 1.02 : 1,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          decoration: BoxDecoration(
-            color: _hovered ? AppColors.accent : AppColors.surface,
-            border: Border.all(
-              color: _hovered ? AppColors.accent : AppColors.border,
-            ),
-            borderRadius: BorderRadius.circular(999),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black54,
-                blurRadius: 24,
-                offset: Offset(0, 10),
-              ),
-            ],
-          ),
-          child: InkWell(
-            onTap: widget.onPressed,
-            borderRadius: BorderRadius.circular(999),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('✨', style: TextStyle(fontSize: 15, height: 1)),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'SUBMIT YOUR FEEDBACK',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

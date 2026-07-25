@@ -1,15 +1,14 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/brand_logo.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/brand_logo.dart';
+
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class PortfolioNavbar extends StatelessWidget {
   const PortfolioNavbar({
@@ -19,7 +18,7 @@ class PortfolioNavbar extends StatelessWidget {
     super.key,
   });
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final PortfolioSection activeSection;
   final bool isScrolled;
 
@@ -28,78 +27,68 @@ class PortfolioNavbar extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final compact = width < AppLayout.compactDesktop;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 280),
-      height: isScrolled ? 72 : AppLayout.navigationHeight,
-      decoration: BoxDecoration(
-        color: isScrolled
-            ? AppColors.background.withValues(alpha: .86)
-            : AppColors.transparent,
-        border: Border(
-          bottom: BorderSide(
-            color: isScrolled ? AppColors.border : AppColors.transparent,
+    return RepaintBoundary(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 280),
+        height: isScrolled ? 72 : AppLayout.navigationHeight,
+        decoration: BoxDecoration(
+          color: isScrolled
+              ? AppColors.background.withValues(alpha: .96)
+              : AppColors.transparent,
+          border: Border(
+            bottom: BorderSide(
+              color: isScrolled ? AppColors.border : AppColors.transparent,
+            ),
           ),
         ),
-      ),
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: isScrolled ? 16 : 0,
-            sigmaY: isScrolled ? 16 : 0,
-          ),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: AppLayout.contentMaxWidth,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: AppLayout.contentMaxWidth,
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppLayout.horizontalPadding(width),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppLayout.horizontalPadding(width),
-                ),
-                child: Row(
-                  children: [
-                    BrandLogo(
-                      profile: content.profile,
-                      semanticLabel:
-                          'Muhammad Tayyab, go to the portfolio home section',
-                      compact: compact,
-                      onPressed: () => context
-                          .read<PortfolioNavigationCubit>()
-                          .navigateTo(PortfolioSection.home),
+              child: Row(
+                children: [
+                  BrandLogo(
+                    profile: content.profile,
+                    semanticLabel: content.profile.fullName,
+                    compact: compact,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        for (final section in PortfolioSection.values)
+                          _NavLink(
+                            section: section,
+                            label: content.navigationLabel(section.name),
+                            active: section == activeSection,
+                            compact: compact,
+                            onPressed: () => context
+                                .read<PortfolioNavigationCubit>()
+                                .navigateTo(section),
+                          ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          for (final section in PortfolioSection.values)
-                            _NavLink(
-                              section: section,
-                              label: content.navigationLabel(section.name),
-                              active: section == activeSection,
-                              compact: compact,
-                              onPressed: () => context
-                                  .read<PortfolioNavigationCubit>()
-                                  .navigateTo(section),
-                            ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(width: 10),
+                  AppButton(
+                    label: 'Hire me',
+                    compact: true,
+                    icon: const AppIcon(
+                      'external',
+                      size: 16,
+                      color: AppColors.textPrimary,
                     ),
-                    const SizedBox(width: 10),
-                    AppButton(
-                      label: 'Hire me',
-                      compact: true,
-                      icon: const AppIcon(
-                        'external',
-                        size: 16,
-                        color: AppColors.textPrimary,
-                      ),
-                      onPressed: () => context
-                          .read<PortfolioNavigationCubit>()
-                          .navigateTo(PortfolioSection.contact),
-                    ),
-                  ],
-                ),
+                    onPressed: () => context
+                        .read<PortfolioNavigationCubit>()
+                        .navigateTo(PortfolioSection.contact),
+                  ),
+                ],
               ),
             ),
           ),
@@ -153,12 +142,28 @@ class _NavLinkState extends State<_NavLink> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              widget.label.toUpperCase(),
-              style: TextStyle(
-                fontSize: widget.compact ? 9.5 : 11,
-                fontWeight: FontWeight.w700,
-                letterSpacing: widget.compact ? .45 : .75,
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              switchInCurve: Curves.easeOutCubic,
+              switchOutCurve: Curves.easeInCubic,
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, .22),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              ),
+              child: Text(
+                widget.label.toUpperCase(),
+                key: ValueKey(widget.active),
+                style: TextStyle(
+                  fontSize: widget.compact ? 9.5 : 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: widget.compact ? .45 : .75,
+                ),
               ),
             ),
             const SizedBox(height: 5),

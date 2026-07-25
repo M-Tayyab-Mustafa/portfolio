@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/core/routing/app_router.dart';
 import 'package:portfolio/core/theme/app_theme.dart';
 import 'package:portfolio/domain/repositories/portfolio_repository.dart';
-import 'package:portfolio/presentation/blocs/content/portfolio_content_bloc.dart';
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
+import 'package:portfolio/presentation/pages/splash/portfolio_splash_page.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class App extends StatelessWidget {
@@ -17,8 +18,8 @@ class App extends StatelessWidget {
       value: repository,
       child: BlocProvider(
         create: (context) =>
-            PortfolioContentBloc(context.read<PortfolioRepository>())
-              ..add(const PortfolioContentStarted()),
+            PortfolioDataBloc(context.read<PortfolioRepository>())
+              ..add(const PortfolioDataStarted()),
         child: const _AppView(),
       ),
     );
@@ -44,7 +45,19 @@ class _AppView extends StatelessWidget {
           Breakpoint(start: 1200, end: 1599, name: DESKTOP),
           Breakpoint(start: 1600, end: double.infinity, name: 'WIDE_DESKTOP'),
         ],
-        child: child!,
+        child: BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
+          builder: (context, state) {
+            if (state.isReady) return child!;
+            return PortfolioSplashPage(
+              errorMessage: state.status == PortfolioDataStatus.failure
+                  ? state.errorMessage
+                  : null,
+              onRetry: () => context.read<PortfolioDataBloc>().add(
+                const PortfolioDataRetryRequested(),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -4,27 +4,26 @@ import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/data/services/email_js_contact_message_sender.dart';
-import 'package:portfolio/presentation/blocs/content/portfolio_content_bloc.dart';
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/app_toast.dart';
-import 'package:portfolio/shared/widgets/brand_loader.dart';
-import 'package:portfolio/shared/widgets/brand_logo.dart';
-import 'package:portfolio/shared/widgets/persistent_resume_button.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/app_toast.dart';
+import 'package:portfolio/presentation/widgets/brand_loader.dart';
+import 'package:portfolio/presentation/widgets/brand_logo.dart';
+import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
 class TestimonialSubmissionPage extends StatelessWidget {
   const TestimonialSubmissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PortfolioContentBloc, PortfolioContentState>(
+    return BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
       builder: (context, state) {
-        final content = state.content;
-        if (content != null) return _SubmissionView(content: content);
-        if (state.status == PortfolioContentStatus.failure) {
+        if (state.isReady) return _SubmissionView(content: state);
+        if (state.status == PortfolioDataStatus.failure) {
           return _SubmissionLoadFailure(message: state.errorMessage);
         }
         return const Scaffold(
@@ -39,7 +38,7 @@ class TestimonialSubmissionPage extends StatelessWidget {
 class _SubmissionView extends StatefulWidget {
   const _SubmissionView({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   State<_SubmissionView> createState() => _SubmissionViewState();
@@ -55,7 +54,7 @@ class _SubmissionViewState extends State<_SubmissionView> {
   bool _submitting = false;
   bool _success = false;
 
-  PortfolioContent get content => widget.content;
+  PortfolioDataState get content => widget.content;
 
   @override
   void dispose() {
@@ -115,108 +114,106 @@ class _SubmissionViewState extends State<_SubmissionView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SelectionArea(
-        child: Stack(
-          children: [
-            const Positioned(
-              left: -150,
-              top: -150,
-              child: _AmbientGlow(size: 500, opacity: .15),
-            ),
-            const Positioned(
-              right: -150,
-              bottom: -150,
-              child: _AmbientGlow(size: 450, opacity: .1),
-            ),
-            SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: _SubmissionHeader(content: content, onBack: _back),
+      body: Stack(
+        children: [
+          const Positioned(
+            left: -150,
+            top: -150,
+            child: _AmbientGlow(size: 500, opacity: .15),
+          ),
+          const Positioned(
+            right: -150,
+            bottom: -150,
+            child: _AmbientGlow(size: 450, opacity: .1),
+          ),
+          SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: _SubmissionHeader(content: content, onBack: _back),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 52,
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 52,
-                    ),
-                    sliver: SliverToBoxAdapter(
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 1240),
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              final mainPanel = AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 400),
-                                transitionBuilder: (child, animation) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: SlideTransition(
-                                      position: Tween<Offset>(
-                                        begin: const Offset(-.025, 0),
-                                        end: Offset.zero,
-                                      ).animate(animation),
-                                      child: child,
-                                    ),
-                                  );
-                                },
-                                child: _success
-                                    ? _SuccessPanel(
-                                        key: const ValueKey('success'),
-                                        onBack: _back,
-                                        onReset: _reset,
-                                      )
-                                    : _buildForm(),
-                              );
-                              final preview = _TestimonialPreview(
-                                name: _nameController.text,
-                                role: _roleController.text,
-                                company: _companyController.text,
-                                feedback: _feedbackController.text,
-                                rating: _rating,
-                              );
-                              if (constraints.maxWidth < 900) {
-                                return Column(
-                                  children: [
-                                    mainPanel,
-                                    const SizedBox(height: 48),
-                                    preview,
-                                  ],
+                  sliver: SliverToBoxAdapter(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1240),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final mainPanel = AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 400),
+                              transitionBuilder: (child, animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: SlideTransition(
+                                    position: Tween<Offset>(
+                                      begin: const Offset(-.025, 0),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                    child: child,
+                                  ),
                                 );
-                              }
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                              },
+                              child: _success
+                                  ? _SuccessPanel(
+                                      key: const ValueKey('success'),
+                                      onBack: _back,
+                                      onReset: _reset,
+                                    )
+                                  : _buildForm(),
+                            );
+                            final preview = _TestimonialPreview(
+                              name: _nameController.text,
+                              role: _roleController.text,
+                              company: _companyController.text,
+                              feedback: _feedbackController.text,
+                              rating: _rating,
+                            );
+                            if (constraints.maxWidth < 900) {
+                              return Column(
                                 children: [
-                                  Expanded(flex: 7, child: mainPanel),
-                                  const SizedBox(width: 52),
-                                  Expanded(flex: 5, child: preview),
+                                  mainPanel,
+                                  const SizedBox(height: 48),
+                                  preview,
                                 ],
                               );
-                            },
-                          ),
+                            }
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(flex: 7, child: mainPanel),
+                                const SizedBox(width: 52),
+                                Expanded(flex: 5, child: preview),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),
                   ),
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: _SubmissionFooter(content: content, onBack: _back),
-                    ),
+                ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: _SubmissionFooter(content: content, onBack: _back),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Positioned(
-              left: 28,
-              bottom: 28,
-              child: PersistentResumeButton(
-                resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
-                ownerName: content.profile.fullName,
-              ),
+          ),
+          Positioned(
+            left: 28,
+            bottom: 28,
+            child: PersistentResumeButton(
+              resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
+              ownerName: content.profile.fullName,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -531,7 +528,7 @@ class _PrimarySubmitButton extends StatelessWidget {
 class _SubmissionHeader extends StatelessWidget {
   const _SubmissionHeader({required this.content, required this.onBack});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final VoidCallback onBack;
 
   @override
@@ -552,8 +549,7 @@ class _SubmissionHeader extends StatelessWidget {
           PortfolioBackButton(onPressed: onBack),
           BrandLogo(
             profile: content.profile,
-            semanticLabel: 'Muhammad Tayyab, go to the portfolio home section',
-            onPressed: onBack,
+            semanticLabel: content.profile.fullName,
           ),
         ],
       ),
@@ -844,7 +840,7 @@ class _SuccessPanel extends StatelessWidget {
 class _SubmissionFooter extends StatelessWidget {
   const _SubmissionFooter({required this.content, required this.onBack});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final VoidCallback onBack;
 
   @override

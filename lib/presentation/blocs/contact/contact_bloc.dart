@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/domain/services/contact_message_sender.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 sealed class ContactEvent {
   const ContactEvent();
@@ -52,7 +53,7 @@ class ContactConfiguration {
     required this.failureMessage,
   });
 
-  factory ContactConfiguration.fromContent(PortfolioContent content) {
+  factory ContactConfiguration.fromData(PortfolioDataState content) {
     return ContactConfiguration(
       emailJs: content.emailJs,
       nameLabel: 'Full name',

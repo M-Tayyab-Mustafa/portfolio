@@ -4,18 +4,20 @@ import 'package:portfolio/core/animations/reveal_on_scroll.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/hover_surface.dart';
-import 'package:portfolio/shared/widgets/portfolio_image.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/hover_surface.dart';
+import 'package:portfolio/presentation/widgets/portfolio_image.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_container.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_header.dart';
+
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class AboutSection extends StatelessWidget {
   const AboutSection({required this.content, super.key});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,7 @@ class AboutSection extends StatelessWidget {
 class _AboutCopy extends StatelessWidget {
   const _AboutCopy({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +233,7 @@ class _StatCard extends StatelessWidget {
 class _AboutPortrait extends StatefulWidget {
   const _AboutPortrait({required this.content, required this.compact});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final bool compact;
 
   @override
@@ -373,24 +375,76 @@ class _AboutPortraitState extends State<_AboutPortrait> {
   }
 }
 
-class _AvailabilityDot extends StatelessWidget {
+class _AvailabilityDot extends StatefulWidget {
   const _AvailabilityDot();
 
   @override
+  State<_AvailabilityDot> createState() => _AvailabilityDotState();
+}
+
+class _AvailabilityDotState extends State<_AvailabilityDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 10,
-      height: 10,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.success,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.success.withValues(alpha: .35),
-            blurRadius: 8,
-            spreadRadius: 2,
-          ),
-        ],
+    final reducedMotion = MediaQuery.disableAnimationsOf(context);
+    return RepaintBoundary(
+      child: SizedBox.square(
+        dimension: 18,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            final progress = reducedMotion ? 0.0 : _controller.value;
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                Transform.scale(
+                  scale: .7 + progress,
+                  child: Opacity(
+                    opacity: reducedMotion ? .25 : .5 * (1 - progress),
+                    child: const DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.success,
+                      ),
+                      child: SizedBox.square(dimension: 12),
+                    ),
+                  ),
+                ),
+                const DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.success,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.success,
+                        blurRadius: 7,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: SizedBox.square(dimension: 8),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

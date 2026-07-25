@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
 
 enum AppToastType { success, error }
 
