@@ -5,28 +5,27 @@ import 'package:portfolio/core/routing/app_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
-import 'package:portfolio/presentation/blocs/content/portfolio_content_bloc.dart';
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
 import 'package:portfolio/presentation/pages/web/sections/projects_section.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/app_toast.dart';
-import 'package:portfolio/shared/widgets/brand_loader.dart';
-import 'package:portfolio/shared/widgets/persistent_resume_button.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/app_toast.dart';
+import 'package:portfolio/presentation/widgets/brand_loader.dart';
+import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
 class ProjectsPage extends StatelessWidget {
   const ProjectsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PortfolioContentBloc, PortfolioContentState>(
+    return BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
       builder: (context, state) {
-        final content = state.content;
-        if (content == null) return const BrandLoader();
-        return _ProjectsPageProviders(content: content);
+        if (!state.isReady) return const BrandLoader();
+        return _ProjectsPageProviders(content: state);
       },
     );
   }
@@ -35,7 +34,7 @@ class ProjectsPage extends StatelessWidget {
 class _ProjectsPageProviders extends StatelessWidget {
   const _ProjectsPageProviders({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +66,7 @@ class _ProjectsPageProviders extends StatelessWidget {
 class _ProjectsPageView extends StatelessWidget {
   const _ProjectsPageView({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +119,7 @@ class _ProjectsPageView extends StatelessWidget {
 class _ProjectsHeader extends StatelessWidget {
   const _ProjectsHeader({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {

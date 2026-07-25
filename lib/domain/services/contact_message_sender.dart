@@ -1,4 +1,4 @@
-import 'package:portfolio/shared/models/portfolio_models.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
 
 abstract interface class ContactMessageSender {
   Future<void> send({

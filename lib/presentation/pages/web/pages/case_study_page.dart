@@ -4,15 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/presentation/blocs/case_study/case_study_cubit.dart';
-import 'package:portfolio/presentation/blocs/content/portfolio_content_bloc.dart';
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/app_toast.dart';
-import 'package:portfolio/shared/widgets/brand_loader.dart';
-import 'package:portfolio/shared/widgets/portfolio_image.dart';
-import 'package:portfolio/shared/widgets/persistent_resume_button.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/app_toast.dart';
+import 'package:portfolio/presentation/widgets/brand_loader.dart';
+import 'package:portfolio/presentation/widgets/portfolio_image.dart';
+import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
 class CaseStudyPage extends StatelessWidget {
   const CaseStudyPage({required this.slug, super.key});
@@ -21,13 +21,12 @@ class CaseStudyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PortfolioContentBloc, PortfolioContentState>(
+    return BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
       builder: (context, state) {
-        final content = state.content;
-        if (content != null) {
-          return _CaseStudyProviders(content: content, slug: slug);
+        if (state.isReady) {
+          return _CaseStudyProviders(content: state, slug: slug);
         }
-        if (state.status == PortfolioContentStatus.failure) {
+        if (state.status == PortfolioDataStatus.failure) {
           return _CaseStudyLoadFailure(message: state.errorMessage);
         }
         return const _CaseStudyLoading();
@@ -39,7 +38,7 @@ class CaseStudyPage extends StatelessWidget {
 class _CaseStudyProviders extends StatelessWidget {
   const _CaseStudyProviders({required this.content, required this.slug});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final String slug;
 
   @override
@@ -57,11 +56,12 @@ class _CaseStudyProviders extends StatelessWidget {
       ],
       child: MultiBlocListener(
         listeners: [
-          BlocListener<PortfolioContentBloc, PortfolioContentState>(
+          BlocListener<PortfolioDataBloc, PortfolioDataState>(
             listenWhen: (previous, current) =>
-                previous.content != current.content && current.content != null,
+                current.isReady &&
+                (!previous.isReady || previous.projects != current.projects),
             listener: (context, state) {
-              context.read<CaseStudyCubit>().replaceContent(state.content!);
+              context.read<CaseStudyCubit>().replaceData(state);
             },
           ),
           BlocListener<ExternalLinkCubit, ExternalLinkState>(
@@ -87,7 +87,7 @@ class _CaseStudyProviders extends StatelessWidget {
 class _CaseStudyView extends StatelessWidget {
   const _CaseStudyView({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +239,7 @@ class _CaseStudyHeader extends StatelessWidget {
 class _CaseStudyBody extends StatelessWidget {
   const _CaseStudyBody({required this.content, required this.project});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final PortfolioProject project;
 
   @override

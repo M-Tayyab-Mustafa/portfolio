@@ -7,14 +7,16 @@ import 'package:portfolio/presentation/blocs/contact/contact_bloc.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_container.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_header.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class ContactSection extends StatelessWidget {
   const ContactSection({required this.content, super.key});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,7 @@ class ContactSection extends StatelessWidget {
 class _ContactDetails extends StatelessWidget {
   const _ContactDetails({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +243,7 @@ class _ContactChannelCardState extends State<_ContactChannelCard> {
 class _ContactForm extends StatelessWidget {
   const _ContactForm({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {

@@ -6,10 +6,11 @@ import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/brand_logo.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/brand_logo.dart';
+
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class PortfolioNavbar extends StatelessWidget {
   const PortfolioNavbar({
@@ -19,7 +20,7 @@ class PortfolioNavbar extends StatelessWidget {
     super.key,
   });
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final PortfolioSection activeSection;
   final bool isScrolled;
 
@@ -63,6 +64,7 @@ class PortfolioNavbar extends StatelessWidget {
                       semanticLabel:
                           'Muhammad Tayyab, go to the portfolio home section',
                       compact: compact,
+                      enableHover: false,
                       onPressed: () => context
                           .read<PortfolioNavigationCubit>()
                           .navigateTo(PortfolioSection.home),

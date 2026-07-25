@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/core/utils/link_launcher.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/app_toast.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/app_toast.dart';
 
 class PersistentResumeButton extends StatefulWidget {
   const PersistentResumeButton({

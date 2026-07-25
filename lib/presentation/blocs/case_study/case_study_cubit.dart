@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class CaseStudyState {
   const CaseStudyState({required this.slug, required this.project});
@@ -14,7 +15,7 @@ class CaseStudyState {
 
 class CaseStudyCubit extends Cubit<CaseStudyState> {
   CaseStudyCubit({
-    required PortfolioContent content,
+    required PortfolioDataState content,
     required String slug,
     required GoRouter router,
   }) : _router = router,
@@ -22,7 +23,7 @@ class CaseStudyCubit extends Cubit<CaseStudyState> {
 
   final GoRouter _router;
 
-  void replaceContent(PortfolioContent content) {
+  void replaceData(PortfolioDataState content) {
     emit(CaseStudyState(slug: state.slug, project: _find(content, state.slug)));
   }
 
@@ -34,7 +35,7 @@ class CaseStudyCubit extends Cubit<CaseStudyState> {
     }
   }
 
-  static PortfolioProject? _find(PortfolioContent content, String slug) {
+  static PortfolioProject? _find(PortfolioDataState content, String slug) {
     for (final project in content.projects) {
       if (project.slug == slug) return project;
     }

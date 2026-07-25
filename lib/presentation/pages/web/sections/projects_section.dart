@@ -8,13 +8,15 @@ import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/hover_surface.dart';
-import 'package:portfolio/shared/widgets/portfolio_image.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/hover_surface.dart';
+import 'package:portfolio/presentation/widgets/portfolio_image.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_container.dart';
 import 'package:portfolio/presentation/pages/web/widgets/section_header.dart';
+
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class ProjectsSection extends StatefulWidget {
   const ProjectsSection({
@@ -23,7 +25,7 @@ class ProjectsSection extends StatefulWidget {
     this.showAllProjects = false,
   });
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final bool showAllProjects;
 
   @override
@@ -325,7 +327,7 @@ class _EmptyProjectArchive extends StatelessWidget {
 class _ProjectFilters extends StatelessWidget {
   const _ProjectFilters({required this.content, required this.state});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final ProjectsState state;
 
   @override
@@ -356,7 +358,7 @@ class _ProjectArchiveControls extends StatelessWidget {
     required this.searchController,
   });
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final ProjectsState state;
   final TextEditingController searchController;
 
@@ -625,7 +627,7 @@ class _FilterButton extends StatelessWidget {
 class _ProjectCard extends StatelessWidget {
   const _ProjectCard({required this.content, required this.project});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final PortfolioProject project;
 
   @override

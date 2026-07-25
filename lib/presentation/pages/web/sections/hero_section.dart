@@ -8,18 +8,19 @@ import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/core/theme/app_typography.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/portfolio_image.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/portfolio_image.dart';
 import 'package:portfolio/presentation/pages/web/widgets/grid_backdrop.dart';
 import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
 import 'package:portfolio/presentation/pages/web/widgets/typewriter_text.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
+
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class HeroSection extends StatelessWidget {
   const HeroSection({required this.content, super.key});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +101,7 @@ class HeroSection extends StatelessWidget {
 class _HeroCopy extends StatelessWidget {
   const _HeroCopy({required this.content, required this.compact});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final bool compact;
 
   @override
@@ -210,7 +211,7 @@ class _HeroCopy extends StatelessWidget {
 class _HeroPortrait extends StatefulWidget {
   const _HeroPortrait({required this.content, required this.compact});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final bool compact;
 
   @override

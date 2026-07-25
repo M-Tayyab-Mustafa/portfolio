@@ -10,9 +10,6 @@ import 'package:portfolio/presentation/pages/web/pages/testimonial_submission_pa
 final GoRouter appRouter = _createAppRouter();
 
 GoRouter _createAppRouter() {
-  // GoRouter does not reflect imperative `push` calls in the browser URL by
-  // default. Full pages use push so that browser Back returns to the section
-  // the visitor came from.
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
   return GoRouter(
@@ -36,18 +33,11 @@ GoRouter _createAppRouter() {
           reverseTransitionDuration: const Duration(milliseconds: 320),
           child: const ProjectsPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final curved = CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
-              reverseCurve: Curves.easeInCubic,
-            );
+            final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);
             return FadeTransition(
               opacity: curved,
               child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(.04, 0),
-                  end: Offset.zero,
-                ).animate(curved),
+                position: Tween<Offset>(begin: const Offset(.04, 0), end: Offset.zero).animate(curved),
                 child: child,
               ),
             );
@@ -63,18 +53,11 @@ GoRouter _createAppRouter() {
           reverseTransitionDuration: const Duration(milliseconds: 360),
           child: CaseStudyPage(slug: state.pathParameters['slug'] ?? ''),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final curved = CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
-              reverseCurve: Curves.easeInCubic,
-            );
+            final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);
             return FadeTransition(
               opacity: curved,
               child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(.08, 0),
-                  end: Offset.zero,
-                ).animate(curved),
+                position: Tween<Offset>(begin: const Offset(.08, 0), end: Offset.zero).animate(curved),
                 child: child,
               ),
             );
@@ -90,18 +73,11 @@ GoRouter _createAppRouter() {
           reverseTransitionDuration: const Duration(milliseconds: 340),
           child: const TestimonialSubmissionPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final curved = CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
-              reverseCurve: Curves.easeInCubic,
-            );
+            final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);
             return FadeTransition(
               opacity: curved,
               child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0, .035),
-                  end: Offset.zero,
-                ).animate(curved),
+                position: Tween<Offset>(begin: const Offset(0, .035), end: Offset.zero).animate(curved),
                 child: child,
               ),
             );

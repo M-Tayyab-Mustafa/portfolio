@@ -5,15 +5,16 @@ import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/brand_logo.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/brand_logo.dart';
+
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
 class PortfolioFooter extends StatelessWidget {
   const PortfolioFooter({required this.content, super.key});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -38,46 +39,9 @@ class PortfolioFooter extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(flex: 3, child: _FooterBrand(content: content)),
-                      const SizedBox(width: 24),
-                      Expanded(
-                        flex: 6,
-                        child: Wrap(
-                          alignment: WrapAlignment.center,
-                          spacing: 4,
-                          runSpacing: 4,
-                          children: [
-                            for (final section in PortfolioSection.values)
-                              TextButton(
-                                onPressed: () => context
-                                    .read<PortfolioNavigationCubit>()
-                                    .navigateTo(section),
-                                child: Text(
-                                  content
-                                      .navigationLabel(section.name)
-                                      .toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: .8,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 24),
-                      AppIconButton(
-                        tooltip: 'Back to top',
-                        onPressed: () => context
-                            .read<PortfolioNavigationCubit>()
-                            .navigateTo(PortfolioSection.home),
-                        icon: const AppIcon('arrowUp'),
-                      ),
-                    ],
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: _FooterBrand(content: content),
                   ),
                   const SizedBox(height: 42),
                   const Divider(height: 1),
@@ -123,7 +87,7 @@ class PortfolioFooter extends StatelessWidget {
 class _FooterBrand extends StatelessWidget {
   const _FooterBrand({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {

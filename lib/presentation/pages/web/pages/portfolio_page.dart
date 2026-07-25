@@ -7,7 +7,7 @@ import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/data/services/email_js_contact_message_sender.dart';
 import 'package:portfolio/presentation/blocs/contact/contact_bloc.dart';
-import 'package:portfolio/presentation/blocs/content/portfolio_content_bloc.dart';
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
@@ -23,12 +23,12 @@ import 'package:portfolio/presentation/pages/web/sections/testimonials_section.d
 import 'package:portfolio/presentation/pages/web/widgets/desktop_only_fallback.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_footer.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_navbar.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/app_toast.dart';
-import 'package:portfolio/shared/widgets/brand_loader.dart';
-import 'package:portfolio/shared/widgets/persistent_resume_button.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/app_toast.dart';
+import 'package:portfolio/presentation/widgets/brand_loader.dart';
+import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
 class PortfolioPage extends StatelessWidget {
   const PortfolioPage({required this.initialSection, super.key});
@@ -37,16 +37,15 @@ class PortfolioPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PortfolioContentBloc, PortfolioContentState>(
+    return BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
       builder: (context, state) {
-        final content = state.content;
-        if (content != null) {
+        if (state.isReady) {
           return _PortfolioProviders(
             initialSection: initialSection,
-            content: content,
+            content: state,
           );
         }
-        if (state.status == PortfolioContentStatus.failure) {
+        if (state.status == PortfolioDataStatus.failure) {
           return _ContentFailure(message: state.errorMessage);
         }
         return const _ContentLoading();
@@ -62,7 +61,7 @@ class _PortfolioProviders extends StatelessWidget {
   });
 
   final PortfolioSection initialSection;
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +84,7 @@ class _PortfolioProviders extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => ContactBloc(
-            ContactConfiguration.fromContent(content),
+            ContactConfiguration.fromData(content),
             messageSender: EmailJsContactMessageSender(),
           ),
         ),
@@ -95,19 +94,21 @@ class _PortfolioProviders extends StatelessWidget {
         reducedMotion: reducedMotion,
         child: MultiBlocListener(
           listeners: [
-            BlocListener<PortfolioContentBloc, PortfolioContentState>(
+            BlocListener<PortfolioDataBloc, PortfolioDataState>(
               listenWhen: (previous, current) =>
-                  previous.content != current.content &&
-                  current.content != null,
+                  current.isReady &&
+                  (!previous.isReady ||
+                      previous.projects != current.projects ||
+                      previous.profile != current.profile ||
+                      previous.emailJs != current.emailJs),
               listener: (context, state) {
-                final next = state.content!;
-                context.read<ProjectsCubit>().replaceProjects(next.projects);
+                context.read<ProjectsCubit>().replaceProjects(state.projects);
                 context.read<TypewriterCubit>().replaceRoles(
-                  next.profile.roles,
+                  state.profile.roles,
                 );
                 context.read<ContactBloc>().add(
                   ContactConfigurationChanged(
-                    ContactConfiguration.fromContent(next),
+                    ContactConfiguration.fromData(state),
                   ),
                 );
               },
@@ -183,7 +184,7 @@ class _PortfolioView extends StatefulWidget {
   const _PortfolioView({required this.initialSection, required this.content});
 
   final PortfolioSection initialSection;
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   State<_PortfolioView> createState() => _PortfolioViewState();
@@ -191,7 +192,9 @@ class _PortfolioView extends StatefulWidget {
 
 class _PortfolioViewState extends State<_PortfolioView> {
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey _footerKey = GlobalKey(debugLabel: 'portfolio-footer');
   bool _isProgrammaticScroll = false;
+  double _resumeButtonBottom = 28;
   int _programmaticScrollId = 0;
   final Map<PortfolioSection, GlobalKey> _sectionKeys = {
     for (final section in PortfolioSection.values)
@@ -207,6 +210,7 @@ class _PortfolioViewState extends State<_PortfolioView> {
         context.read<PortfolioNavigationCubit>().routeChanged(
           widget.initialSection,
         );
+        _reportScroll();
       }
     });
   }
@@ -280,6 +284,19 @@ class _PortfolioViewState extends State<_PortfolioView> {
       }
     }
     final position = _scrollController.position;
+    final footerRenderObject = _footerKey.currentContext?.findRenderObject();
+    if (footerRenderObject is RenderBox) {
+      final footerTop = footerRenderObject.localToGlobal(Offset.zero).dy;
+      final visibleFooterHeight =
+          (MediaQuery.sizeOf(context).height - footerTop).clamp(
+            0.0,
+            footerRenderObject.size.height,
+          );
+      final nextResumeButtonBottom = 28 + visibleFooterHeight;
+      if ((nextResumeButtonBottom - _resumeButtonBottom).abs() > .5) {
+        setState(() => _resumeButtonBottom = nextResumeButtonBottom);
+      }
+    }
     final navigation = context.read<PortfolioNavigationCubit>();
     final previousSection = navigation.state.activeSection;
     navigation.updateScroll(
@@ -357,7 +374,7 @@ class _PortfolioViewState extends State<_PortfolioView> {
                           key: _sectionKeys[PortfolioSection.contact],
                           child: ContactSection(content: content),
                         ),
-                        PortfolioFooter(content: content),
+                        PortfolioFooter(key: _footerKey, content: content),
                       ],
                     ),
                   ),
@@ -438,7 +455,7 @@ class _PortfolioViewState extends State<_PortfolioView> {
             ),
             Positioned(
               left: 28,
-              bottom: 28,
+              bottom: _resumeButtonBottom,
               child: PersistentResumeButton(
                 resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
                 ownerName: content.profile.fullName,
@@ -495,8 +512,8 @@ class _ContentFailure extends StatelessWidget {
                 const SizedBox(height: 26),
                 AppButton(
                   label: 'Retry Firestore',
-                  onPressed: () => context.read<PortfolioContentBloc>().add(
-                    const PortfolioContentRetryRequested(),
+                  onPressed: () => context.read<PortfolioDataBloc>().add(
+                    const PortfolioDataRetryRequested(),
                   ),
                 ),
               ],

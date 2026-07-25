@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
 
 class ProjectsState {
   const ProjectsState({

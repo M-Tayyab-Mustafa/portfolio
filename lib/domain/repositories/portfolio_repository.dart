@@ -1,14 +1,32 @@
-import 'package:portfolio/shared/models/portfolio_models.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
 
 abstract interface class PortfolioRepository {
-  Stream<PortfolioContent> watchContent();
+  Stream<PersonalProfile> watchProfile();
+
+  Stream<EmailJsConfiguration> watchEmailJsConfiguration();
+
+  Stream<PortfolioLinks> watchLinks();
+
+  Stream<StatsDocument> watchStats();
+
+  Stream<ContactChannelsDocument> watchContactChannels();
+
+  Stream<List<ExperienceItem>> watchExperiences();
+
+  Stream<List<PortfolioProject>> watchProjects();
+
+  Stream<List<ServiceItem>> watchServices();
+
+  Stream<List<SkillGroup>> watchSkillGroups();
+
+  Stream<List<TestimonialItem>> watchTestimonials();
 }
 
-class PortfolioContentNotFoundException implements Exception {
-  const PortfolioContentNotFoundException();
+class PortfolioDataNotFoundException implements Exception {
+  const PortfolioDataNotFoundException();
 
   @override
-  String toString() => 'PortfolioContentNotFoundException';
+  String toString() => 'PortfolioDataNotFoundException';
 }
 
 class PortfolioRepositoryInitializationException implements Exception {

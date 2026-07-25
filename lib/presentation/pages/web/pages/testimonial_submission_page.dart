@@ -4,27 +4,26 @@ import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/data/services/email_js_contact_message_sender.dart';
-import 'package:portfolio/presentation/blocs/content/portfolio_content_bloc.dart';
+import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
-import 'package:portfolio/shared/models/portfolio_models.dart';
-import 'package:portfolio/shared/widgets/app_button.dart';
-import 'package:portfolio/shared/widgets/app_icon.dart';
-import 'package:portfolio/shared/widgets/app_toast.dart';
-import 'package:portfolio/shared/widgets/brand_loader.dart';
-import 'package:portfolio/shared/widgets/brand_logo.dart';
-import 'package:portfolio/shared/widgets/persistent_resume_button.dart';
+import 'package:portfolio/data/models/portfolio_models.dart';
+import 'package:portfolio/presentation/widgets/app_button.dart';
+import 'package:portfolio/presentation/widgets/app_icon.dart';
+import 'package:portfolio/presentation/widgets/app_toast.dart';
+import 'package:portfolio/presentation/widgets/brand_loader.dart';
+import 'package:portfolio/presentation/widgets/brand_logo.dart';
+import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
 class TestimonialSubmissionPage extends StatelessWidget {
   const TestimonialSubmissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PortfolioContentBloc, PortfolioContentState>(
+    return BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
       builder: (context, state) {
-        final content = state.content;
-        if (content != null) return _SubmissionView(content: content);
-        if (state.status == PortfolioContentStatus.failure) {
+        if (state.isReady) return _SubmissionView(content: state);
+        if (state.status == PortfolioDataStatus.failure) {
           return _SubmissionLoadFailure(message: state.errorMessage);
         }
         return const Scaffold(
@@ -39,7 +38,7 @@ class TestimonialSubmissionPage extends StatelessWidget {
 class _SubmissionView extends StatefulWidget {
   const _SubmissionView({required this.content});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
 
   @override
   State<_SubmissionView> createState() => _SubmissionViewState();
@@ -55,7 +54,7 @@ class _SubmissionViewState extends State<_SubmissionView> {
   bool _submitting = false;
   bool _success = false;
 
-  PortfolioContent get content => widget.content;
+  PortfolioDataState get content => widget.content;
 
   @override
   void dispose() {
@@ -531,7 +530,7 @@ class _PrimarySubmitButton extends StatelessWidget {
 class _SubmissionHeader extends StatelessWidget {
   const _SubmissionHeader({required this.content, required this.onBack});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final VoidCallback onBack;
 
   @override
@@ -844,7 +843,7 @@ class _SuccessPanel extends StatelessWidget {
 class _SubmissionFooter extends StatelessWidget {
   const _SubmissionFooter({required this.content, required this.onBack});
 
-  final PortfolioContent content;
+  final PortfolioDataState content;
   final VoidCallback onBack;
 
   @override
