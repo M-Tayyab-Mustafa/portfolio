@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
-import 'package:portfolio/data/services/email_js_contact_message_sender.dart';
+import 'package:portfolio/domain/repositories/portfolio_repository.dart';
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
@@ -69,16 +69,17 @@ class _SubmissionViewState extends State<_SubmissionView> {
     if (!_formKey.currentState!.validate() || _submitting) return;
     setState(() => _submitting = true);
     try {
-      await EmailJsContactMessageSender().send(
-        configuration: content.emailJs,
-        senderName: _nameController.text.trim(),
-        senderEmail: content.profile.email,
-        subject: 'Portfolio testimonial from ${_nameController.text.trim()}',
-        message:
-            'Role: ${_roleController.text.trim()}\n'
-            'Company: ${_companyController.text.trim()}\n'
-            'Rating: $_rating/5\n\n'
-            '${_feedbackController.text.trim()}',
+      await context.read<PortfolioRepository>().submitTestimonial(
+        TestimonialItem(
+          name: _nameController.text.trim(),
+          role: _roleController.text.trim(),
+          company: _companyController.text.trim(),
+          content: _feedbackController.text.trim(),
+          rating: _rating,
+          avatar: '',
+          order: DateTime.now().millisecondsSinceEpoch,
+          enabled: true,
+        ),
       );
       if (!mounted) return;
       setState(() {
@@ -90,7 +91,7 @@ class _SubmissionViewState extends State<_SubmissionView> {
       setState(() => _submitting = false);
       AppToast.show(
         context,
-        message: 'Your testimonial could not be delivered. Please try again.',
+        message: 'Your testimonial could not be saved. Please try again.',
         type: AppToastType.error,
       );
     }
@@ -197,20 +198,29 @@ class _SubmissionViewState extends State<_SubmissionView> {
                 ),
                 SliverFillRemaining(
                   hasScrollBody: false,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: _SubmissionFooter(content: content, onBack: _back),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          MediaQuery.sizeOf(context).width < 700 ? 24 : 48,
+                          0,
+                          MediaQuery.sizeOf(context).width < 700 ? 24 : 48,
+                          24,
+                        ),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: PersistentResumeButton(
+                            resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
+                            ownerName: content.profile.fullName,
+                          ),
+                        ),
+                      ),
+                      _SubmissionFooter(content: content, onBack: _back),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ),
-          Positioned(
-            left: 28,
-            bottom: 28,
-            child: PersistentResumeButton(
-              resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
-              ownerName: content.profile.fullName,
             ),
           ),
         ],
@@ -748,7 +758,7 @@ class _SuccessPanel extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'TRANSMISSION CONFIRMED',
+                      'TESTIMONIAL SAVED',
                       style: TextStyle(
                         color: AppColors.success,
                         fontFamily: 'monospace',
@@ -774,7 +784,7 @@ class _SuccessPanel extends StatelessWidget {
           ),
           const SizedBox(height: 28),
           const Text(
-            'Your recommendation was delivered successfully. It will be reviewed before it appears in the live portfolio testimonials.',
+            'Your recommendation was saved successfully and is now available in the portfolio testimonials.',
             style: TextStyle(
               color: AppColors.textSecondary,
               fontSize: 15,
@@ -797,7 +807,7 @@ class _SuccessPanel extends StatelessWidget {
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Your feedback is sent privately through EmailJS and is never published automatically.',
+                    'Your feedback is saved automatically and appears in the portfolio immediately.',
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 12,

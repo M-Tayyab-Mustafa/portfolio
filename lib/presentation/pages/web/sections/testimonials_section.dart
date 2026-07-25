@@ -298,7 +298,7 @@ class _EmptyTestimonials extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Published client feedback will appear here after review.',
+            'Client feedback will appear here when available.',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
