@@ -135,6 +135,13 @@ class FirestorePortfolioRepository implements PortfolioRepository {
     );
   }
 
+  @override
+  Future<void> submitTestimonial(TestimonialItem testimonial) {
+    return _instance
+        .collection(PortfolioCollection.testimonials.name)
+        .add(testimonial.toMap());
+  }
+
   Stream<T> _watchAboutDocument<T>(
     AboutDocument document,
     T Function(Map<String, Object?> map) fromMap,

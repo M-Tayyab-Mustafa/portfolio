@@ -20,6 +20,8 @@ abstract interface class PortfolioRepository {
   Stream<List<SkillGroup>> watchSkillGroups();
 
   Stream<List<TestimonialItem>> watchTestimonials();
+
+  Future<void> submitTestimonial(TestimonialItem testimonial);
 }
 
 class PortfolioDataNotFoundException implements Exception {
