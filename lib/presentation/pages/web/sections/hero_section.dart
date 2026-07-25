@@ -458,16 +458,18 @@ class _ScrollCueState extends State<_ScrollCue>
               letterSpacing: 1.4,
             ),
           ),
-          AnimatedBuilder(
-            animation: _offset,
-            builder: (context, child) => Transform.translate(
-              offset: Offset(0, _offset.value),
-              child: child,
-            ),
-            child: const AppIcon(
-              'arrowDown',
-              size: 18,
-              color: AppColors.accent,
+          RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _offset,
+              builder: (context, child) => Transform.translate(
+                offset: Offset(0, _offset.value),
+                child: child,
+              ),
+              child: const AppIcon(
+                'arrowDown',
+                size: 18,
+                color: AppColors.accent,
+              ),
             ),
           ),
         ],

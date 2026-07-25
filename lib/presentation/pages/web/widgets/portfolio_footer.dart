@@ -37,7 +37,7 @@ class PortfolioFooter extends StatelessWidget {
                   children: [
                     BrandLogo(
                       profile: content.profile,
-                      semanticLabel: 'Muhammad Tayyab',
+                      semanticLabel: content.profile.fullName,
                       compact: true,
                     ),
                     const SizedBox(height: 8),

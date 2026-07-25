@@ -14,6 +14,7 @@ import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.d
 import 'package:portfolio/data/models/portfolio_models.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
 import 'package:portfolio/presentation/widgets/app_toast.dart';
+import 'package:portfolio/presentation/widgets/brand_logo.dart';
 import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
@@ -145,10 +146,10 @@ class _ProjectsHeader extends StatelessWidget {
                     child: PortfolioBackButton(onPressed: () => context.pop()),
                   ),
                 ),
-                _ArchiveBrandLogo(
-                  firstName: content.profile.firstName,
-                  lastName: content.profile.lastName,
-                  onPressed: () => context.go(PortfolioSection.home.path),
+                BrandLogo(
+                  profile: content.profile,
+                  semanticLabel: content.profile.fullName,
+                  compact: true,
                 ),
                 Expanded(
                   child: Align(
@@ -201,135 +202,6 @@ class _ProjectsHeader extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ArchiveBrandLogo extends StatefulWidget {
-  const _ArchiveBrandLogo({
-    required this.firstName,
-    required this.lastName,
-    required this.onPressed,
-  });
-
-  final String firstName;
-  final String lastName;
-  final VoidCallback onPressed;
-
-  @override
-  State<_ArchiveBrandLogo> createState() => _ArchiveBrandLogoState();
-}
-
-class _ArchiveBrandLogoState extends State<_ArchiveBrandLogo> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: TextButton(
-        onPressed: widget.onPressed,
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
-          minimumSize: const Size(48, 48),
-          foregroundColor: AppColors.textPrimary,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: const Color(0xFF0C0C0C),
-                border: Border.all(
-                  color: _hovered ? AppColors.accent : AppColors.borderStrong,
-                ),
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 6,
-                    right: 6,
-                    top: 6,
-                    child: Container(
-                      height: 1.5,
-                      color: AppColors.borderStrong,
-                    ),
-                  ),
-                  Center(
-                    child: Text.rich(
-                      TextSpan(
-                        text: 'M',
-                        children: [
-                          TextSpan(
-                            text: '//',
-                            style: TextStyle(
-                              color: _hovered
-                                  ? AppColors.textPrimary
-                                  : AppColors.accent,
-                            ),
-                          ),
-                          const TextSpan(text: 'T'),
-                        ],
-                      ),
-                      style: TextStyle(
-                        color: _hovered
-                            ? AppColors.accent
-                            : AppColors.textPrimary,
-                        fontFamily: 'monospace',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                  const Positioned(
-                    right: 4,
-                    bottom: 4,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: AppColors.accent,
-                        shape: BoxShape.circle,
-                      ),
-                      child: SizedBox.square(dimension: 4),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 14),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.firstName.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    height: 1,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  widget.lastName.toUpperCase(),
-                  style: TextStyle(
-                    color: _hovered ? AppColors.textPrimary : AppColors.accent,
-                    fontFamily: 'monospace',
-                    fontSize: 8,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 3,
-                    height: 1,
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );

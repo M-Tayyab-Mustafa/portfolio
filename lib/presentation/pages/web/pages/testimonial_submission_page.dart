@@ -547,7 +547,10 @@ class _SubmissionHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           PortfolioBackButton(onPressed: onBack),
-          BrandLogo(profile: content.profile, semanticLabel: 'Muhammad Tayyab'),
+          BrandLogo(
+            profile: content.profile,
+            semanticLabel: content.profile.fullName,
+          ),
         ],
       ),
     );

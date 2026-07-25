@@ -404,45 +404,47 @@ class _AvailabilityDotState extends State<_AvailabilityDot>
   @override
   Widget build(BuildContext context) {
     final reducedMotion = MediaQuery.disableAnimationsOf(context);
-    return SizedBox.square(
-      dimension: 18,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          final progress = reducedMotion ? 0.0 : _controller.value;
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              Transform.scale(
-                scale: .7 + progress,
-                child: Opacity(
-                  opacity: reducedMotion ? .25 : .5 * (1 - progress),
-                  child: const DecoratedBox(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.success,
+    return RepaintBoundary(
+      child: SizedBox.square(
+        dimension: 18,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            final progress = reducedMotion ? 0.0 : _controller.value;
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                Transform.scale(
+                  scale: .7 + progress,
+                  child: Opacity(
+                    opacity: reducedMotion ? .25 : .5 * (1 - progress),
+                    child: const DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.success,
+                      ),
+                      child: SizedBox.square(dimension: 12),
                     ),
-                    child: SizedBox.square(dimension: 12),
                   ),
                 ),
-              ),
-              const DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.success,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.success,
-                      blurRadius: 7,
-                      spreadRadius: 1,
-                    ),
-                  ],
+                const DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.success,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.success,
+                        blurRadius: 7,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: SizedBox.square(dimension: 8),
                 ),
-                child: SizedBox.square(dimension: 8),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

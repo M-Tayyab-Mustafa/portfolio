@@ -1,25 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class RevealScrollScope extends InheritedWidget {
-  const RevealScrollScope({
-    required this.controller,
-    required super.child,
-    super.key,
-  });
-
-  final ScrollController controller;
-
-  static RevealScrollScope? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<RevealScrollScope>();
-  }
-
-  @override
-  bool updateShouldNotify(RevealScrollScope oldWidget) {
-    return controller != oldWidget.controller;
-  }
-}
-
 class RevealOnScroll extends StatefulWidget {
   const RevealOnScroll({
     required this.child,
@@ -45,8 +26,8 @@ class _RevealOnScrollState extends State<RevealOnScroll>
   late final AnimationController _controller;
   late final Animation<double> _opacity;
   late final Animation<Offset> _slide;
-  ScrollController? _scrollController;
-  bool _played = false;
+  bool _started = false;
+  bool _completed = false;
 
   @override
   void initState() {
@@ -63,69 +44,51 @@ class _RevealOnScrollState extends State<RevealOnScroll>
       begin: widget.offset,
       end: Offset.zero,
     ).animate(curved);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkViewport());
-  }
-
-  void _checkViewport() {
-    if (!mounted || _played) return;
-    final renderObject = context.findRenderObject();
-    if (renderObject is RenderBox && renderObject.hasSize) {
-      final top = renderObject.localToGlobal(Offset.zero).dy;
-      final bottom = top + renderObject.size.height;
-      final viewportHeight = MediaQuery.sizeOf(context).height;
-      if (bottom > 0 && top < viewportHeight) {
-        _reveal();
-      }
-    }
-  }
-
-  void _handleScroll() {
-    if (_played) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkViewport());
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final nextController = RevealScrollScope.maybeOf(context)?.controller;
-    if (nextController != _scrollController) {
-      _scrollController?.removeListener(_handleScroll);
-      _scrollController = nextController;
-      _scrollController?.addListener(_handleScroll);
-    }
     if (MediaQuery.maybeOf(context)?.disableAnimations ?? false) {
-      _played = true;
+      _started = true;
+      _completed = true;
       _controller.value = 1;
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkViewport());
   }
 
   Future<void> _reveal() async {
-    if (_played) return;
-    _played = true;
-    _scrollController?.removeListener(_handleScroll);
+    if (_started) return;
+    setState(() => _started = true);
     if (widget.delay > Duration.zero) await Future<void>.delayed(widget.delay);
-    if (mounted) await _controller.forward();
+    if (!mounted) return;
+    await _controller.forward();
+    if (mounted) setState(() => _completed = true);
   }
 
   @override
   void dispose() {
-    _scrollController?.removeListener(_handleScroll);
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_completed) return widget.child;
+
+    final transition = RepaintBoundary(
+      child: FadeTransition(
+        opacity: _opacity,
+        child: SlideTransition(position: _slide, child: widget.child),
+      ),
+    );
+    if (_started) return transition;
+
     return VisibilityDetector(
       key: ValueKey('reveal-${widget.key ?? hashCode}'),
       onVisibilityChanged: (info) {
         if (info.visibleFraction >= widget.visibilityThreshold) _reveal();
       },
-      child: FadeTransition(
-        opacity: _opacity,
-        child: SlideTransition(position: _slide, child: widget.child),
-      ),
+      child: transition,
     );
   }
 }

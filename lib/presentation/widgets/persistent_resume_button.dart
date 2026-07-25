@@ -87,7 +87,7 @@ class _PersistentResumeButtonState extends State<PersistentResumeButton>
           alignment: Alignment.centerLeft,
           children: [
             Positioned(
-              left: showBadge ? 172 : 142,
+              left: showBadge ? 185 : 142,
               child: IgnorePointer(
                 child: AnimatedOpacity(
                   opacity: _hovered ? 1 : 0,
@@ -275,32 +275,34 @@ class _PulseDot extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox.square(
       dimension: 10,
-      child: AnimatedBuilder(
-        animation: controller,
-        builder: (context, child) => Stack(
-          alignment: Alignment.center,
-          children: [
-            Transform.scale(
-              scale: 1 + controller.value * 1.25,
-              child: Opacity(
-                opacity: .75 * (1 - controller.value),
-                child: const DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: AppColors.accent,
-                    shape: BoxShape.circle,
+      child: RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) => Stack(
+            alignment: Alignment.center,
+            children: [
+              Transform.scale(
+                scale: 1 + controller.value * 1.25,
+                child: Opacity(
+                  opacity: .75 * (1 - controller.value),
+                  child: const DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.accent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: SizedBox.square(dimension: 8),
                   ),
-                  child: SizedBox.square(dimension: 8),
                 ),
               ),
-            ),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                color: AppColors.accent,
-                shape: BoxShape.circle,
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AppColors.accent,
+                  shape: BoxShape.circle,
+                ),
+                child: SizedBox.square(dimension: 8),
               ),
-              child: SizedBox.square(dimension: 8),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

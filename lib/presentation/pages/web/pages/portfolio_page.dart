@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:portfolio/core/animations/reveal_on_scroll.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:portfolio/core/routing/app_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
@@ -193,9 +193,14 @@ class _PortfolioView extends StatefulWidget {
 class _PortfolioViewState extends State<_PortfolioView> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _footerKey = GlobalKey(debugLabel: 'portfolio-footer');
+  final ValueNotifier<double> _floatingControlsBottom = ValueNotifier(28);
   bool _isProgrammaticScroll = false;
-  double _resumeButtonBottom = 28;
+  bool _scrollReportScheduled = false;
+  double _measuredMaxScrollExtent = -1;
+  double? _footerScrollOffset;
+  double _footerHeight = 0;
   int _programmaticScrollId = 0;
+  final Map<PortfolioSection, double> _sectionScrollOffsets = {};
   final Map<PortfolioSection, GlobalKey> _sectionKeys = {
     for (final section in PortfolioSection.values)
       section: GlobalKey(debugLabel: section.name),
@@ -275,26 +280,57 @@ class _PortfolioViewState extends State<_PortfolioView> {
   }
 
   void _reportScroll() {
-    if (!_scrollController.hasClients || !mounted) return;
-    final tops = <PortfolioSection, double>{};
+    if (!_scrollController.hasClients || !mounted || _scrollReportScheduled) {
+      return;
+    }
+    _scrollReportScheduled = true;
+    SchedulerBinding.instance.scheduleFrameCallback((_) {
+      _scrollReportScheduled = false;
+      _flushScrollReport();
+    });
+  }
+
+  void _measurePageLayout(ScrollPosition position) {
+    _sectionScrollOffsets.clear();
     for (final entry in _sectionKeys.entries) {
       final renderObject = entry.value.currentContext?.findRenderObject();
       if (renderObject is RenderBox) {
-        tops[entry.key] = renderObject.localToGlobal(Offset.zero).dy;
+        _sectionScrollOffsets[entry.key] =
+            position.pixels + renderObject.localToGlobal(Offset.zero).dy;
       }
     }
-    final position = _scrollController.position;
     final footerRenderObject = _footerKey.currentContext?.findRenderObject();
     if (footerRenderObject is RenderBox) {
-      final footerTop = footerRenderObject.localToGlobal(Offset.zero).dy;
-      final visibleFooterHeight =
-          (MediaQuery.sizeOf(context).height - footerTop).clamp(
-            0.0,
-            footerRenderObject.size.height,
-          );
-      final nextResumeButtonBottom = 28 + visibleFooterHeight;
-      if ((nextResumeButtonBottom - _resumeButtonBottom).abs() > .5) {
-        setState(() => _resumeButtonBottom = nextResumeButtonBottom);
+      _footerScrollOffset =
+          position.pixels + footerRenderObject.localToGlobal(Offset.zero).dy;
+      _footerHeight = footerRenderObject.size.height;
+    }
+    _measuredMaxScrollExtent = position.maxScrollExtent;
+  }
+
+  void _flushScrollReport() {
+    if (!_scrollController.hasClients || !mounted) return;
+    final position = _scrollController.position;
+    if (_sectionScrollOffsets.length != PortfolioSection.values.length ||
+        (position.maxScrollExtent - _measuredMaxScrollExtent).abs() > .5) {
+      _measurePageLayout(position);
+    }
+
+    final viewportHeight = MediaQuery.sizeOf(context).height;
+    final tops = <PortfolioSection, double>{
+      for (final entry in _sectionScrollOffsets.entries)
+        entry.key: entry.value - position.pixels,
+    };
+    final footerOffset = _footerScrollOffset;
+    if (footerOffset != null) {
+      final footerTop = footerOffset - position.pixels;
+      final visibleFooterHeight = (viewportHeight - footerTop).clamp(
+        0.0,
+        _footerHeight,
+      );
+      final nextBottom = 28 + visibleFooterHeight;
+      if ((nextBottom - _floatingControlsBottom.value).abs() > .5) {
+        _floatingControlsBottom.value = nextBottom;
       }
     }
     final navigation = context.read<PortfolioNavigationCubit>();
@@ -302,7 +338,7 @@ class _PortfolioViewState extends State<_PortfolioView> {
     navigation.updateScroll(
       offset: position.pixels,
       maxScrollExtent: position.maxScrollExtent,
-      viewportHeight: MediaQuery.sizeOf(context).height,
+      viewportHeight: viewportHeight,
       sectionTopOffsets: tops,
     );
     final activeSection = navigation.state.activeSection;
@@ -316,6 +352,7 @@ class _PortfolioViewState extends State<_PortfolioView> {
     _scrollController
       ..removeListener(_reportScroll)
       ..dispose();
+    _floatingControlsBottom.dispose();
     super.dispose();
   }
 
@@ -337,45 +374,42 @@ class _PortfolioViewState extends State<_PortfolioView> {
           children: [
             Scrollbar(
               controller: _scrollController,
-              child: RevealScrollScope(
+              child: SingleChildScrollView(
                 controller: _scrollController,
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  primary: false,
-                  child: Column(
-                    children: [
-                      KeyedSubtree(
-                        key: _sectionKeys[PortfolioSection.home],
-                        child: HeroSection(content: content),
-                      ),
-                      KeyedSubtree(
-                        key: _sectionKeys[PortfolioSection.about],
-                        child: AboutSection(content: content),
-                      ),
-                      KeyedSubtree(
-                        key: _sectionKeys[PortfolioSection.skills],
-                        child: SkillsSection(content: content),
-                      ),
-                      KeyedSubtree(
-                        key: _sectionKeys[PortfolioSection.services],
-                        child: ServicesSection(content: content),
-                      ),
-                      KeyedSubtree(
-                        key: _sectionKeys[PortfolioSection.projects],
-                        child: ProjectsSection(content: content),
-                      ),
-                      KeyedSubtree(
-                        key: _sectionKeys[PortfolioSection.experience],
-                        child: ExperienceSection(content: content),
-                      ),
-                      TestimonialsSection(content: content),
-                      KeyedSubtree(
-                        key: _sectionKeys[PortfolioSection.contact],
-                        child: ContactSection(content: content),
-                      ),
-                      PortfolioFooter(key: _footerKey, content: content),
-                    ],
-                  ),
+                primary: false,
+                child: Column(
+                  children: [
+                    KeyedSubtree(
+                      key: _sectionKeys[PortfolioSection.home],
+                      child: HeroSection(content: content),
+                    ),
+                    KeyedSubtree(
+                      key: _sectionKeys[PortfolioSection.about],
+                      child: AboutSection(content: content),
+                    ),
+                    KeyedSubtree(
+                      key: _sectionKeys[PortfolioSection.skills],
+                      child: SkillsSection(content: content),
+                    ),
+                    KeyedSubtree(
+                      key: _sectionKeys[PortfolioSection.services],
+                      child: ServicesSection(content: content),
+                    ),
+                    KeyedSubtree(
+                      key: _sectionKeys[PortfolioSection.projects],
+                      child: ProjectsSection(content: content),
+                    ),
+                    KeyedSubtree(
+                      key: _sectionKeys[PortfolioSection.experience],
+                      child: ExperienceSection(content: content),
+                    ),
+                    TestimonialsSection(content: content),
+                    KeyedSubtree(
+                      key: _sectionKeys[PortfolioSection.contact],
+                      child: ContactSection(content: content),
+                    ),
+                    PortfolioFooter(key: _footerKey, content: content),
+                  ],
                 ),
               ),
             ),
@@ -419,9 +453,10 @@ class _PortfolioViewState extends State<_PortfolioView> {
                     ),
               ),
             ),
-            Positioned(
-              right: 30,
-              bottom: _resumeButtonBottom,
+            ValueListenableBuilder<double>(
+              valueListenable: _floatingControlsBottom,
+              builder: (context, bottom, child) =>
+                  Positioned(right: 30, bottom: bottom, child: child!),
               child:
                   BlocSelector<
                     PortfolioNavigationCubit,
@@ -451,9 +486,10 @@ class _PortfolioViewState extends State<_PortfolioView> {
                     ),
                   ),
             ),
-            Positioned(
-              left: 28,
-              bottom: _resumeButtonBottom,
+            ValueListenableBuilder<double>(
+              valueListenable: _floatingControlsBottom,
+              builder: (context, bottom, child) =>
+                  Positioned(left: 28, bottom: bottom, child: child!),
               child: PersistentResumeButton(
                 resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
                 ownerName: content.profile.fullName,

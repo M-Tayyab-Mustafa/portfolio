@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
@@ -29,74 +27,68 @@ class PortfolioNavbar extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final compact = width < AppLayout.compactDesktop;
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 280),
-      height: isScrolled ? 72 : AppLayout.navigationHeight,
-      decoration: BoxDecoration(
-        color: isScrolled
-            ? AppColors.background.withValues(alpha: .86)
-            : AppColors.transparent,
-        border: Border(
-          bottom: BorderSide(
-            color: isScrolled ? AppColors.border : AppColors.transparent,
+    return RepaintBoundary(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 280),
+        height: isScrolled ? 72 : AppLayout.navigationHeight,
+        decoration: BoxDecoration(
+          color: isScrolled
+              ? AppColors.background.withValues(alpha: .96)
+              : AppColors.transparent,
+          border: Border(
+            bottom: BorderSide(
+              color: isScrolled ? AppColors.border : AppColors.transparent,
+            ),
           ),
         ),
-      ),
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: isScrolled ? 16 : 0,
-            sigmaY: isScrolled ? 16 : 0,
-          ),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: AppLayout.contentMaxWidth,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: AppLayout.contentMaxWidth,
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppLayout.horizontalPadding(width),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppLayout.horizontalPadding(width),
-                ),
-                child: Row(
-                  children: [
-                    BrandLogo(
-                      profile: content.profile,
-                      semanticLabel: 'Muhammad Tayyab',
-                      compact: compact,
+              child: Row(
+                children: [
+                  BrandLogo(
+                    profile: content.profile,
+                    semanticLabel: content.profile.fullName,
+                    compact: compact,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        for (final section in PortfolioSection.values)
+                          _NavLink(
+                            section: section,
+                            label: content.navigationLabel(section.name),
+                            active: section == activeSection,
+                            compact: compact,
+                            onPressed: () => context
+                                .read<PortfolioNavigationCubit>()
+                                .navigateTo(section),
+                          ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          for (final section in PortfolioSection.values)
-                            _NavLink(
-                              section: section,
-                              label: content.navigationLabel(section.name),
-                              active: section == activeSection,
-                              compact: compact,
-                              onPressed: () => context
-                                  .read<PortfolioNavigationCubit>()
-                                  .navigateTo(section),
-                            ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(width: 10),
+                  AppButton(
+                    label: 'Hire me',
+                    compact: true,
+                    icon: const AppIcon(
+                      'external',
+                      size: 16,
+                      color: AppColors.textPrimary,
                     ),
-                    const SizedBox(width: 10),
-                    AppButton(
-                      label: 'Hire me',
-                      compact: true,
-                      icon: const AppIcon(
-                        'external',
-                        size: 16,
-                        color: AppColors.textPrimary,
-                      ),
-                      onPressed: () => context
-                          .read<PortfolioNavigationCubit>()
-                          .navigateTo(PortfolioSection.contact),
-                    ),
-                  ],
-                ),
+                    onPressed: () => context
+                        .read<PortfolioNavigationCubit>()
+                        .navigateTo(PortfolioSection.contact),
+                  ),
+                ],
               ),
             ),
           ),
