@@ -196,7 +196,7 @@ class _TestimonialCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   for (var index = 0; index < 5; index++)
                     Icon(
@@ -221,7 +221,7 @@ class _TestimonialCard extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CircleAvatar(
                     radius: 24,
