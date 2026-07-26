@@ -26,8 +26,20 @@ class App extends StatelessWidget {
   }
 }
 
-class _AppView extends StatelessWidget {
+class _AppView extends StatefulWidget {
   const _AppView();
+
+  @override
+  State<_AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<_AppView> {
+  bool _splashAnimationCompleted = false;
+
+  void _onSplashAnimationComplete() {
+    if (_splashAnimationCompleted || !mounted) return;
+    setState(() => _splashAnimationCompleted = true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +59,12 @@ class _AppView extends StatelessWidget {
         ],
         child: BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
           builder: (context, state) {
-            if (state.isReady) return child!;
+            if (state.isReady && _splashAnimationCompleted) return child!;
             return PortfolioSplashPage(
               errorMessage: state.status == PortfolioDataStatus.failure
                   ? state.errorMessage
                   : null,
+              onAnimationComplete: _onSplashAnimationComplete,
               onRetry: () => context.read<PortfolioDataBloc>().add(
                 const PortfolioDataRetryRequested(),
               ),

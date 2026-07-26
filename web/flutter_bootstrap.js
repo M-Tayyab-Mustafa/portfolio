@@ -10,4 +10,14 @@ _flutter.loader.load({
   serviceWorkerSettings: serviceWorkerVersion == null
       ? undefined
       : {serviceWorkerVersion},
+  onEntrypointLoaded: async function(engineInitializer) {
+    const appRunner = await engineInitializer.initializeEngine();
+    await appRunner.runApp();
+
+    const loading = document.getElementById('app-loading');
+    if (loading) {
+      loading.setAttribute('aria-hidden', 'true');
+      window.setTimeout(() => loading.remove(), 200);
+    }
+  },
 });
