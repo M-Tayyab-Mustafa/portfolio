@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/presentation/pages/web/pages/case_study_page.dart';
@@ -7,13 +8,23 @@ import 'package:portfolio/presentation/pages/web/pages/portfolio_page.dart';
 import 'package:portfolio/presentation/pages/web/pages/projects_page.dart';
 import 'package:portfolio/presentation/pages/web/pages/testimonial_submission_page.dart';
 
-final GoRouter appRouter = _createAppRouter();
+GoRouter? _appRouter;
+
+// Called from main after the path URL strategy is configured and before the
+// temporary startup MaterialApp can replace a browser deep link with `/`.
+void initializeAppRouter() {
+  _appRouter ??= _createAppRouter();
+}
+
+GoRouter get appRouter => _appRouter ??= _createAppRouter();
 
 GoRouter _createAppRouter() {
   GoRouter.optionURLReflectsImperativeAPIs = true;
+  final browserLocation = urlStrategy?.getPath();
 
   return GoRouter(
-    initialLocation: PortfolioSection.home.path,
+    initialLocation: browserLocation ?? PortfolioSection.home.path,
+    overridePlatformDefaultLocation: browserLocation != null,
     redirect: (context, state) {
       final path = state.uri.path;
       if (path.length <= 1 || !path.endsWith('/')) return null;

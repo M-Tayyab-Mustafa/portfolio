@@ -209,6 +209,10 @@ class _PortfolioViewState extends State<_PortfolioView> {
   @override
   void initState() {
     super.initState();
+    // A deep link initially lays out at scroll offset zero. Keep the first
+    // scroll report from replacing that route with `/` before we have scrolled
+    // to the requested section.
+    _isProgrammaticScroll = widget.initialSection != PortfolioSection.home;
     _scrollController.addListener(_reportScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
