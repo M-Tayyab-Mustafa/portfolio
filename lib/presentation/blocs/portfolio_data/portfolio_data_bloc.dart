@@ -68,8 +68,13 @@ final class _TestimonialsChanged extends PortfolioDataEvent {
 }
 
 final class _PortfolioDataFailed extends PortfolioDataEvent {
-  const _PortfolioDataFailed(this.error);
+  const _PortfolioDataFailed(this.error, {required this.blocksInitialRender});
   final Object error;
+  final bool blocksInitialRender;
+}
+
+final class _PortfolioBackgroundDataRequested extends PortfolioDataEvent {
+  const _PortfolioBackgroundDataRequested();
 }
 
 enum PortfolioDataStatus { initial, loading, loaded, failure }
@@ -112,10 +117,13 @@ class PortfolioDataState {
   final List<TestimonialItem>? _testimonials;
   final String? errorMessage;
 
-  bool get isReady =>
-      _profile != null &&
+  /// The minimum data required to render the home/hero experience.
+  bool get isReady => _profile != null && _links != null;
+
+  /// Whether every independently loaded portfolio section has responded.
+  bool get isFullyLoaded =>
+      isReady &&
       _emailJs != null &&
-      _links != null &&
       _statsDocument != null &&
       _contactChannelsDocument != null &&
       _experiences != null &&
@@ -124,16 +132,36 @@ class PortfolioDataState {
       _skillGroups != null &&
       _testimonials != null;
 
+  bool get hasEmailJs => _emailJs != null;
+  bool get hasStats => _statsDocument != null;
+  bool get hasContactChannels => _contactChannelsDocument != null;
+  bool get hasExperiences => _experiences != null;
+  bool get hasProjects => _projects != null;
+  bool get hasServices => _services != null;
+  bool get hasSkillGroups => _skillGroups != null;
+  bool get hasTestimonials => _testimonials != null;
+
   PersonalProfile get profile => _profile!;
-  EmailJsConfiguration get emailJs => _emailJs!;
+  EmailJsConfiguration get emailJs =>
+      _emailJs ??
+      const EmailJsConfiguration(
+        serviceId: '',
+        templateId: '',
+        publicKey: '',
+        nameParameter: '',
+        emailParameter: '',
+        subjectParameter: '',
+        messageParameter: '',
+      );
   PortfolioLinks get links => _links!;
-  List<StatItem> get stats => _statsDocument!.items;
-  List<ContactChannel> get contactChannels => _contactChannelsDocument!.items;
-  List<ExperienceItem> get experiences => _experiences!;
-  List<PortfolioProject> get projects => _projects!;
-  List<ServiceItem> get services => _services!;
-  List<SkillGroup> get skillGroups => _skillGroups!;
-  List<TestimonialItem> get testimonials => _testimonials!;
+  List<StatItem> get stats => _statsDocument?.items ?? const [];
+  List<ContactChannel> get contactChannels =>
+      _contactChannelsDocument?.items ?? const [];
+  List<ExperienceItem> get experiences => _experiences ?? const [];
+  List<PortfolioProject> get projects => _projects ?? const [];
+  List<ServiceItem> get services => _services ?? const [];
+  List<SkillGroup> get skillGroups => _skillGroups ?? const [];
+  List<TestimonialItem> get testimonials => _testimonials ?? const [];
 
   List<SocialLink> get socials =>
       PortfolioLocalContent.socials(links: links, email: profile.email);
@@ -187,6 +215,7 @@ class PortfolioDataBloc extends Bloc<PortfolioDataEvent, PortfolioDataState> {
   PortfolioDataBloc(this._repository) : super(const PortfolioDataState()) {
     on<PortfolioDataStarted>(_onStarted);
     on<PortfolioDataRetryRequested>(_onRetryRequested);
+    on<_PortfolioBackgroundDataRequested>(_onBackgroundDataRequested);
     on<_ProfileChanged>(
       (event, emit) => _emitModel(emit, state.copyWith(profile: event.model)),
     );
@@ -229,6 +258,7 @@ class PortfolioDataBloc extends Bloc<PortfolioDataEvent, PortfolioDataState> {
 
   final PortfolioRepository _repository;
   final List<StreamSubscription<Object?>> _subscriptions = [];
+  bool _backgroundStarted = false;
 
   Future<void> _onStarted(
     PortfolioDataStarted event,
@@ -247,9 +277,12 @@ class PortfolioDataBloc extends Bloc<PortfolioDataEvent, PortfolioDataState> {
   Future<void> _subscribe(Emitter<PortfolioDataState> emit) async {
     emit(state.copyWith(status: PortfolioDataStatus.loading, clearError: true));
     await _cancelSubscriptions();
+    _backgroundStarted = false;
 
     void onError(Object error, StackTrace stackTrace) {
-      if (!isClosed) add(_PortfolioDataFailed(error));
+      if (!isClosed) {
+        add(_PortfolioDataFailed(error, blocksInitialRender: true));
+      }
     }
 
     _subscriptions.addAll([
@@ -257,16 +290,42 @@ class PortfolioDataBloc extends Bloc<PortfolioDataEvent, PortfolioDataState> {
         (model) => add(_ProfileChanged(model)),
         onError: onError,
       ),
-      _repository.watchEmailJsConfiguration().listen(
-        (model) => add(_EmailJsChanged(model)),
-        onError: onError,
-      ),
       _repository.watchLinks().listen(
         (model) => add(_LinksChanged(model)),
         onError: onError,
       ),
+    ]);
+    if (state.isReady) _scheduleBackgroundData();
+  }
+
+  void _onBackgroundDataRequested(
+    _PortfolioBackgroundDataRequested event,
+    Emitter<PortfolioDataState> emit,
+  ) {
+    if (_backgroundStarted) return;
+    _backgroundStarted = true;
+
+    void onError(Object error, StackTrace stackTrace) {
+      if (!isClosed) {
+        add(_PortfolioDataFailed(error, blocksInitialRender: false));
+      }
+    }
+
+    _subscriptions.addAll([
+      _repository.watchEmailJsConfiguration().listen(
+        (model) => add(_EmailJsChanged(model)),
+        onError: onError,
+      ),
       _repository.watchStats().listen(
         (model) => add(_StatsChanged(model)),
+        onError: onError,
+      ),
+      _repository.watchServices().listen(
+        (models) => add(_ServicesChanged(models)),
+        onError: onError,
+      ),
+      _repository.watchSkillGroups().listen(
+        (models) => add(_SkillGroupsChanged(models)),
         onError: onError,
       ),
       _repository.watchContactChannels().listen(
@@ -281,14 +340,6 @@ class PortfolioDataBloc extends Bloc<PortfolioDataEvent, PortfolioDataState> {
         (models) => add(_ProjectsChanged(models)),
         onError: onError,
       ),
-      _repository.watchServices().listen(
-        (models) => add(_ServicesChanged(models)),
-        onError: onError,
-      ),
-      _repository.watchSkillGroups().listen(
-        (models) => add(_SkillGroupsChanged(models)),
-        onError: onError,
-      ),
       _repository.watchTestimonials().listen(
         (models) => add(_TestimonialsChanged(models)),
         onError: onError,
@@ -297,17 +348,27 @@ class PortfolioDataBloc extends Bloc<PortfolioDataEvent, PortfolioDataState> {
   }
 
   void _emitModel(Emitter<PortfolioDataState> emit, PortfolioDataState next) {
+    final becameReady = !state.isReady && next.isReady;
     emit(
       next.copyWith(
-        status: next.isReady
+        status: next.isFullyLoaded
             ? PortfolioDataStatus.loaded
             : PortfolioDataStatus.loading,
         clearError: true,
       ),
     );
+    if (becameReady) _scheduleBackgroundData();
+  }
+
+  void _scheduleBackgroundData() {
+    // Give Flutter a frame to paint Home before starting non-critical reads.
+    Timer(const Duration(milliseconds: 100), () {
+      if (!isClosed) add(const _PortfolioBackgroundDataRequested());
+    });
   }
 
   void _onFailed(_PortfolioDataFailed event, Emitter<PortfolioDataState> emit) {
+    if (!event.blocksInitialRender && state.isReady) return;
     emit(
       state.copyWith(
         status: PortfolioDataStatus.failure,

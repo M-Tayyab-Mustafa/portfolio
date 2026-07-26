@@ -385,28 +385,50 @@ class _PortfolioViewState extends State<_PortfolioView> {
                     ),
                     KeyedSubtree(
                       key: _sectionKeys[PortfolioSection.about],
-                      child: AboutSection(content: content),
+                      child: _DeferredPortfolioSection(
+                        loaded: content.hasStats,
+                        child: AboutSection(content: content),
+                      ),
                     ),
                     KeyedSubtree(
                       key: _sectionKeys[PortfolioSection.skills],
-                      child: SkillsSection(content: content),
+                      child: _DeferredPortfolioSection(
+                        loaded: content.hasSkillGroups,
+                        child: SkillsSection(content: content),
+                      ),
                     ),
                     KeyedSubtree(
                       key: _sectionKeys[PortfolioSection.services],
-                      child: ServicesSection(content: content),
+                      child: _DeferredPortfolioSection(
+                        loaded: content.hasServices,
+                        child: ServicesSection(content: content),
+                      ),
                     ),
                     KeyedSubtree(
                       key: _sectionKeys[PortfolioSection.projects],
-                      child: ProjectsSection(content: content),
+                      child: _DeferredPortfolioSection(
+                        loaded: content.hasProjects,
+                        child: ProjectsSection(content: content),
+                      ),
                     ),
                     KeyedSubtree(
                       key: _sectionKeys[PortfolioSection.experience],
-                      child: ExperienceSection(content: content),
+                      child: _DeferredPortfolioSection(
+                        loaded: content.hasExperiences,
+                        child: ExperienceSection(content: content),
+                      ),
                     ),
-                    TestimonialsSection(content: content),
+                    _DeferredPortfolioSection(
+                      loaded: content.hasTestimonials,
+                      child: TestimonialsSection(content: content),
+                    ),
                     KeyedSubtree(
                       key: _sectionKeys[PortfolioSection.contact],
-                      child: ContactSection(content: content),
+                      child: _DeferredPortfolioSection(
+                        loaded:
+                            content.hasContactChannels && content.hasEmailJs,
+                        child: ContactSection(content: content),
+                      ),
                     ),
                     PortfolioFooter(key: _footerKey, content: content),
                   ],
@@ -499,6 +521,19 @@ class _PortfolioViewState extends State<_PortfolioView> {
         ),
       ),
     );
+  }
+}
+
+class _DeferredPortfolioSection extends StatelessWidget {
+  const _DeferredPortfolioSection({required this.loaded, required this.child});
+
+  final bool loaded;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (loaded) return child;
+    return const SizedBox(height: 480);
   }
 }
 
