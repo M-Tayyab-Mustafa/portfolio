@@ -14,6 +14,14 @@ GoRouter _createAppRouter() {
 
   return GoRouter(
     initialLocation: PortfolioSection.home.path,
+    redirect: (context, state) {
+      final path = state.uri.path;
+      if (path.length <= 1 || !path.endsWith('/')) return null;
+
+      return state.uri
+          .replace(path: path.substring(0, path.length - 1))
+          .toString();
+    },
     routes: [
       for (final section in PortfolioSection.values)
         GoRoute(
