@@ -25,7 +25,7 @@ class ProjectsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
       builder: (context, state) {
-        if (!state.isReady) return const BrandLoader();
+        if (!state.isReady || !state.hasProjects) return const BrandLoader();
         return _ProjectsPageProviders(content: state);
       },
     );

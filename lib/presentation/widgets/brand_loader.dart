@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 
 class BrandLoader extends StatefulWidget {
-  const BrandLoader({super.key});
+  const BrandLoader({super.key, this.onStartupAnimationCompleted});
+
+  static const animationCycleDuration = Duration(seconds: 1, milliseconds: 800);
+
+  final VoidCallback? onStartupAnimationCompleted;
 
   @override
   State<BrandLoader> createState() => _BrandLoaderState();
 }
 
-class _BrandLoaderState extends State<BrandLoader>
-    with TickerProviderStateMixin {
+class _BrandLoaderState extends State<BrandLoader> with TickerProviderStateMixin {
   late final AnimationController _entranceController;
   late final AnimationController _loopController;
   late final Animation<double> _entrance;
@@ -17,18 +20,14 @@ class _BrandLoaderState extends State<BrandLoader>
   @override
   void initState() {
     super.initState();
-    _entranceController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    )..forward();
-    _loopController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1800),
-    )..repeat();
-    _entrance = CurvedAnimation(
-      parent: _entranceController,
-      curve: Curves.easeOutCubic,
-    );
+    _entranceController = AnimationController(vsync: this, duration: BrandLoader.animationCycleDuration)..forward();
+    _loopController = AnimationController(vsync: this, duration: BrandLoader.animationCycleDuration)
+      ..forward().then((_) {
+        if (!mounted) return;
+        widget.onStartupAnimationCompleted?.call();
+        _loopController.repeat();
+      });
+    _entrance = CurvedAnimation(parent: _entranceController, curve: Curves.easeOutCubic);
   }
 
   @override
@@ -55,47 +54,23 @@ class _BrandLoaderState extends State<BrandLoader>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _AnimatedBrandMark(
-                      animation: _loopController,
-                      reducedMotion: reducedMotion,
-                    ),
+                    _AnimatedBrandMark(animation: _loopController, reducedMotion: reducedMotion),
                     const SizedBox(height: 24),
                     const Text(
                       'MUHAMMAD',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontFamily: 'SpaceGrotesk',
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 7,
-                      ),
+                      style: TextStyle(color: AppColors.textPrimary, fontFamily: 'SpaceGrotesk', fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 7),
                     ),
                     const SizedBox(height: 5),
                     const Text(
                       'TAYYAB',
-                      style: TextStyle(
-                        color: AppColors.accent,
-                        fontFamily: 'monospace',
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 5,
-                      ),
+                      style: TextStyle(color: AppColors.accent, fontFamily: 'monospace', fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 5),
                     ),
                     const SizedBox(height: 38),
-                    _ProgressTrack(
-                      animation: _loopController,
-                      reducedMotion: reducedMotion,
-                    ),
+                    _ProgressTrack(animation: _loopController, reducedMotion: reducedMotion),
                     const SizedBox(height: 14),
                     const Text(
                       'INITIALIZING DIGITAL CANVAS...',
-                      style: TextStyle(
-                        color: AppColors.textMuted,
-                        fontFamily: 'monospace',
-                        fontSize: 9,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 1.7,
-                      ),
+                      style: TextStyle(color: AppColors.textMuted, fontFamily: 'monospace', fontSize: 9, fontWeight: FontWeight.w500, letterSpacing: 1.7),
                     ),
                   ],
                 ),
@@ -124,13 +99,7 @@ class _LoaderBackdropPainter extends CustomPainter {
     canvas.drawCircle(
       center,
       size.shortestSide * .28,
-      Paint()
-        ..shader =
-            const RadialGradient(
-              colors: [Color(0x28E50914), Color(0x00080808)],
-            ).createShader(
-              Rect.fromCircle(center: center, radius: size.shortestSide * .3),
-            ),
+      Paint()..shader = const RadialGradient(colors: [Color(0x28E50914), Color(0x00080808)]).createShader(Rect.fromCircle(center: center, radius: size.shortestSide * .3)),
     );
     final gridPaint = Paint()
       ..color = const Color(0x0AFFFFFF)
@@ -147,10 +116,7 @@ class _LoaderBackdropPainter extends CustomPainter {
 }
 
 class _AnimatedBrandMark extends StatelessWidget {
-  const _AnimatedBrandMark({
-    required this.animation,
-    required this.reducedMotion,
-  });
+  const _AnimatedBrandMark({required this.animation, required this.reducedMotion});
 
   final Animation<double> animation;
   final bool reducedMotion;
@@ -170,15 +136,7 @@ class _AnimatedBrandMark extends StatelessWidget {
               height: 128 + (22 * pulse),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.accent.withValues(
-                      alpha: .14 + (.1 * pulse),
-                    ),
-                    blurRadius: 56,
-                    spreadRadius: 8,
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: AppColors.accent.withValues(alpha: .14 + (.1 * pulse)), blurRadius: 56, spreadRadius: 8)],
               ),
             ),
             Container(
@@ -197,11 +155,7 @@ class _AnimatedBrandMark extends StatelessWidget {
                     top: 12,
                     child: Container(
                       height: 2,
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [AppColors.accent, Color(0x4DFFFFFF)],
-                        ),
-                      ),
+                      decoration: const BoxDecoration(gradient: LinearGradient(colors: [AppColors.accent, Color(0x4DFFFFFF)])),
                     ),
                   ),
                   const Center(
@@ -216,13 +170,7 @@ class _AnimatedBrandMark extends StatelessWidget {
                           TextSpan(text: 'T'),
                         ],
                       ),
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontFamily: 'monospace',
-                        fontSize: 23,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -2,
-                      ),
+                      style: TextStyle(color: AppColors.textPrimary, fontFamily: 'monospace', fontSize: 23, fontWeight: FontWeight.w900, letterSpacing: -2),
                     ),
                   ),
                   Positioned(
@@ -232,9 +180,7 @@ class _AnimatedBrandMark extends StatelessWidget {
                       width: 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: AppColors.accent.withValues(
-                          alpha: .5 + (.5 * pulse),
-                        ),
+                        color: AppColors.accent.withValues(alpha: .5 + (.5 * pulse)),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -273,15 +219,7 @@ class _ProgressTrack extends StatelessWidget {
                 child: Container(
                   width: 96,
                   height: 2,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.transparent,
-                        AppColors.accent,
-                        AppColors.transparent,
-                      ],
-                    ),
-                  ),
+                  decoration: const BoxDecoration(gradient: LinearGradient(colors: [AppColors.transparent, AppColors.accent, AppColors.transparent])),
                 ),
               );
             },
