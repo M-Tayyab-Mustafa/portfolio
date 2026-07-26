@@ -8,61 +8,42 @@ import 'package:portfolio/data/repositories/firestore_portfolio_repository.dart'
 import 'package:portfolio/firebase_options.dart';
 import 'package:portfolio/presentation/pages/splash/portfolio_splash_page.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
-  runApp(const _PortfolioBootstrap());
+  await _startPortfolio();
 }
 
-class _PortfolioBootstrap extends StatefulWidget {
-  const _PortfolioBootstrap();
-
-  @override
-  State<_PortfolioBootstrap> createState() => _PortfolioBootstrapState();
-}
-
-class _PortfolioBootstrapState extends State<_PortfolioBootstrap> {
-  late Future<FirestorePortfolioRepository> _initialization;
-
-  @override
-  void initState() {
-    super.initState();
-    _initialization = _initialize();
-  }
-
-  Future<FirestorePortfolioRepository> _initialize() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+Future<void> _startPortfolio() async {
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
+    runApp(
+      App(repository: FirestorePortfolioRepository(FirebaseFirestore.instance)),
     );
-    return FirestorePortfolioRepository(FirebaseFirestore.instance);
+  } catch (_) {
+    runApp(const _PortfolioStartupFailure());
   }
+}
 
-  void _retry() {
-    setState(() => _initialization = _initialize());
-  }
+class _PortfolioStartupFailure extends StatelessWidget {
+  const _PortfolioStartupFailure();
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<FirestorePortfolioRepository>(
-      future: _initialization,
-      builder: (context, snapshot) {
-        final repository = snapshot.data;
-        if (repository != null) return App(repository: repository);
-
-        return MaterialApp(
-          title: 'Muhammad Tayyab — Senior Flutter Developer',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.dark,
-          darkTheme: AppTheme.dark,
-          themeMode: ThemeMode.dark,
-          home: PortfolioSplashPage(
-            errorMessage: snapshot.hasError
-                ? 'The portfolio service could not be started.'
-                : null,
-            onRetry: _retry,
-          ),
-        );
-      },
+    return MaterialApp(
+      title: 'Muhammad Tayyab — Senior Flutter Developer',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.dark,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
+      home: PortfolioSplashPage(
+        errorMessage: 'The portfolio service could not be started.',
+        onRetry: _startPortfolio,
+      ),
     );
   }
 }

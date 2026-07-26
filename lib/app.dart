@@ -4,7 +4,6 @@ import 'package:portfolio/core/routing/app_router.dart';
 import 'package:portfolio/core/theme/app_theme.dart';
 import 'package:portfolio/domain/repositories/portfolio_repository.dart';
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
-import 'package:portfolio/presentation/pages/splash/portfolio_splash_page.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class App extends StatelessWidget {
@@ -26,20 +25,8 @@ class App extends StatelessWidget {
   }
 }
 
-class _AppView extends StatefulWidget {
+class _AppView extends StatelessWidget {
   const _AppView();
-
-  @override
-  State<_AppView> createState() => _AppViewState();
-}
-
-class _AppViewState extends State<_AppView> {
-  bool _splashAnimationCompleted = false;
-
-  void _onSplashAnimationComplete() {
-    if (_splashAnimationCompleted || !mounted) return;
-    setState(() => _splashAnimationCompleted = true);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,20 +44,7 @@ class _AppViewState extends State<_AppView> {
           Breakpoint(start: 1200, end: 1599, name: DESKTOP),
           Breakpoint(start: 1600, end: double.infinity, name: 'WIDE_DESKTOP'),
         ],
-        child: BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
-          builder: (context, state) {
-            if (state.isReady && _splashAnimationCompleted) return child!;
-            return PortfolioSplashPage(
-              errorMessage: state.status == PortfolioDataStatus.failure
-                  ? state.errorMessage
-                  : null,
-              onAnimationComplete: _onSplashAnimationComplete,
-              onRetry: () => context.read<PortfolioDataBloc>().add(
-                const PortfolioDataRetryRequested(),
-              ),
-            );
-          },
-        ),
+        child: child!,
       ),
     );
   }
