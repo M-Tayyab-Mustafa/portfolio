@@ -23,7 +23,7 @@ class CaseStudyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
       builder: (context, state) {
-        if (state.isReady) {
+        if (state.isReady && state.hasProjects) {
           return _CaseStudyProviders(content: state, slug: slug);
         }
         if (state.status == PortfolioDataStatus.failure) {
