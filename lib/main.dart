@@ -8,42 +8,61 @@ import 'package:portfolio/data/repositories/firestore_portfolio_repository.dart'
 import 'package:portfolio/firebase_options.dart';
 import 'package:portfolio/presentation/pages/splash/portfolio_splash_page.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
-  await _startPortfolio();
+  runApp(const _PortfolioBootstrap());
 }
 
-Future<void> _startPortfolio() async {
-  try {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
-    runApp(
-      App(repository: FirestorePortfolioRepository(FirebaseFirestore.instance)),
-    );
-  } catch (_) {
-    runApp(const _PortfolioStartupFailure());
+class _PortfolioBootstrap extends StatefulWidget {
+  const _PortfolioBootstrap();
+
+  @override
+  State<_PortfolioBootstrap> createState() => _PortfolioBootstrapState();
+}
+
+class _PortfolioBootstrapState extends State<_PortfolioBootstrap> {
+  late Future<FirestorePortfolioRepository> _initialization;
+
+  @override
+  void initState() {
+    super.initState();
+    _initialization = _initialize();
   }
-}
 
-class _PortfolioStartupFailure extends StatelessWidget {
-  const _PortfolioStartupFailure();
+  Future<FirestorePortfolioRepository> _initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    return FirestorePortfolioRepository(FirebaseFirestore.instance);
+  }
+
+  void _retry() {
+    setState(() => _initialization = _initialize());
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Muhammad Tayyab — Senior Flutter Developer',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.dark,
-      home: PortfolioSplashPage(
-        errorMessage: 'The portfolio service could not be started.',
-        onRetry: _startPortfolio,
-      ),
+    return FutureBuilder<FirestorePortfolioRepository>(
+      future: _initialization,
+      builder: (context, snapshot) {
+        final repository = snapshot.data;
+        if (repository != null) return App(repository: repository);
+
+        return MaterialApp(
+          title: 'Muhammad Tayyab — Senior Flutter Developer',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.dark,
+          darkTheme: AppTheme.dark,
+          themeMode: ThemeMode.dark,
+          home: PortfolioSplashPage(
+            errorMessage: snapshot.hasError
+                ? 'The portfolio service could not be started.'
+                : null,
+            onRetry: _retry,
+          ),
+        );
+      },
     );
   }
 }
