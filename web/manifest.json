@@ -1,12 +1,11 @@
 {
-    "name": "portfolio",
-    "short_name": "portfolio",
+    "name": "Muhammad Tayyab — Flutter Developer",
+    "short_name": "Tayyab",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#080808",
+    "theme_color": "#E50914",
+    "description": "Flutter and Android developer portfolio for Muhammad Tayyab.",
     "prefer_related_applications": false,
     "icons": [
         {
