@@ -39,8 +39,24 @@ jobs:
       - name: Build Flutter Web
         run: flutter build web --release --base-href "/portfolio/"
 
-      - name: Add SPA fallback
-        run: cp build/web/index.html build/web/404.html
+      - name: Add SPA route entry points
+        shell: bash
+        run: |
+          cp build/web/index.html build/web/404.html
+
+          for route in \
+            about \
+            skills \
+            services \
+            projects \
+            experience \
+            contact \
+            projects/all-projects \
+            testimonials/submit-testimonial
+          do
+            mkdir -p "build/web/$route"
+            cp build/web/index.html "build/web/$route/index.html"
+          done
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

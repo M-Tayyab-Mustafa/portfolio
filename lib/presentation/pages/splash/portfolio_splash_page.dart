@@ -7,13 +7,11 @@ class PortfolioSplashPage extends StatelessWidget {
   const PortfolioSplashPage({
     required this.errorMessage,
     required this.onRetry,
-    this.onAnimationComplete,
     super.key,
   });
 
   final String? errorMessage;
   final VoidCallback onRetry;
-  final VoidCallback? onAnimationComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +20,7 @@ class PortfolioSplashPage extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Center(
         child: message == null
-            ? BrandLoader(onStartupAnimationCompleted: onAnimationComplete)
+            ? const BrandLoader()
             : Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(

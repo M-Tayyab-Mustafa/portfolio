@@ -591,6 +591,11 @@ cp build/web/index.html build/web/404.html
 The generated site is written to `build/web/`. The copied `404.html` lets
 GitHub Pages return the Flutter shell for deep links such as
 `/portfolio/projects/sample-app`, after which `go_router` resolves the route.
+The deployment workflow also creates `index.html` entry points for each fixed
+route, including `/portfolio/testimonials/submit-testimonial/`, so URLs entered
+directly in the browser receive a normal page response instead of relying on
+GitHub Pages' 404 fallback. Dynamic case-study paths continue to use the
+fallback.
 
 If the repository or hosting subdirectory changes, update `--base-href` in
 `.github/workflows/dart.yml`.
@@ -604,7 +609,7 @@ push to `main` and can also be started manually:
 2. Install and cache stable Flutter.
 3. Resolve dependencies.
 4. Build the release web bundle with `/portfolio/` as the base href.
-5. Create the SPA `404.html` fallback.
+5. Create fixed-route entry points and the SPA `404.html` fallback.
 6. Upload the Pages artifact.
 7. Deploy through GitHub's `github-pages` environment.
 
