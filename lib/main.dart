@@ -3,14 +3,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:portfolio/app.dart';
+import 'package:portfolio/core/routing/app_router.dart';
 import 'package:portfolio/core/theme/app_theme.dart';
 import 'package:portfolio/data/repositories/firestore_portfolio_repository.dart';
 import 'package:portfolio/firebase_options.dart';
 import 'package:portfolio/presentation/pages/splash/portfolio_splash_page.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeAppRouter();
   runApp(const _PortfolioBootstrap());
 }
 
