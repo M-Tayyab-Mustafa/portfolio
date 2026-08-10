@@ -39,8 +39,8 @@ class _AppView extends StatelessWidget {
       themeMode: ThemeMode.dark,
       builder: (context, child) => ResponsiveBreakpoints.builder(
         breakpoints: const [
-          Breakpoint(start: 0, end: 899, name: MOBILE),
-          Breakpoint(start: 900, end: 1199, name: TABLET),
+          Breakpoint(start: 0, end: 599, name: MOBILE),
+          Breakpoint(start: 600, end: 1199, name: TABLET),
           Breakpoint(start: 1200, end: 1599, name: DESKTOP),
           Breakpoint(start: 1600, end: double.infinity, name: 'WIDE_DESKTOP'),
         ],

@@ -4,9 +4,10 @@ import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/presentation/blocs/typewriter/typewriter_cubit.dart';
 
 class TypewriterText extends StatelessWidget {
-  const TypewriterText({required this.prefix, super.key});
+  const TypewriterText({required this.prefix, super.key, this.fontSize = 14});
 
   final String prefix;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -21,23 +22,23 @@ class TypewriterText extends StatelessWidget {
                 text: state.visibleText,
                 style: const TextStyle(color: AppColors.accent),
               ),
-              const TextSpan(
+              TextSpan(
                 text: '  ',
                 style: TextStyle(
                   backgroundColor: AppColors.accent,
-                  fontSize: 13,
+                  fontSize: fontSize - 1,
                 ),
               ),
             ],
           ),
           maxLines: 1,
           overflow: TextOverflow.clip,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textPrimary,
             fontFamily: 'monospace',
-            fontSize: 14,
+            fontSize: fontSize,
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.4,
+            letterSpacing: 1.25,
           ),
         );
       },

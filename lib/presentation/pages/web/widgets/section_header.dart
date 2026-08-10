@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/core/theme/app_typography.dart';
-import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
+import 'package:portfolio/presentation/widgets/outlined_text.dart';
 
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
