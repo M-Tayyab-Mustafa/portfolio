@@ -1,25 +1,70 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:portfolio/app.dart';
-import 'package:portfolio/di/injection.dart';
-import 'firebase_options.dart';
+import 'package:portfolio/core/routing/app_router.dart';
+import 'package:portfolio/core/theme/app_theme.dart';
+import 'package:portfolio/data/repositories/firestore_portfolio_repository.dart';
+import 'package:portfolio/firebase_options.dart';
+import 'package:portfolio/presentation/pages/splash/portfolio_splash_page.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  Injection.init();
+void main() {
   usePathUrlStrategy();
-  runApp(
-    ResponsiveBreakpoints.builder(
-      breakpoints: const [
-        Breakpoint(start: 0, end: 480, name: MOBILE),
-        Breakpoint(start: 481, end: 1023, name: TABLET),
-        Breakpoint(start: 1024, end: 1920, name: DESKTOP),
-        Breakpoint(start: 1921, end: double.infinity, name: '4K'),
-      ],
-      child: const App(),
-    ),
-  );
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeAppRouter();
+  runApp(const _PortfolioBootstrap());
+}
+
+class _PortfolioBootstrap extends StatefulWidget {
+  const _PortfolioBootstrap();
+
+  @override
+  State<_PortfolioBootstrap> createState() => _PortfolioBootstrapState();
+}
+
+class _PortfolioBootstrapState extends State<_PortfolioBootstrap> {
+  late Future<FirestorePortfolioRepository> _initialization;
+
+  @override
+  void initState() {
+    super.initState();
+    _initialization = _initialize();
+  }
+
+  Future<FirestorePortfolioRepository> _initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    return FirestorePortfolioRepository(FirebaseFirestore.instance);
+  }
+
+  void _retry() {
+    setState(() => _initialization = _initialize());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<FirestorePortfolioRepository>(
+      future: _initialization,
+      builder: (context, snapshot) {
+        final repository = snapshot.data;
+        if (repository != null) return App(repository: repository);
+
+        return MaterialApp(
+          title: 'Muhammad Tayyab — Senior Flutter Developer',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.dark,
+          darkTheme: AppTheme.dark,
+          themeMode: ThemeMode.dark,
+          home: PortfolioSplashPage(
+            errorMessage: snapshot.hasError
+                ? 'The portfolio service could not be started.'
+                : null,
+            onRetry: _retry,
+          ),
+        );
+      },
+    );
+  }
 }

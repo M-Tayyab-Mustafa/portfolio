@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -18,21 +18,75 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Muhammad Tayyab is a Flutter and Android developer building responsive, maintainable cross-platform applications.">
+  <meta name="theme-color" content="#080808">
+  <meta property="og:title" content="Muhammad Tayyab — Flutter Developer">
+  <meta property="og:description" content="Flutter and Android development, reusable packages, responsive UI engineering, and selected projects.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="portfolio">
+  <meta name="apple-mobile-web-app-title" content="Muhammad Tayyab">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/svg+xml" href="icons/brand-mark.svg"/>
 
-  <title>portfolio</title>
+  <title>Muhammad Tayyab — Flutter Developer</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: #080808;
+    }
+
+    #app-loading {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      background: #080808;
+      transition: opacity 180ms ease;
+    }
+
+    #app-loading[aria-hidden="true"] {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .app-loading-mark {
+      width: 52px;
+      height: 52px;
+      animation: app-loading-pulse 1.1s ease-in-out infinite alternate;
+    }
+
+    @keyframes app-loading-pulse {
+      from { opacity: .45; transform: scale(.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .app-loading-mark { animation: none; }
+    }
+  </style>
 </head>
 <body>
+  <div id="app-loading" role="status" aria-label="Loading portfolio">
+    <img
+      class="app-loading-mark"
+      src="icons/brand-mark.svg"
+      alt=""
+      width="52"
+      height="52"
+      fetchpriority="high"
+    >
+  </div>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
