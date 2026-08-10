@@ -15,17 +15,16 @@ import 'package:portfolio/presentation/widgets/outlined_text.dart';
 import 'package:portfolio/presentation/widgets/portfolio_image.dart';
 import 'package:portfolio/presentation/widgets/typewriter_text.dart';
 
-class TabletHeroSection extends StatelessWidget {
-  const TabletHeroSection({required this.content, super.key});
+class MobileHeroSection extends StatelessWidget {
+  const MobileHeroSection({required this.content, super.key});
 
   final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
     final viewport = MediaQuery.sizeOf(context);
-    final wide = viewport.width >= 860;
-    final minimumHeight = math.max(viewport.height, wide ? 720.0 : 920.0);
-    final horizontalPadding = AppLayout.tabletHorizontalPadding(viewport.width);
+    final minimumHeight = math.max(viewport.height, 880.0);
+    final horizontalPadding = AppLayout.mobileHorizontalPadding(viewport.width);
 
     return ColoredBox(
       color: AppColors.background,
@@ -56,38 +55,24 @@ class TabletHeroSection extends StatelessWidget {
             Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
-                  maxWidth: AppLayout.tabletContentMaxWidth,
+                  maxWidth: AppLayout.mobileContentMaxWidth,
                 ),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(
                     horizontalPadding,
-                    AppLayout.tabletNavigationHeight + 62,
+                    AppLayout.mobileNavigationHeight + 42,
                     horizontalPadding,
-                    68,
+                    54,
                   ),
-                  child: wide
-                      ? Row(
-                          children: [
-                            Expanded(
-                              flex: 6,
-                              child: _HeroCopy(content: content, wide: true),
-                            ),
-                            const SizedBox(width: 44),
-                            Expanded(
-                              flex: 5,
-                              child: _HeroPortrait(content: content),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _HeroCopy(content: content, wide: false),
-                            const SizedBox(height: 48),
-                            Center(child: _HeroPortrait(content: content)),
-                          ],
-                        ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _HeroCopy(content: content),
+                      const SizedBox(height: 38),
+                      Center(child: _HeroPortrait(content: content)),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -99,15 +84,15 @@ class TabletHeroSection extends StatelessWidget {
 }
 
 class _HeroCopy extends StatelessWidget {
-  const _HeroCopy({required this.content, required this.wide});
+  const _HeroCopy({required this.content});
 
   final PortfolioDataState content;
-  final bool wide;
 
   @override
   Widget build(BuildContext context) {
     final profile = content.profile;
-    final nameSize = wide ? 60.0 : 52.0;
+    final width = MediaQuery.sizeOf(context).width;
+    final nameSize = width < 360 ? 40.0 : 44.0;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -230,7 +215,7 @@ class _HeroPortrait extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 310),
+      constraints: const BoxConstraints(maxWidth: 278),
       child: AspectRatio(
         aspectRatio: .76,
         child: Stack(
@@ -324,7 +309,7 @@ class _HeroPortrait extends StatelessWidget {
               ),
             ),
             Positioned(
-              right: -12,
+              right: -6,
               top: 28,
               child: DecoratedBox(
                 decoration: BoxDecoration(

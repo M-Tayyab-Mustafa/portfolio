@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/core/theme/app_spacing.dart';
 
 abstract final class AppTypography {
   static TextTheme build() {
@@ -57,12 +58,16 @@ abstract final class AppTypography {
   }
 
   static double heroSize(double width) {
+    if (width < 360) return 40;
+    if (width < AppLayout.tabletMinimum) return 44;
     if (width < 1050) return 64;
     if (width < 1400) return 82;
     return 96;
   }
 
   static double sectionTitleSize(double width) {
+    if (width < 360) return 31;
+    if (width < AppLayout.tabletMinimum) return 34;
     if (width < 1050) return 40;
     if (width < 1400) return 48;
     return 56;

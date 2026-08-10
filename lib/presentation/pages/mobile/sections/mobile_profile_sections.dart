@@ -6,11 +6,11 @@ import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/data/models/portfolio_models.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
-import 'package:portfolio/presentation/pages/tablet/widgets/tablet_section.dart';
+import 'package:portfolio/presentation/pages/mobile/widgets/mobile_section.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
 
-class TabletAboutSection extends StatelessWidget {
-  const TabletAboutSection({required this.content, super.key});
+class MobileAboutSection extends StatelessWidget {
+  const MobileAboutSection({required this.content, super.key});
 
   final PortfolioDataState content;
 
@@ -19,14 +19,14 @@ class TabletAboutSection extends StatelessWidget {
     final profile = content.profile;
     final heading = content.heading('about');
 
-    return TabletSection(
+    return MobileSection(
       background: AppColors.surface,
       ambientAlignment: Alignment.centerRight,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           RevealOnScroll(
-            child: TabletSectionHeader(
+            child: MobileSectionHeader(
               eyebrow: heading.eyebrow,
               title: heading.title,
               accentTitle: heading.accentTitle,
@@ -35,8 +35,10 @@ class TabletAboutSection extends StatelessWidget {
           const SizedBox(height: 44),
           RevealOnScroll(
             offset: const Offset(0, .05),
-            child: TabletSurface(
-              padding: const EdgeInsets.all(26),
+            child: MobileSurface(
+              padding: EdgeInsets.all(
+                MediaQuery.sizeOf(context).width < 360 ? 18 : 26,
+              ),
               color: AppColors.background,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +186,7 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TabletSurface(
+    return MobileSurface(
       padding: const EdgeInsets.all(17),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -221,8 +223,8 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-class TabletSkillsSection extends StatelessWidget {
-  const TabletSkillsSection({required this.content, super.key});
+class MobileSkillsSection extends StatelessWidget {
+  const MobileSkillsSection({required this.content, super.key});
 
   final PortfolioDataState content;
 
@@ -230,13 +232,13 @@ class TabletSkillsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final heading = content.heading('skills');
 
-    return TabletSection(
+    return MobileSection(
       ambientAlignment: Alignment.topLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           RevealOnScroll(
-            child: TabletSectionHeader(
+            child: MobileSectionHeader(
               eyebrow: heading.eyebrow,
               title: heading.title,
               accentTitle: heading.accentTitle,
@@ -278,7 +280,7 @@ class _SkillCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TabletSurface(
+    return MobileSurface(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -345,8 +347,8 @@ class _SkillCard extends StatelessWidget {
   }
 }
 
-class TabletServicesSection extends StatelessWidget {
-  const TabletServicesSection({required this.content, super.key});
+class MobileServicesSection extends StatelessWidget {
+  const MobileServicesSection({required this.content, super.key});
 
   final PortfolioDataState content;
 
@@ -354,14 +356,14 @@ class TabletServicesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final heading = content.heading('services');
 
-    return TabletSection(
+    return MobileSection(
       background: AppColors.surface,
       ambientAlignment: Alignment.bottomRight,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           RevealOnScroll(
-            child: TabletSectionHeader(
+            child: MobileSectionHeader(
               eyebrow: heading.eyebrow,
               title: heading.title,
               accentTitle: heading.accentTitle,
@@ -405,7 +407,7 @@ class _ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TabletSurface(
+    return MobileSurface(
       color: AppColors.background,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

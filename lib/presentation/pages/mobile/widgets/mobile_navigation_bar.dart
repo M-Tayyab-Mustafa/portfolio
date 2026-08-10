@@ -9,8 +9,8 @@ import 'package:portfolio/presentation/widgets/app_button.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
 import 'package:portfolio/presentation/widgets/brand_logo.dart';
 
-class TabletNavigationBar extends StatelessWidget {
-  const TabletNavigationBar({
+class MobileNavigationBar extends StatelessWidget {
+  const MobileNavigationBar({
     required this.content,
     required this.activeSection,
     required this.isScrolled,
@@ -24,8 +24,8 @@ class TabletNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    const navigationHeight = AppLayout.tabletNavigationHeight;
-    final horizontalPadding = AppLayout.tabletHorizontalPadding(width);
+    const navigationHeight = AppLayout.mobileNavigationHeight;
+    final horizontalPadding = AppLayout.mobileHorizontalPadding(width);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 240),
@@ -46,7 +46,7 @@ class TabletNavigationBar extends StatelessWidget {
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            maxWidth: AppLayout.tabletContentMaxWidth,
+            maxWidth: AppLayout.mobileContentMaxWidth,
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -60,16 +60,10 @@ class TabletNavigationBar extends StatelessWidget {
                     profile: content.profile,
                     semanticLabel: '${content.profile.fullName} home',
                     compact: true,
-                    showWordmark: width >= 560,
+                    showWordmark: width >= 390,
                   ),
                 ),
                 const Spacer(),
-                if (width >= 720) ...[
-                  _ActiveSectionLabel(
-                    label: content.navigationLabel(activeSection.name),
-                  ),
-                  const SizedBox(width: 12),
-                ],
                 AppButton(
                   label: 'Hire me',
                   compact: true,
@@ -77,7 +71,7 @@ class TabletNavigationBar extends StatelessWidget {
                       .read<PortfolioNavigationCubit>()
                       .navigateTo(PortfolioSection.contact),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 8),
                 PopupMenuButton<PortfolioSection>(
                   tooltip: 'Open navigation',
                   color: AppColors.elevatedSurface,
@@ -123,8 +117,8 @@ class TabletNavigationBar extends StatelessWidget {
                       ),
                   ],
                   child: Container(
-                    width: 48,
-                    height: 48,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
                       color: AppColors.surface,
                       border: Border.all(color: AppColors.borderStrong),
@@ -142,50 +136,6 @@ class TabletNavigationBar extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ActiveSectionLabel extends StatelessWidget {
-  const _ActiveSectionLabel({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 6,
-              height: 6,
-              decoration: const BoxDecoration(
-                color: AppColors.accent,
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              label.toUpperCase(),
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontFamily: 'monospace',
-                fontSize: 9,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 1,
-              ),
-            ),
-          ],
         ),
       ),
     );

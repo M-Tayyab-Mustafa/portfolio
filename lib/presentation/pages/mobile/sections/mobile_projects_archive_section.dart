@@ -13,13 +13,13 @@ import 'package:portfolio/presentation/widgets/app_button.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
 import 'package:portfolio/presentation/widgets/hover_surface.dart';
 import 'package:portfolio/presentation/widgets/portfolio_image.dart';
-import 'package:portfolio/presentation/pages/web/widgets/section_container.dart';
-import 'package:portfolio/presentation/pages/web/widgets/section_header.dart';
+import 'package:portfolio/presentation/pages/mobile/widgets/mobile_archive_section_container.dart';
+import 'package:portfolio/presentation/pages/mobile/widgets/mobile_archive_section_header.dart';
 
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
-class ProjectsSection extends StatefulWidget {
-  const ProjectsSection({
+class MobileProjectsArchiveSection extends StatefulWidget {
+  const MobileProjectsArchiveSection({
     required this.content,
     super.key,
     this.showAllProjects = false,
@@ -29,10 +29,12 @@ class ProjectsSection extends StatefulWidget {
   final bool showAllProjects;
 
   @override
-  State<ProjectsSection> createState() => _ProjectsSectionState();
+  State<MobileProjectsArchiveSection> createState() =>
+      _MobileProjectsArchiveSectionState();
 }
 
-class _ProjectsSectionState extends State<ProjectsSection> {
+class _MobileProjectsArchiveSectionState
+    extends State<MobileProjectsArchiveSection> {
   static const _initialProjectLimit = 6;
   final _searchController = TextEditingController();
 
@@ -51,13 +53,13 @@ class _ProjectsSectionState extends State<ProjectsSection> {
             : state.visibleProjects.take(_initialProjectLimit).toList();
         final hasMoreProjects =
             state.visibleProjects.length > _initialProjectLimit;
-        return SectionContainer(
+        return MobileArchiveSectionContainer(
           ambientAlignment: Alignment.bottomCenter,
           ambientOpacity: .06,
           child: Column(
             children: [
               RevealOnScroll(
-                child: SectionHeader(
+                child: MobileArchiveSectionHeader(
                   eyebrow: widget.showAllProjects
                       ? 'COMPLETE DIGITAL ARCHIVE'
                       : widget.content.heading('projects').eyebrow,
@@ -493,7 +495,7 @@ class _ProjectsCallToAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(MediaQuery.sizeOf(context).width);
     final copy = const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -510,14 +512,14 @@ class _ProjectsCallToAction extends StatelessWidget {
     );
     final backButton = AppButton(
       label: 'Back to portfolio',
-      expanded: compact,
+      expanded: mobile,
       variant: AppButtonVariant.outline,
       compact: true,
       onPressed: () => context.go(PortfolioSection.projects.path),
     );
     final contactButton = AppButton(
       label: 'Get in touch',
-      expanded: compact,
+      expanded: mobile,
       compact: true,
       onPressed: () => context.go(PortfolioSection.contact.path),
     );
@@ -529,8 +531,8 @@ class _ProjectsCallToAction extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppLayout.radius),
       ),
       child: Padding(
-        padding: EdgeInsets.all(compact ? 22 : 32),
-        child: compact
+        padding: EdgeInsets.all(mobile ? 22 : 32),
+        child: mobile
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

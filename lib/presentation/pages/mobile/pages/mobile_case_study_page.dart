@@ -14,8 +14,8 @@ import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/portfolio_image.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class WebCaseStudyPage extends StatelessWidget {
-  const WebCaseStudyPage({required this.slug, super.key});
+class MobileCaseStudyPage extends StatelessWidget {
+  const MobileCaseStudyPage({required this.slug, super.key});
 
   final String slug;
 
@@ -98,8 +98,7 @@ class _CaseStudyView extends StatelessWidget {
           return const _CaseStudyUnavailable();
         }
         final width = MediaQuery.sizeOf(context).width;
-        final compact =
-            MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+        final mobile = AppLayout.isMobile(width);
 
         return Scaffold(
           backgroundColor: AppColors.background,
@@ -137,7 +136,7 @@ class _CaseStudyView extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: AppLayout.horizontalPadding(width),
-                                vertical: compact ? 24 : 40,
+                                vertical: mobile ? 24 : 40,
                               ),
                               child: _CaseStudyBody(
                                 content: content,
@@ -152,9 +151,9 @@ class _CaseStudyView extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: compact ? 16 : 28,
+                left: mobile ? 16 : 28,
                 bottom:
-                    (compact ? 16 : 28) + MediaQuery.paddingOf(context).bottom,
+                    (mobile ? 16 : 28) + MediaQuery.paddingOf(context).bottom,
                 child: PersistentResumeButton(
                   resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
                   ownerName: content.profile.fullName,
@@ -176,7 +175,7 @@ class _CaseStudyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(width);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: .96),
@@ -188,7 +187,7 @@ class _CaseStudyHeader extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AppLayout.horizontalPadding(width),
-              vertical: compact ? 14 : 22,
+              vertical: mobile ? 14 : 22,
             ),
             child: Row(
               children: [
@@ -213,7 +212,7 @@ class _CaseStudyHeader extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
-                              fontSize: compact ? 20 : null,
+                              fontSize: mobile ? 20 : null,
                               fontWeight: FontWeight.w900,
                               letterSpacing: -1,
                             ),
@@ -246,7 +245,7 @@ class _CaseStudyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final caseStudy = project.caseStudy;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(MediaQuery.sizeOf(context).width);
     final closing = TextButton(
       onPressed: context.read<CaseStudyCubit>().closeCaseStudy,
       child: const Text('BACK TO PROJECTS'),
@@ -287,7 +286,7 @@ class _CaseStudyBody extends StatelessWidget {
         const SizedBox(height: 52),
         const Divider(height: 1),
         const SizedBox(height: 22),
-        if (compact) ...[
+        if (mobile) ...[
           Text(
             '${content.profile.fullName} // Portfolio case study'.toUpperCase(),
             style: const TextStyle(
@@ -415,9 +414,9 @@ class _ProjectSpecs extends StatelessWidget {
   Widget build(BuildContext context) {
     final caseStudy = project.caseStudy;
     final actions = _actionsFor(project);
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(MediaQuery.sizeOf(context).width);
     return Container(
-      padding: EdgeInsets.all(compact ? 18 : 24),
+      padding: EdgeInsets.all(mobile ? 18 : 24),
       decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border.all(color: AppColors.border),
@@ -677,10 +676,10 @@ class _NarrativeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(MediaQuery.sizeOf(context).width);
     return Container(
       constraints: const BoxConstraints(minHeight: 220),
-      padding: EdgeInsets.all(compact ? 20 : 28),
+      padding: EdgeInsets.all(mobile ? 20 : 28),
       decoration: BoxDecoration(
         color: accent
             ? AppColors.surface
@@ -693,7 +692,7 @@ class _NarrativeCard extends StatelessWidget {
         children: [
           Positioned(
             left: 0,
-            top: compact ? -20 : -28,
+            top: mobile ? -20 : -28,
             child: Container(
               width: 64,
               height: 3,
