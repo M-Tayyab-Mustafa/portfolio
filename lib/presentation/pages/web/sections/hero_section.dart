@@ -11,9 +11,9 @@ import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cub
 import 'package:portfolio/presentation/widgets/app_button.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
 import 'package:portfolio/presentation/widgets/portfolio_image.dart';
-import 'package:portfolio/presentation/pages/web/widgets/grid_backdrop.dart';
-import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
-import 'package:portfolio/presentation/pages/web/widgets/typewriter_text.dart';
+import 'package:portfolio/presentation/widgets/grid_backdrop.dart';
+import 'package:portfolio/presentation/widgets/typewriter_text.dart';
+import 'package:portfolio/presentation/widgets/outlined_text.dart';
 
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 

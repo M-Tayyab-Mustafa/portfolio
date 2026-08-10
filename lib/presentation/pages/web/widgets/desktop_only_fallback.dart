@@ -37,12 +37,12 @@ class DesktopOnlyFallback extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'DESKTOP EXPERIENCE',
+                      'TABLET / DESKTOP EXPERIENCE',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'This portfolio is currently designed for desktop displays. Open it in a window at least 900 pixels wide.',
+                      'This portfolio is optimized for tablets and desktop displays. Open it in a window at least 600 pixels wide.',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: AppColors.textSecondary,

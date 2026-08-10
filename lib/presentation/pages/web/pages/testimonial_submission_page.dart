@@ -5,7 +5,7 @@ import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/domain/repositories/portfolio_repository.dart';
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
-import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
+import 'package:portfolio/presentation/widgets/outlined_text.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
 import 'package:portfolio/data/models/portfolio_models.dart';
 import 'package:portfolio/presentation/widgets/app_button.dart';

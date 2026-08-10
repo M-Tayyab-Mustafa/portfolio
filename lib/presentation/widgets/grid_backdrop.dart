@@ -2,25 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
 
 class GridBackdrop extends StatelessWidget {
-  const GridBackdrop({super.key});
+  const GridBackdrop({super.key, this.spacing = 56, this.opacity = .32});
+
+  final double spacing;
+  final double opacity;
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: Opacity(
-        opacity: .34,
-        child: CustomPaint(painter: const _GridPainter(), size: Size.infinite),
+        opacity: opacity,
+        child: CustomPaint(painter: _GridPainter(spacing), size: Size.infinite),
       ),
     );
   }
 }
 
 class _GridPainter extends CustomPainter {
-  const _GridPainter();
+  const _GridPainter(this.spacing);
+
+  final double spacing;
 
   @override
   void paint(Canvas canvas, Size size) {
-    const spacing = 64.0;
     final paint = Paint()
       ..color = AppColors.textPrimary.withValues(alpha: .055)
       ..strokeWidth = 1;
@@ -34,14 +38,16 @@ class _GridPainter extends CustomPainter {
 
     final fade = Paint()
       ..shader = const RadialGradient(
-        radius: .75,
+        radius: .78,
         colors: [Colors.transparent, AppColors.background],
-        stops: [.28, 1],
+        stops: [.25, 1],
       ).createShader(Offset.zero & size)
       ..blendMode = BlendMode.srcOver;
     canvas.drawRect(Offset.zero & size, fade);
   }
 
   @override
-  bool shouldRepaint(covariant _GridPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _GridPainter oldDelegate) {
+    return oldDelegate.spacing != spacing;
+  }
 }

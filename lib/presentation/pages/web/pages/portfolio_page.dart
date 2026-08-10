@@ -12,6 +12,7 @@ import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
 import 'package:portfolio/presentation/blocs/typewriter/typewriter_cubit.dart';
+import 'package:portfolio/presentation/pages/tablet/pages/tablet_portfolio_page.dart';
 import 'package:portfolio/presentation/pages/web/sections/about_section.dart';
 import 'package:portfolio/presentation/pages/web/sections/contact_section.dart';
 import 'package:portfolio/presentation/pages/web/sections/experience_section.dart';
@@ -142,12 +143,40 @@ class _PortfolioProviders extends StatelessWidget {
               },
             ),
           ],
-          child: _PortfolioView(
+          child: _ResponsivePortfolioView(
             initialSection: initialSection,
             content: content,
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ResponsivePortfolioView extends StatelessWidget {
+  const _ResponsivePortfolioView({
+    required this.initialSection,
+    required this.content,
+  });
+
+  final PortfolioSection initialSection;
+  final PortfolioDataState content;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < AppLayout.tabletMinimum) {
+          return DesktopOnlyFallback(content: content);
+        }
+        if (constraints.maxWidth < AppLayout.desktopMinimum) {
+          return TabletPortfolioPage(
+            initialSection: initialSection,
+            content: content,
+          );
+        }
+        return _PortfolioView(initialSection: initialSection, content: content);
+      },
     );
   }
 }
@@ -359,9 +388,6 @@ class _PortfolioViewState extends State<_PortfolioView> {
   @override
   Widget build(BuildContext context) {
     final content = widget.content;
-    if (MediaQuery.sizeOf(context).width < AppLayout.desktopMinimum) {
-      return DesktopOnlyFallback(content: content);
-    }
 
     return BlocListener<PortfolioNavigationCubit, PortfolioNavigationState>(
       listenWhen: (previous, current) =>
