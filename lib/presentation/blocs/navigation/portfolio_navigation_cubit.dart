@@ -79,11 +79,12 @@ class PortfolioNavigationCubit extends Cubit<PortfolioNavigationState> {
     required double maxScrollExtent,
     required double viewportHeight,
     required Map<PortfolioSection, double> sectionTopOffsets,
+    double navigationHeight = AppLayout.navigationHeight,
   }) {
     final safeMax = maxScrollExtent < 0 ? 0.0 : maxScrollExtent;
     final safeOffset = offset.clamp(0.0, safeMax).toDouble();
     var active = PortfolioSection.home;
-    final marker = AppLayout.navigationHeight + viewportHeight * .33;
+    final marker = navigationHeight + viewportHeight * .33;
     for (final section in PortfolioSection.values) {
       final top = sectionTopOffsets[section];
       if (top != null && top <= marker) active = section;

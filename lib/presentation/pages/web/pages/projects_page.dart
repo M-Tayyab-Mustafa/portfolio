@@ -10,7 +10,7 @@ import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
 import 'package:portfolio/presentation/pages/web/sections/projects_section.dart';
-import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
+import 'package:portfolio/presentation/widgets/portfolio_back_button.dart';
 import 'package:portfolio/data/models/portfolio_models.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
 import 'package:portfolio/presentation/widgets/app_toast.dart';
@@ -18,8 +18,8 @@ import 'package:portfolio/presentation/widgets/brand_logo.dart';
 import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class ProjectsPage extends StatelessWidget {
-  const ProjectsPage({super.key});
+class WebProjectsPage extends StatelessWidget {
+  const WebProjectsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +71,11 @@ class _ProjectsPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(72),
+        preferredSize: Size.fromHeight(compact ? 64 : 72),
         child: _ProjectsHeader(content: content),
       ),
       body: Stack(
@@ -102,8 +103,8 @@ class _ProjectsPageView extends StatelessWidget {
             child: ProjectsSection(content: content, showAllProjects: true),
           ),
           Positioned(
-            left: 28,
-            bottom: 28,
+            left: compact ? 16 : 28,
+            bottom: compact ? 16 : 28,
             child: PersistentResumeButton(
               resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
               ownerName: content.profile.fullName,
@@ -123,6 +124,7 @@ class _ProjectsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: .94),
@@ -136,7 +138,7 @@ class _ProjectsHeader extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AppLayout.horizontalPadding(width),
-              vertical: 12,
+              vertical: compact ? 10 : 12,
             ),
             child: Row(
               children: [
@@ -150,53 +152,60 @@ class _ProjectsHeader extends StatelessWidget {
                   profile: content.profile,
                   semanticLabel: content.profile.fullName,
                   compact: true,
+                  showWordmark: width >= 390,
                 ),
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: AppColors.textPrimary.withValues(alpha: .05),
-                        border: Border.all(color: AppColors.border),
-                        borderRadius: BorderRadius.circular(AppLayout.radius),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 7,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const AppIcon(
-                              'layers',
-                              size: 14,
-                              color: AppColors.accent,
+                    child: compact
+                        ? const SizedBox(width: 44)
+                        : DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: AppColors.textPrimary.withValues(
+                                alpha: .05,
+                              ),
+                              border: Border.all(color: AppColors.border),
+                              borderRadius: BorderRadius.circular(
+                                AppLayout.radius,
+                              ),
                             ),
-                            const SizedBox(width: 7),
-                            Text.rich(
-                              TextSpan(
-                                text: 'Total Projects: ',
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 7,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  TextSpan(
-                                    text: '${content.projects.length}',
+                                  const AppIcon(
+                                    'layers',
+                                    size: 14,
+                                    color: AppColors.accent,
+                                  ),
+                                  const SizedBox(width: 7),
+                                  Text.rich(
+                                    TextSpan(
+                                      text: 'Total Projects: ',
+                                      children: [
+                                        TextSpan(
+                                          text: '${content.projects.length}',
+                                          style: const TextStyle(
+                                            color: AppColors.textPrimary,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.w800,
+                                      color: AppColors.textMuted,
+                                      fontFamily: 'monospace',
+                                      fontSize: 10,
                                     ),
                                   ),
                                 ],
                               ),
-                              style: const TextStyle(
-                                color: AppColors.textMuted,
-                                fontFamily: 'monospace',
-                                fontSize: 10,
-                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
                   ),
                 ),
               ],

@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/core/routing/app_routes.dart';
 import 'package:portfolio/core/theme/app_colors.dart';
+import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/domain/repositories/portfolio_repository.dart';
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
-import 'package:portfolio/presentation/pages/web/widgets/outlined_text.dart';
-import 'package:portfolio/presentation/pages/web/widgets/portfolio_back_button.dart';
+import 'package:portfolio/presentation/widgets/outlined_text.dart';
+import 'package:portfolio/presentation/widgets/portfolio_back_button.dart';
 import 'package:portfolio/data/models/portfolio_models.dart';
 import 'package:portfolio/presentation/widgets/app_button.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
@@ -15,8 +16,8 @@ import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/brand_logo.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class TestimonialSubmissionPage extends StatelessWidget {
-  const TestimonialSubmissionPage({super.key});
+class WebTestimonialSubmissionPage extends StatelessWidget {
+  const WebTestimonialSubmissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +114,8 @@ class _SubmissionViewState extends State<_SubmissionView> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -134,9 +137,11 @@ class _SubmissionViewState extends State<_SubmissionView> {
                   child: _SubmissionHeader(content: content, onBack: _back),
                 ),
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 52,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: compact
+                        ? AppLayout.tabletHorizontalPadding(width)
+                        : 32,
+                    vertical: compact ? 32 : 52,
                   ),
                   sliver: SliverToBoxAdapter(
                     child: Center(
@@ -229,11 +234,13 @@ class _SubmissionViewState extends State<_SubmissionView> {
   }
 
   Widget _buildForm() {
+    final width = MediaQuery.sizeOf(context).width;
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
     final headingStyle = Theme.of(context).textTheme.displayMedium!.copyWith(
-      fontSize: 58,
+      fontSize: width < 360 ? 34 : (compact ? 40 : 58),
       fontWeight: FontWeight.w900,
-      height: .9,
-      letterSpacing: -2.5,
+      height: compact ? .96 : .9,
+      letterSpacing: compact ? -1.5 : -2.5,
     );
     return Form(
       key: _formKey,
@@ -292,8 +299,9 @@ class _SubmissionViewState extends State<_SubmissionView> {
             ),
           ),
           const SizedBox(height: 22),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            runSpacing: 6,
             children: [
               const _FieldLabel('Your Review / Testimonial *'),
               Text(
@@ -543,11 +551,13 @@ class _SubmissionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final horizontalPadding = MediaQuery.sizeOf(context).width < 700
-        ? 24.0
+    final width = MediaQuery.sizeOf(context).width;
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final horizontalPadding = width < 700
+        ? AppLayout.tabletHorizontalPadding(width)
         : 48.0;
     return Container(
-      height: 80,
+      height: compact ? 64 : 80,
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       decoration: const BoxDecoration(
         color: Color(0xE6080808),
@@ -560,6 +570,8 @@ class _SubmissionHeader extends StatelessWidget {
           BrandLogo(
             profile: content.profile,
             semanticLabel: content.profile.fullName,
+            compact: compact,
+            showWordmark: width >= 390,
           ),
         ],
       ),
@@ -584,6 +596,7 @@ class _TestimonialPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
     final displayName = name.trim().isEmpty ? 'Client Name' : name.trim();
     final displayRole = role.trim().isEmpty ? 'Role / Position' : role.trim();
     final displayCompany = company.trim().isEmpty ? 'Company' : company.trim();
@@ -605,7 +618,7 @@ class _TestimonialPreview extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           constraints: const BoxConstraints(minHeight: 300),
-          padding: const EdgeInsets.all(38),
+          padding: EdgeInsets.all(compact ? 22 : 38),
           decoration: BoxDecoration(
             color: AppColors.surface,
             border: Border.all(color: AppColors.border),
@@ -726,8 +739,22 @@ class _SuccessPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final primary = AppButton(
+      label: 'View live portfolio',
+      expanded: true,
+      compact: true,
+      onPressed: onBack,
+    );
+    final secondary = AppButton(
+      label: 'Submit another feedback',
+      variant: AppButtonVariant.outline,
+      expanded: true,
+      compact: true,
+      onPressed: onReset,
+    );
     return Container(
-      padding: const EdgeInsets.all(42),
+      padding: EdgeInsets.all(compact ? 22 : 42),
       decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border.all(color: AppColors.border),
@@ -819,28 +846,18 @@ class _SuccessPanel extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 28),
-          Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  label: 'View live portfolio',
-                  expanded: true,
-                  compact: true,
-                  onPressed: onBack,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: AppButton(
-                  label: 'Submit another feedback',
-                  variant: AppButtonVariant.outline,
-                  expanded: true,
-                  compact: true,
-                  onPressed: onReset,
-                ),
-              ),
-            ],
-          ),
+          if (compact) ...[
+            primary,
+            const SizedBox(height: 10),
+            secondary,
+          ] else
+            Row(
+              children: [
+                Expanded(child: primary),
+                const SizedBox(width: 14),
+                Expanded(child: secondary),
+              ],
+            ),
         ],
       ),
     );
@@ -855,44 +872,50 @@ class _SubmissionFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final horizontalPadding = MediaQuery.sizeOf(context).width < 700
-        ? 24.0
+    final width = MediaQuery.sizeOf(context).width;
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final horizontalPadding = width < 700
+        ? AppLayout.tabletHorizontalPadding(width)
         : 48.0;
+    final copyright = Text(
+      '© ${DateTime.now().year} ${content.profile.fullName}. All rights reserved.',
+      style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+    );
+    final links = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextButton(onPressed: onBack, child: const Text('Portfolio')),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Text('|', style: TextStyle(color: AppColors.borderStrong)),
+        ),
+        const Flexible(
+          child: Text(
+            'Feedback Console',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+          ),
+        ),
+      ],
+    );
     return Container(
-      height: 80,
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      constraints: BoxConstraints(minHeight: compact ? 112 : 80),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: compact ? 18 : 0,
+      ),
       decoration: const BoxDecoration(
         color: Color(0x4D121212),
         border: Border(top: BorderSide(color: AppColors.border)),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '© ${DateTime.now().year} ${content.profile.fullName}. All rights reserved.',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 12,
+      child: compact
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [copyright, const SizedBox(height: 8), links],
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [copyright, links],
             ),
-          ),
-          Row(
-            children: [
-              TextButton(onPressed: onBack, child: const Text('Portfolio')),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  '|',
-                  style: TextStyle(color: AppColors.borderStrong),
-                ),
-              ),
-              const Text(
-                'Feedback Console',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

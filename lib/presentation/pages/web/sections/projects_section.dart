@@ -364,122 +364,126 @@ class _ProjectArchiveControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(AppLayout.radius),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x66000000),
-            blurRadius: 30,
-            offset: Offset(0, 12),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 390,
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: context.read<ProjectsCubit>().search,
-                    style: const TextStyle(fontSize: 12),
-                    decoration: InputDecoration(
-                      hintText: 'Search projects by name, technology, tag...',
-                      prefixIcon: const Icon(Icons.search, size: 18),
-                      suffixIcon: state.searchQuery.isEmpty
-                          ? null
-                          : IconButton(
-                              tooltip: 'Clear search',
-                              onPressed: () {
-                                searchController.clear();
-                                context.read<ProjectsCubit>().search('');
-                              },
-                              icon: const Icon(Icons.close, size: 17),
-                            ),
-                      filled: true,
-                      fillColor: AppColors.background,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 14),
-                      border: const OutlineInputBorder(),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.borderStrong),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.accent),
-                      ),
-                    ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 620;
+        final search = TextField(
+          controller: searchController,
+          onChanged: context.read<ProjectsCubit>().search,
+          style: const TextStyle(fontSize: 12),
+          decoration: InputDecoration(
+            hintText: 'Search projects by name, technology, tag...',
+            prefixIcon: const Icon(Icons.search, size: 18),
+            suffixIcon: state.searchQuery.isEmpty
+                ? null
+                : IconButton(
+                    tooltip: 'Clear search',
+                    onPressed: () {
+                      searchController.clear();
+                      context.read<ProjectsCubit>().search('');
+                    },
+                    icon: const Icon(Icons.close, size: 17),
                   ),
-                ),
-                const Spacer(),
-                const AppIcon('layers', size: 16, color: AppColors.accent),
-                const SizedBox(width: 8),
-                Text(
-                  'Showing ${state.visibleProjects.length} of ${state.allProjects.length} Projects',
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontFamily: 'monospace',
-                    fontSize: 11,
-                  ),
-                ),
-              ],
+            filled: true,
+            fillColor: AppColors.background,
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+            border: const OutlineInputBorder(),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.borderStrong),
             ),
-            const SizedBox(height: 22),
-            const Divider(height: 1),
-            const SizedBox(height: 18),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 13, right: 14),
-                  child: Text(
-                    'FILTER:',
-                    style: TextStyle(
-                      color: AppColors.textMuted,
-                      fontFamily: 'monospace',
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final category in ProjectCategory.values)
-                        if (category == ProjectCategory.all ||
-                            state.allProjects.any(
-                              (project) => project.category == category,
-                            ))
-                          _FilterButton(
-                            label: content.categoryLabel(category),
-                            count: category == ProjectCategory.all
-                                ? state.allProjects.length
-                                : state.allProjects
-                                      .where(
-                                        (project) =>
-                                            project.category == category,
-                                      )
-                                      .length,
-                            selected: category == state.selectedCategory,
-                            onPressed: () => context
-                                .read<ProjectsCubit>()
-                                .selectCategory(category),
-                          ),
-                    ],
-                  ),
-                ),
-              ],
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.accent),
+            ),
+          ),
+        );
+        final count = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AppIcon('layers', size: 16, color: AppColors.accent),
+            const SizedBox(width: 8),
+            Text(
+              'Showing ${state.visibleProjects.length} of ${state.allProjects.length} Projects',
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontFamily: 'monospace',
+                fontSize: 11,
+              ),
             ),
           ],
-        ),
-      ),
+        );
+        final filters = Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final category in ProjectCategory.values)
+              if (category == ProjectCategory.all ||
+                  state.allProjects.any(
+                    (project) => project.category == category,
+                  ))
+                _FilterButton(
+                  label: content.categoryLabel(category),
+                  count: category == ProjectCategory.all
+                      ? state.allProjects.length
+                      : state.allProjects
+                            .where((project) => project.category == category)
+                            .length,
+                  selected: category == state.selectedCategory,
+                  onPressed: () =>
+                      context.read<ProjectsCubit>().selectCategory(category),
+                ),
+          ],
+        );
+
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            border: Border.all(color: AppColors.border),
+            borderRadius: BorderRadius.circular(AppLayout.radius),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x66000000),
+                blurRadius: 30,
+                offset: Offset(0, 12),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(compact ? 18 : 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (compact) ...[
+                  search,
+                  const SizedBox(height: 14),
+                  count,
+                ] else
+                  Row(
+                    children: [
+                      SizedBox(width: 390, child: search),
+                      const Spacer(),
+                      count,
+                    ],
+                  ),
+                const SizedBox(height: 22),
+                const Divider(height: 1),
+                const SizedBox(height: 18),
+                const Text(
+                  'FILTER:',
+                  style: TextStyle(
+                    color: AppColors.textMuted,
+                    fontFamily: 'monospace',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                filters,
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -489,6 +493,35 @@ class _ProjectsCallToAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final copy = const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'HAVE A PROJECT IN MIND?',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+        ),
+        SizedBox(height: 6),
+        Text(
+          "Let's collaborate to bring your digital vision to life.",
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+        ),
+      ],
+    );
+    final backButton = AppButton(
+      label: 'Back to portfolio',
+      expanded: compact,
+      variant: AppButtonVariant.outline,
+      compact: true,
+      onPressed: () => context.go(PortfolioSection.projects.path),
+    );
+    final contactButton = AppButton(
+      label: 'Get in touch',
+      expanded: compact,
+      compact: true,
+      onPressed: () => context.go(PortfolioSection.contact.path),
+    );
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -496,42 +529,26 @@ class _ProjectsCallToAction extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppLayout.radius),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Row(
-          children: [
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        padding: EdgeInsets.all(compact ? 22 : 32),
+        child: compact
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    'HAVE A PROJECT IN MIND?',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    "Let's collaborate to bring your digital vision to life.",
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
+                  copy,
+                  const SizedBox(height: 22),
+                  backButton,
+                  const SizedBox(height: 10),
+                  contactButton,
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(child: copy),
+                  backButton,
+                  const SizedBox(width: 12),
+                  contactButton,
                 ],
               ),
-            ),
-            AppButton(
-              label: 'Back to portfolio',
-              variant: AppButtonVariant.outline,
-              compact: true,
-              onPressed: () => context.go(PortfolioSection.projects.path),
-            ),
-            const SizedBox(width: 12),
-            AppButton(
-              label: 'Get in touch',
-              compact: true,
-              onPressed: () => context.go(PortfolioSection.contact.path),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -647,7 +664,7 @@ class _ProjectCard extends StatelessWidget {
                 hovered: hovered,
               ),
               SizedBox(
-                height: 300,
+                height: MediaQuery.sizeOf(context).width < 600 ? 340 : 300,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(26, 24, 26, 22),
                   child: Column(
@@ -706,7 +723,10 @@ class _ProjectCard extends StatelessWidget {
                       ),
                       const Divider(height: 1),
                       const SizedBox(height: 12),
-                      Row(
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 8,
+                        runSpacing: 6,
                         children: [
                           OutlinedButton.icon(
                             onPressed: () => context
@@ -738,7 +758,6 @@ class _ProjectCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Spacer(),
                           if (primaryAction != null)
                             TextButton.icon(
                               onPressed: () =>

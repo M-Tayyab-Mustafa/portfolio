@@ -14,8 +14,8 @@ import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/portfolio_image.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class CaseStudyPage extends StatelessWidget {
-  const CaseStudyPage({required this.slug, super.key});
+class WebCaseStudyPage extends StatelessWidget {
+  const WebCaseStudyPage({required this.slug, super.key});
 
   final String slug;
 
@@ -97,6 +97,9 @@ class _CaseStudyView extends StatelessWidget {
         if (project == null || !state.isAvailable) {
           return const _CaseStudyUnavailable();
         }
+        final width = MediaQuery.sizeOf(context).width;
+        final compact =
+            MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
 
         return Scaffold(
           backgroundColor: AppColors.background,
@@ -133,10 +136,8 @@ class _CaseStudyView extends StatelessWidget {
                             constraints: const BoxConstraints(maxWidth: 1120),
                             child: Padding(
                               padding: EdgeInsets.symmetric(
-                                horizontal: AppLayout.horizontalPadding(
-                                  MediaQuery.sizeOf(context).width,
-                                ),
-                                vertical: 40,
+                                horizontal: AppLayout.horizontalPadding(width),
+                                vertical: compact ? 24 : 40,
                               ),
                               child: _CaseStudyBody(
                                 content: content,
@@ -151,8 +152,9 @@ class _CaseStudyView extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: 28,
-                bottom: 28,
+                left: compact ? 16 : 28,
+                bottom:
+                    (compact ? 16 : 28) + MediaQuery.paddingOf(context).bottom,
                 child: PersistentResumeButton(
                   resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
                   ownerName: content.profile.fullName,
@@ -173,6 +175,8 @@ class _CaseStudyHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: .96),
@@ -183,10 +187,8 @@ class _CaseStudyHeader extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1120),
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: AppLayout.horizontalPadding(
-                MediaQuery.sizeOf(context).width,
-              ),
-              vertical: 22,
+              horizontal: AppLayout.horizontalPadding(width),
+              vertical: compact ? 14 : 22,
             ),
             child: Row(
               children: [
@@ -211,6 +213,7 @@ class _CaseStudyHeader extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
+                              fontSize: compact ? 20 : null,
                               fontWeight: FontWeight.w900,
                               letterSpacing: -1,
                             ),
@@ -243,6 +246,11 @@ class _CaseStudyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final caseStudy = project.caseStudy;
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final closing = TextButton(
+      onPressed: context.read<CaseStudyCubit>().closeCaseStudy,
+      child: const Text('BACK TO PROJECTS'),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -279,27 +287,38 @@ class _CaseStudyBody extends StatelessWidget {
         const SizedBox(height: 52),
         const Divider(height: 1),
         const SizedBox(height: 22),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                '${content.profile.fullName} // Portfolio case study'
-                    .toUpperCase(),
-                style: const TextStyle(
-                  color: AppColors.textMuted,
-                  fontFamily: 'monospace',
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.2,
+        if (compact) ...[
+          Text(
+            '${content.profile.fullName} // Portfolio case study'.toUpperCase(),
+            style: const TextStyle(
+              color: AppColors.textMuted,
+              fontFamily: 'monospace',
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.2,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Align(alignment: Alignment.centerLeft, child: closing),
+        ] else
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '${content.profile.fullName} // Portfolio case study'
+                      .toUpperCase(),
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontFamily: 'monospace',
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ),
-            ),
-            TextButton(
-              onPressed: context.read<CaseStudyCubit>().closeCaseStudy,
-              child: const Text('BACK TO PROJECTS'),
-            ),
-          ],
-        ),
+              closing,
+            ],
+          ),
       ],
     );
   }
@@ -396,8 +415,9 @@ class _ProjectSpecs extends StatelessWidget {
   Widget build(BuildContext context) {
     final caseStudy = project.caseStudy;
     final actions = _actionsFor(project);
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(compact ? 18 : 24),
       decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border.all(color: AppColors.border),
@@ -657,9 +677,10 @@ class _NarrativeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
     return Container(
       constraints: const BoxConstraints(minHeight: 220),
-      padding: const EdgeInsets.all(28),
+      padding: EdgeInsets.all(compact ? 20 : 28),
       decoration: BoxDecoration(
         color: accent
             ? AppColors.surface
@@ -672,7 +693,7 @@ class _NarrativeCard extends StatelessWidget {
         children: [
           Positioned(
             left: 0,
-            top: -28,
+            top: compact ? -20 : -28,
             child: Container(
               width: 64,
               height: 3,

@@ -9,10 +9,10 @@ editorial interface backed by Firebase.
 > professional information in this README are fictional placeholders. Replace
 > them with your own information when configuring a fork.
 
-> **Display support:** the main portfolio currently targets browser windows at
-> least **900 px wide**. Smaller viewports intentionally show a desktop
-> experience notice. The responsive system still distinguishes tablet, desktop,
-> and wide-desktop layouts above that minimum.
+> **Display support:** the main portfolio targets browser windows at least
+> **600 px wide**. It uses a dedicated touch-friendly tablet presentation from
+> 600–1199 px and the editorial desktop presentation from 1200 px upward.
+> Smaller viewports intentionally show a tablet/desktop experience notice.
 
 ## Table of contents
 
@@ -120,20 +120,22 @@ radius. Important dimensions include:
 
 | Setting | Value |
 | --- | ---: |
-| Minimum portfolio width | `900 px` |
+| Minimum portfolio width | `600 px` |
+| Tablet content width | `980 px` |
 | Compact desktop boundary | `1120 px` |
 | Desktop breakpoint | `1200 px` |
 | Wide desktop breakpoint | `1600 px` |
 | Maximum content width | `1280 px` |
 | Maximum reading width | `680 px` |
 | Navigation height | `80 px` |
+| Tablet navigation height | `72 px` |
 | Standard section padding | `112 px` |
 | Wide section padding | `128 px` |
 
 The breakpoint registration in `app.dart` is:
 
-- Mobile: `0–899 px`
-- Tablet: `900–1199 px`
+- Mobile: `0–599 px`
+- Tablet: `600–1199 px`
 - Desktop: `1200–1599 px`
 - Wide desktop: `1600 px` and above
 
@@ -225,7 +227,9 @@ portfolio/
 │   ├── domain/                     # Repository and service abstractions
 │   ├── presentation/
 │   │   ├── blocs/                  # App and feature state management
-│   │   ├── pages/                  # Portfolio and secondary pages
+│   │   ├── pages/
+│   │   │   ├── tablet/             # Touch-first tablet pages, sections, widgets
+│   │   │   └── web/                # Desktop portfolio and secondary pages
 │   │   └── widgets/                # Shared visual components
 │   ├── app.dart                    # App theme, breakpoints, and root providers
 │   ├── firebase_options.dart       # FlutterFire-generated platform options
@@ -627,11 +631,11 @@ for public traffic.
 - Reveal animations begin partially visible, keeping content readable if a
   browser throttles animation callbacks.
 - External link schemes are limited to `http`, `https`, `mailto`, and `tel`.
-- The desktop-only fallback remains readable on widths below 900 px.
+- The tablet/desktop fallback remains readable on widths below 600 px.
 
 The current design is not a complete mobile portfolio. Supporting narrow screens
-requires responsive versions of the main sections rather than merely changing
-the registered breakpoints.
+below 600 px requires a compact mobile navigation and content pass rather than
+merely shrinking the tablet presentation.
 
 ## Troubleshooting
 
