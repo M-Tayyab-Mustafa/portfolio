@@ -13,13 +13,13 @@ import 'package:portfolio/presentation/widgets/app_button.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
 import 'package:portfolio/presentation/widgets/hover_surface.dart';
 import 'package:portfolio/presentation/widgets/portfolio_image.dart';
-import 'package:portfolio/presentation/pages/web/widgets/section_container.dart';
-import 'package:portfolio/presentation/pages/web/widgets/section_header.dart';
+import 'package:portfolio/presentation/pages/tablet/widgets/tablet_archive_section_container.dart';
+import 'package:portfolio/presentation/pages/tablet/widgets/tablet_archive_section_header.dart';
 
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 
-class ProjectsSection extends StatefulWidget {
-  const ProjectsSection({
+class TabletProjectsArchiveSection extends StatefulWidget {
+  const TabletProjectsArchiveSection({
     required this.content,
     super.key,
     this.showAllProjects = false,
@@ -29,10 +29,12 @@ class ProjectsSection extends StatefulWidget {
   final bool showAllProjects;
 
   @override
-  State<ProjectsSection> createState() => _ProjectsSectionState();
+  State<TabletProjectsArchiveSection> createState() =>
+      _TabletProjectsArchiveSectionState();
 }
 
-class _ProjectsSectionState extends State<ProjectsSection> {
+class _TabletProjectsArchiveSectionState
+    extends State<TabletProjectsArchiveSection> {
   static const _initialProjectLimit = 6;
   final _searchController = TextEditingController();
 
@@ -51,13 +53,13 @@ class _ProjectsSectionState extends State<ProjectsSection> {
             : state.visibleProjects.take(_initialProjectLimit).toList();
         final hasMoreProjects =
             state.visibleProjects.length > _initialProjectLimit;
-        return SectionContainer(
+        return TabletArchiveSectionContainer(
           ambientAlignment: Alignment.bottomCenter,
           ambientOpacity: .06,
           child: Column(
             children: [
               RevealOnScroll(
-                child: SectionHeader(
+                child: TabletArchiveSectionHeader(
                   eyebrow: widget.showAllProjects
                       ? 'COMPLETE DIGITAL ARCHIVE'
                       : widget.content.heading('projects').eyebrow,
@@ -493,7 +495,7 @@ class _ProjectsCallToAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     final copy = const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

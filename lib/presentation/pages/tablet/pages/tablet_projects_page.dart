@@ -9,7 +9,7 @@ import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
-import 'package:portfolio/presentation/pages/web/sections/projects_section.dart';
+import 'package:portfolio/presentation/pages/tablet/sections/tablet_projects_archive_section.dart';
 import 'package:portfolio/presentation/widgets/portfolio_back_button.dart';
 import 'package:portfolio/data/models/portfolio_models.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
@@ -18,8 +18,8 @@ import 'package:portfolio/presentation/widgets/brand_logo.dart';
 import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class WebProjectsPage extends StatelessWidget {
-  const WebProjectsPage({super.key});
+class TabletProjectsPage extends StatelessWidget {
+  const TabletProjectsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +71,7 @@ class _ProjectsPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: PreferredSize(
@@ -100,7 +100,10 @@ class _ProjectsPageView extends StatelessWidget {
             ),
           ),
           SingleChildScrollView(
-            child: ProjectsSection(content: content, showAllProjects: true),
+            child: TabletProjectsArchiveSection(
+              content: content,
+              showAllProjects: true,
+            ),
           ),
           Positioned(
             left: compact ? 16 : 28,
@@ -124,7 +127,7 @@ class _ProjectsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: .94),

@@ -9,7 +9,7 @@ import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.
 import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
-import 'package:portfolio/presentation/pages/web/sections/projects_section.dart';
+import 'package:portfolio/presentation/pages/mobile/sections/mobile_projects_archive_section.dart';
 import 'package:portfolio/presentation/widgets/portfolio_back_button.dart';
 import 'package:portfolio/data/models/portfolio_models.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
@@ -18,8 +18,8 @@ import 'package:portfolio/presentation/widgets/brand_logo.dart';
 import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class WebProjectsPage extends StatelessWidget {
-  const WebProjectsPage({super.key});
+class MobileProjectsPage extends StatelessWidget {
+  const MobileProjectsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +71,11 @@ class _ProjectsPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(MediaQuery.sizeOf(context).width);
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(compact ? 64 : 72),
+        preferredSize: Size.fromHeight(mobile ? 64 : 72),
         child: _ProjectsHeader(content: content),
       ),
       body: Stack(
@@ -100,11 +100,14 @@ class _ProjectsPageView extends StatelessWidget {
             ),
           ),
           SingleChildScrollView(
-            child: ProjectsSection(content: content, showAllProjects: true),
+            child: MobileProjectsArchiveSection(
+              content: content,
+              showAllProjects: true,
+            ),
           ),
           Positioned(
-            left: compact ? 16 : 28,
-            bottom: compact ? 16 : 28,
+            left: mobile ? 16 : 28,
+            bottom: mobile ? 16 : 28,
             child: PersistentResumeButton(
               resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
               ownerName: content.profile.fullName,
@@ -124,7 +127,7 @@ class _ProjectsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(width);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: .94),
@@ -138,7 +141,7 @@ class _ProjectsHeader extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AppLayout.horizontalPadding(width),
-              vertical: compact ? 10 : 12,
+              vertical: mobile ? 10 : 12,
             ),
             child: Row(
               children: [
@@ -157,7 +160,7 @@ class _ProjectsHeader extends StatelessWidget {
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: compact
+                    child: mobile
                         ? const SizedBox(width: 44)
                         : DecoratedBox(
                             decoration: BoxDecoration(

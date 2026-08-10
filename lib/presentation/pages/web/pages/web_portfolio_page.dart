@@ -12,7 +12,6 @@ import 'package:portfolio/presentation/blocs/links/external_link_cubit.dart';
 import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cubit.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
 import 'package:portfolio/presentation/blocs/typewriter/typewriter_cubit.dart';
-import 'package:portfolio/presentation/pages/tablet/pages/tablet_portfolio_page.dart';
 import 'package:portfolio/presentation/pages/web/sections/about_section.dart';
 import 'package:portfolio/presentation/pages/web/sections/contact_section.dart';
 import 'package:portfolio/presentation/pages/web/sections/experience_section.dart';
@@ -21,7 +20,6 @@ import 'package:portfolio/presentation/pages/web/sections/projects_section.dart'
 import 'package:portfolio/presentation/pages/web/sections/services_section.dart';
 import 'package:portfolio/presentation/pages/web/sections/skills_section.dart';
 import 'package:portfolio/presentation/pages/web/sections/testimonials_section.dart';
-import 'package:portfolio/presentation/pages/web/widgets/desktop_only_fallback.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_footer.dart';
 import 'package:portfolio/presentation/pages/web/widgets/portfolio_navbar.dart';
 import 'package:portfolio/data/models/portfolio_models.dart';
@@ -31,8 +29,8 @@ import 'package:portfolio/presentation/widgets/app_toast.dart';
 import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class PortfolioPage extends StatelessWidget {
-  const PortfolioPage({required this.initialSection, super.key});
+class WebPortfolioPage extends StatelessWidget {
+  const WebPortfolioPage({required this.initialSection, super.key});
 
   final PortfolioSection initialSection;
 
@@ -143,40 +141,12 @@ class _PortfolioProviders extends StatelessWidget {
               },
             ),
           ],
-          child: _ResponsivePortfolioView(
+          child: _PortfolioView(
             initialSection: initialSection,
             content: content,
           ),
         ),
       ),
-    );
-  }
-}
-
-class _ResponsivePortfolioView extends StatelessWidget {
-  const _ResponsivePortfolioView({
-    required this.initialSection,
-    required this.content,
-  });
-
-  final PortfolioSection initialSection;
-  final PortfolioDataState content;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < AppLayout.tabletMinimum) {
-          return DesktopOnlyFallback(content: content);
-        }
-        if (constraints.maxWidth < AppLayout.desktopMinimum) {
-          return TabletPortfolioPage(
-            initialSection: initialSection,
-            content: content,
-          );
-        }
-        return _PortfolioView(initialSection: initialSection, content: content);
-      },
     );
   }
 }

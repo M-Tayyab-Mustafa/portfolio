@@ -16,8 +16,8 @@ import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/brand_logo.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class WebTestimonialSubmissionPage extends StatelessWidget {
-  const WebTestimonialSubmissionPage({super.key});
+class TabletTestimonialSubmissionPage extends StatelessWidget {
+  const TabletTestimonialSubmissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class _SubmissionViewState extends State<_SubmissionView> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -235,7 +235,7 @@ class _SubmissionViewState extends State<_SubmissionView> {
 
   Widget _buildForm() {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     final headingStyle = Theme.of(context).textTheme.displayMedium!.copyWith(
       fontSize: width < 360 ? 34 : (compact ? 40 : 58),
       fontWeight: FontWeight.w900,
@@ -552,7 +552,7 @@ class _SubmissionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     final horizontalPadding = width < 700
         ? AppLayout.tabletHorizontalPadding(width)
         : 48.0;
@@ -596,7 +596,7 @@ class _TestimonialPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     final displayName = name.trim().isEmpty ? 'Client Name' : name.trim();
     final displayRole = role.trim().isEmpty ? 'Role / Position' : role.trim();
     final displayCompany = company.trim().isEmpty ? 'Company' : company.trim();
@@ -739,7 +739,7 @@ class _SuccessPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     final primary = AppButton(
       label: 'View live portfolio',
       expanded: true,
@@ -873,7 +873,7 @@ class _SubmissionFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     final horizontalPadding = width < 700
         ? AppLayout.tabletHorizontalPadding(width)
         : 48.0;

@@ -16,8 +16,8 @@ import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/brand_logo.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class WebTestimonialSubmissionPage extends StatelessWidget {
-  const WebTestimonialSubmissionPage({super.key});
+class MobileTestimonialSubmissionPage extends StatelessWidget {
+  const MobileTestimonialSubmissionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class _SubmissionViewState extends State<_SubmissionView> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(width);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
@@ -138,10 +138,10 @@ class _SubmissionViewState extends State<_SubmissionView> {
                 ),
                 SliverPadding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: compact
-                        ? AppLayout.tabletHorizontalPadding(width)
+                    horizontal: mobile
+                        ? AppLayout.mobileHorizontalPadding(width)
                         : 32,
-                    vertical: compact ? 32 : 52,
+                    vertical: mobile ? 32 : 52,
                   ),
                   sliver: SliverToBoxAdapter(
                     child: Center(
@@ -235,12 +235,12 @@ class _SubmissionViewState extends State<_SubmissionView> {
 
   Widget _buildForm() {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(width);
     final headingStyle = Theme.of(context).textTheme.displayMedium!.copyWith(
-      fontSize: width < 360 ? 34 : (compact ? 40 : 58),
+      fontSize: width < 360 ? 34 : (mobile ? 40 : 58),
       fontWeight: FontWeight.w900,
-      height: compact ? .96 : .9,
-      letterSpacing: compact ? -1.5 : -2.5,
+      height: mobile ? .96 : .9,
+      letterSpacing: mobile ? -1.5 : -2.5,
     );
     return Form(
       key: _formKey,
@@ -552,12 +552,12 @@ class _SubmissionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(width);
     final horizontalPadding = width < 700
-        ? AppLayout.tabletHorizontalPadding(width)
+        ? AppLayout.mobileHorizontalPadding(width)
         : 48.0;
     return Container(
-      height: compact ? 64 : 80,
+      height: mobile ? 64 : 80,
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       decoration: const BoxDecoration(
         color: Color(0xE6080808),
@@ -570,7 +570,7 @@ class _SubmissionHeader extends StatelessWidget {
           BrandLogo(
             profile: content.profile,
             semanticLabel: content.profile.fullName,
-            compact: compact,
+            compact: mobile,
             showWordmark: width >= 390,
           ),
         ],
@@ -596,7 +596,7 @@ class _TestimonialPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(MediaQuery.sizeOf(context).width);
     final displayName = name.trim().isEmpty ? 'Client Name' : name.trim();
     final displayRole = role.trim().isEmpty ? 'Role / Position' : role.trim();
     final displayCompany = company.trim().isEmpty ? 'Company' : company.trim();
@@ -618,7 +618,7 @@ class _TestimonialPreview extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           constraints: const BoxConstraints(minHeight: 300),
-          padding: EdgeInsets.all(compact ? 22 : 38),
+          padding: EdgeInsets.all(mobile ? 22 : 38),
           decoration: BoxDecoration(
             color: AppColors.surface,
             border: Border.all(color: AppColors.border),
@@ -739,7 +739,7 @@ class _SuccessPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(MediaQuery.sizeOf(context).width);
     final primary = AppButton(
       label: 'View live portfolio',
       expanded: true,
@@ -754,7 +754,7 @@ class _SuccessPanel extends StatelessWidget {
       onPressed: onReset,
     );
     return Container(
-      padding: EdgeInsets.all(compact ? 22 : 42),
+      padding: EdgeInsets.all(mobile ? 22 : 42),
       decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border.all(color: AppColors.border),
@@ -846,7 +846,7 @@ class _SuccessPanel extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 28),
-          if (compact) ...[
+          if (mobile) ...[
             primary,
             const SizedBox(height: 10),
             secondary,
@@ -873,9 +873,9 @@ class _SubmissionFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final mobile = AppLayout.isMobile(width);
     final horizontalPadding = width < 700
-        ? AppLayout.tabletHorizontalPadding(width)
+        ? AppLayout.mobileHorizontalPadding(width)
         : 48.0;
     final copyright = Text(
       '© ${DateTime.now().year} ${content.profile.fullName}. All rights reserved.',
@@ -898,16 +898,16 @@ class _SubmissionFooter extends StatelessWidget {
       ],
     );
     return Container(
-      constraints: BoxConstraints(minHeight: compact ? 112 : 80),
+      constraints: BoxConstraints(minHeight: mobile ? 112 : 80),
       padding: EdgeInsets.symmetric(
         horizontal: horizontalPadding,
-        vertical: compact ? 18 : 0,
+        vertical: mobile ? 18 : 0,
       ),
       decoration: const BoxDecoration(
         color: Color(0x4D121212),
         border: Border(top: BorderSide(color: AppColors.border)),
       ),
-      child: compact
+      child: mobile
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [copyright, const SizedBox(height: 8), links],

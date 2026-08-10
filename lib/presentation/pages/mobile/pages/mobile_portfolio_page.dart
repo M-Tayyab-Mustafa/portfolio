@@ -13,11 +13,11 @@ import 'package:portfolio/presentation/blocs/navigation/portfolio_navigation_cub
 import 'package:portfolio/presentation/blocs/portfolio_data/portfolio_data_bloc.dart';
 import 'package:portfolio/presentation/blocs/projects/projects_cubit.dart';
 import 'package:portfolio/presentation/blocs/typewriter/typewriter_cubit.dart';
-import 'package:portfolio/presentation/pages/tablet/sections/tablet_contact_section.dart';
-import 'package:portfolio/presentation/pages/tablet/sections/tablet_hero_section.dart';
-import 'package:portfolio/presentation/pages/tablet/sections/tablet_profile_sections.dart';
-import 'package:portfolio/presentation/pages/tablet/sections/tablet_work_sections.dart';
-import 'package:portfolio/presentation/pages/tablet/widgets/tablet_navigation_bar.dart';
+import 'package:portfolio/presentation/pages/mobile/sections/mobile_contact_section.dart';
+import 'package:portfolio/presentation/pages/mobile/sections/mobile_hero_section.dart';
+import 'package:portfolio/presentation/pages/mobile/sections/mobile_profile_sections.dart';
+import 'package:portfolio/presentation/pages/mobile/sections/mobile_work_sections.dart';
+import 'package:portfolio/presentation/pages/mobile/widgets/mobile_navigation_bar.dart';
 import 'package:portfolio/presentation/widgets/app_button.dart';
 import 'package:portfolio/presentation/widgets/app_icon.dart';
 import 'package:portfolio/presentation/widgets/app_toast.dart';
@@ -25,8 +25,8 @@ import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/brand_logo.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class TabletPortfolioPage extends StatelessWidget {
-  const TabletPortfolioPage({required this.initialSection, super.key});
+class MobilePortfolioPage extends StatelessWidget {
+  const MobilePortfolioPage({required this.initialSection, super.key});
 
   final PortfolioSection initialSection;
 
@@ -35,22 +35,22 @@ class TabletPortfolioPage extends StatelessWidget {
     return BlocBuilder<PortfolioDataBloc, PortfolioDataState>(
       builder: (context, state) {
         if (state.isReady) {
-          return _TabletPortfolioProviders(
+          return _MobilePortfolioProviders(
             initialSection: initialSection,
             content: state,
           );
         }
         if (state.status == PortfolioDataStatus.failure) {
-          return _TabletContentFailure(message: state.errorMessage);
+          return _MobileContentFailure(message: state.errorMessage);
         }
-        return const _TabletContentLoading();
+        return const _MobileContentLoading();
       },
     );
   }
 }
 
-class _TabletPortfolioProviders extends StatelessWidget {
-  const _TabletPortfolioProviders({
+class _MobilePortfolioProviders extends StatelessWidget {
+  const _MobilePortfolioProviders({
     required this.initialSection,
     required this.content,
   });
@@ -85,7 +85,7 @@ class _TabletPortfolioProviders extends StatelessWidget {
         ),
         BlocProvider(create: (_) => ExternalLinkCubit()),
       ],
-      child: _TabletTypewriterMotionSync(
+      child: _MobileTypewriterMotionSync(
         reducedMotion: reducedMotion,
         child: MultiBlocListener(
           listeners: [
@@ -137,7 +137,7 @@ class _TabletPortfolioProviders extends StatelessWidget {
               },
             ),
           ],
-          child: _TabletPortfolioView(
+          child: _MobilePortfolioView(
             initialSection: initialSection,
             content: content,
           ),
@@ -147,8 +147,8 @@ class _TabletPortfolioProviders extends StatelessWidget {
   }
 }
 
-class _TabletTypewriterMotionSync extends StatefulWidget {
-  const _TabletTypewriterMotionSync({
+class _MobileTypewriterMotionSync extends StatefulWidget {
+  const _MobileTypewriterMotionSync({
     required this.reducedMotion,
     required this.child,
   });
@@ -157,14 +157,14 @@ class _TabletTypewriterMotionSync extends StatefulWidget {
   final Widget child;
 
   @override
-  State<_TabletTypewriterMotionSync> createState() =>
-      _TabletTypewriterMotionSyncState();
+  State<_MobileTypewriterMotionSync> createState() =>
+      _MobileTypewriterMotionSyncState();
 }
 
-class _TabletTypewriterMotionSyncState
-    extends State<_TabletTypewriterMotionSync> {
+class _MobileTypewriterMotionSyncState
+    extends State<_MobileTypewriterMotionSync> {
   @override
-  void didUpdateWidget(covariant _TabletTypewriterMotionSync oldWidget) {
+  void didUpdateWidget(covariant _MobileTypewriterMotionSync oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.reducedMotion != widget.reducedMotion) {
       context.read<TypewriterCubit>().setReducedMotion(widget.reducedMotion);
@@ -175,8 +175,8 @@ class _TabletTypewriterMotionSyncState
   Widget build(BuildContext context) => widget.child;
 }
 
-class _TabletPortfolioView extends StatefulWidget {
-  const _TabletPortfolioView({
+class _MobilePortfolioView extends StatefulWidget {
+  const _MobilePortfolioView({
     required this.initialSection,
     required this.content,
   });
@@ -185,16 +185,16 @@ class _TabletPortfolioView extends StatefulWidget {
   final PortfolioDataState content;
 
   @override
-  State<_TabletPortfolioView> createState() => _TabletPortfolioViewState();
+  State<_MobilePortfolioView> createState() => _MobilePortfolioViewState();
 }
 
-class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
+class _MobilePortfolioViewState extends State<_MobilePortfolioView> {
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _footerKey = GlobalKey(debugLabel: 'tablet-footer');
+  final GlobalKey _footerKey = GlobalKey(debugLabel: 'mobile-footer');
   final ValueNotifier<double> _floatingBottom = ValueNotifier(22);
   final Map<PortfolioSection, GlobalKey> _sectionKeys = {
     for (final section in PortfolioSection.values)
-      section: GlobalKey(debugLabel: 'tablet-${section.name}'),
+      section: GlobalKey(debugLabel: 'mobile-${section.name}'),
   };
   final Map<PortfolioSection, double> _sectionOffsets = {};
 
@@ -219,7 +219,7 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
   }
 
   @override
-  void didUpdateWidget(covariant _TabletPortfolioView oldWidget) {
+  void didUpdateWidget(covariant _MobilePortfolioView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initialSection != widget.initialSection) {
       context.read<PortfolioNavigationCubit>().routeChanged(
@@ -254,7 +254,7 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
       final target =
           (_scrollController.offset +
                   renderObject.localToGlobal(Offset.zero).dy -
-                  AppLayout.tabletNavigationHeight +
+                  AppLayout.mobileNavigationHeight +
                   1)
               .clamp(0.0, _scrollController.position.maxScrollExtent)
               .toDouble();
@@ -330,7 +330,7 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
       maxScrollExtent: position.maxScrollExtent,
       viewportHeight: viewportHeight,
       sectionTopOffsets: tops,
-      navigationHeight: AppLayout.tabletNavigationHeight,
+      navigationHeight: AppLayout.mobileNavigationHeight,
     );
     final active = navigation.state.activeSection;
     if (!_isProgrammaticScroll && active != previous) {
@@ -350,6 +350,7 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
   @override
   Widget build(BuildContext context) {
     final content = widget.content;
+    const floatingEdgeInset = 12.0;
 
     return BlocListener<PortfolioNavigationCubit, PortfolioNavigationState>(
       listenWhen: (previous, current) =>
@@ -370,56 +371,56 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
                     children: [
                       KeyedSubtree(
                         key: _sectionKeys[PortfolioSection.home],
-                        child: TabletHeroSection(content: content),
+                        child: MobileHeroSection(content: content),
                       ),
                       KeyedSubtree(
                         key: _sectionKeys[PortfolioSection.about],
-                        child: _DeferredTabletSection(
+                        child: _DeferredMobileSection(
                           loaded: content.hasStats,
-                          child: TabletAboutSection(content: content),
+                          child: MobileAboutSection(content: content),
                         ),
                       ),
                       KeyedSubtree(
                         key: _sectionKeys[PortfolioSection.skills],
-                        child: _DeferredTabletSection(
+                        child: _DeferredMobileSection(
                           loaded: content.hasSkillGroups,
-                          child: TabletSkillsSection(content: content),
+                          child: MobileSkillsSection(content: content),
                         ),
                       ),
                       KeyedSubtree(
                         key: _sectionKeys[PortfolioSection.services],
-                        child: _DeferredTabletSection(
+                        child: _DeferredMobileSection(
                           loaded: content.hasServices,
-                          child: TabletServicesSection(content: content),
+                          child: MobileServicesSection(content: content),
                         ),
                       ),
                       KeyedSubtree(
                         key: _sectionKeys[PortfolioSection.projects],
-                        child: _DeferredTabletSection(
+                        child: _DeferredMobileSection(
                           loaded: content.hasProjects,
-                          child: TabletProjectsSection(content: content),
+                          child: MobileProjectsSection(content: content),
                         ),
                       ),
                       KeyedSubtree(
                         key: _sectionKeys[PortfolioSection.experience],
-                        child: _DeferredTabletSection(
+                        child: _DeferredMobileSection(
                           loaded: content.hasExperiences,
-                          child: TabletExperienceSection(content: content),
+                          child: MobileExperienceSection(content: content),
                         ),
                       ),
-                      _DeferredTabletSection(
+                      _DeferredMobileSection(
                         loaded: content.hasTestimonials,
-                        child: TabletTestimonialsSection(content: content),
+                        child: MobileTestimonialsSection(content: content),
                       ),
                       KeyedSubtree(
                         key: _sectionKeys[PortfolioSection.contact],
-                        child: _DeferredTabletSection(
+                        child: _DeferredMobileSection(
                           loaded:
                               content.hasContactChannels && content.hasEmailJs,
-                          child: TabletContactSection(content: content),
+                          child: MobileContactSection(content: content),
                         ),
                       ),
-                      _TabletFooter(key: _footerKey, content: content),
+                      _MobileFooter(key: _footerKey, content: content),
                     ],
                   ),
                 ),
@@ -436,7 +437,7 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
                       buildWhen: (previous, current) =>
                           previous.activeSection != current.activeSection ||
                           previous.isScrolled != current.isScrolled,
-                      builder: (context, state) => TabletNavigationBar(
+                      builder: (context, state) => MobileNavigationBar(
                         content: content,
                         activeSection: state.activeSection,
                         isScrolled: state.isScrolled,
@@ -466,8 +467,11 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
               ),
               ValueListenableBuilder<double>(
                 valueListenable: _floatingBottom,
-                builder: (context, bottom, child) =>
-                    Positioned(right: 20, bottom: bottom, child: child!),
+                builder: (context, bottom, child) => Positioned(
+                  right: floatingEdgeInset,
+                  bottom: bottom,
+                  child: child!,
+                ),
                 child:
                     BlocSelector<
                       PortfolioNavigationCubit,
@@ -494,8 +498,11 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
               ),
               ValueListenableBuilder<double>(
                 valueListenable: _floatingBottom,
-                builder: (context, bottom, child) =>
-                    Positioned(left: 20, bottom: bottom, child: child!),
+                builder: (context, bottom, child) => Positioned(
+                  left: floatingEdgeInset,
+                  bottom: bottom,
+                  child: child!,
+                ),
                 child: PersistentResumeButton(
                   resumeUrl: content.link(PortfolioLinkKey.resumeUrl),
                   ownerName: content.profile.fullName,
@@ -509,8 +516,8 @@ class _TabletPortfolioViewState extends State<_TabletPortfolioView> {
   }
 }
 
-class _DeferredTabletSection extends StatelessWidget {
-  const _DeferredTabletSection({required this.loaded, required this.child});
+class _DeferredMobileSection extends StatelessWidget {
+  const _DeferredMobileSection({required this.loaded, required this.child});
 
   final bool loaded;
   final Widget child;
@@ -522,15 +529,15 @@ class _DeferredTabletSection extends StatelessWidget {
   }
 }
 
-class _TabletFooter extends StatelessWidget {
-  const _TabletFooter({required this.content, super.key});
+class _MobileFooter extends StatelessWidget {
+  const _MobileFooter({required this.content, super.key});
 
   final PortfolioDataState content;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final horizontalPadding = AppLayout.tabletHorizontalPadding(width);
+    final horizontalPadding = width < 360 ? 12.0 : 16.0;
 
     final identity = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -574,7 +581,7 @@ class _TabletFooter extends StatelessWidget {
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(
-            maxWidth: AppLayout.tabletContentMaxWidth,
+            maxWidth: AppLayout.mobileContentMaxWidth,
           ),
           child: SizedBox(
             width: double.infinity,
@@ -585,12 +592,9 @@ class _TabletFooter extends StatelessWidget {
                 horizontalPadding,
                 26,
               ),
-              child: Row(
-                children: [
-                  Expanded(child: identity),
-                  const SizedBox(width: 16),
-                  socials,
-                ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [identity, const SizedBox(height: 18), socials],
               ),
             ),
           ),
@@ -600,8 +604,8 @@ class _TabletFooter extends StatelessWidget {
   }
 }
 
-class _TabletContentLoading extends StatelessWidget {
-  const _TabletContentLoading();
+class _MobileContentLoading extends StatelessWidget {
+  const _MobileContentLoading();
 
   @override
   Widget build(BuildContext context) {
@@ -612,8 +616,8 @@ class _TabletContentLoading extends StatelessWidget {
   }
 }
 
-class _TabletContentFailure extends StatelessWidget {
-  const _TabletContentFailure({this.message});
+class _MobileContentFailure extends StatelessWidget {
+  const _MobileContentFailure({this.message});
 
   final String? message;
 
@@ -621,11 +625,10 @@ class _TabletContentFailure extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 520),
+      body: SafeArea(
+        child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

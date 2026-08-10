@@ -14,8 +14,8 @@ import 'package:portfolio/presentation/widgets/brand_loader.dart';
 import 'package:portfolio/presentation/widgets/portfolio_image.dart';
 import 'package:portfolio/presentation/widgets/persistent_resume_button.dart';
 
-class WebCaseStudyPage extends StatelessWidget {
-  const WebCaseStudyPage({required this.slug, super.key});
+class TabletCaseStudyPage extends StatelessWidget {
+  const TabletCaseStudyPage({required this.slug, super.key});
 
   final String slug;
 
@@ -98,8 +98,7 @@ class _CaseStudyView extends StatelessWidget {
           return const _CaseStudyUnavailable();
         }
         final width = MediaQuery.sizeOf(context).width;
-        final compact =
-            MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+        final compact = MediaQuery.sizeOf(context).width < 600;
 
         return Scaffold(
           backgroundColor: AppColors.background,
@@ -176,7 +175,7 @@ class _CaseStudyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.background.withValues(alpha: .96),
@@ -246,7 +245,7 @@ class _CaseStudyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final caseStudy = project.caseStudy;
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     final closing = TextButton(
       onPressed: context.read<CaseStudyCubit>().closeCaseStudy,
       child: const Text('BACK TO PROJECTS'),
@@ -415,7 +414,7 @@ class _ProjectSpecs extends StatelessWidget {
   Widget build(BuildContext context) {
     final caseStudy = project.caseStudy;
     final actions = _actionsFor(project);
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     return Container(
       padding: EdgeInsets.all(compact ? 18 : 24),
       decoration: BoxDecoration(
@@ -677,7 +676,7 @@ class _NarrativeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final compact = MediaQuery.sizeOf(context).width < AppLayout.compactDesktop;
+    final compact = MediaQuery.sizeOf(context).width < 600;
     return Container(
       constraints: const BoxConstraints(minHeight: 220),
       padding: EdgeInsets.all(compact ? 20 : 28),

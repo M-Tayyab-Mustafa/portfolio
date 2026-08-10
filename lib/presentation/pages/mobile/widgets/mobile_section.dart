@@ -3,8 +3,8 @@ import 'package:portfolio/core/theme/app_colors.dart';
 import 'package:portfolio/core/theme/app_spacing.dart';
 import 'package:portfolio/presentation/widgets/outlined_text.dart';
 
-class TabletSection extends StatelessWidget {
-  const TabletSection({
+class MobileSection extends StatelessWidget {
+  const MobileSection({
     required this.child,
     super.key,
     this.background = AppColors.background,
@@ -22,7 +22,9 @@ class TabletSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final horizontalPadding = AppLayout.tabletHorizontalPadding(width);
+    final horizontalPadding = AppLayout.mobileHorizontalPadding(width);
+    final effectiveTopPadding = topPadding > 72 ? 72.0 : topPadding;
+    final effectiveBottomPadding = bottomPadding > 72 ? 72.0 : bottomPadding;
 
     return ColoredBox(
       color: background,
@@ -51,14 +53,14 @@ class TabletSection extends StatelessWidget {
           Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxWidth: AppLayout.tabletContentMaxWidth,
+                maxWidth: AppLayout.mobileContentMaxWidth,
               ),
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
                   horizontalPadding,
-                  topPadding,
+                  effectiveTopPadding,
                   horizontalPadding,
-                  bottomPadding,
+                  effectiveBottomPadding,
                 ),
                 child: child,
               ),
@@ -70,8 +72,8 @@ class TabletSection extends StatelessWidget {
   }
 }
 
-class TabletSectionHeader extends StatelessWidget {
-  const TabletSectionHeader({
+class MobileSectionHeader extends StatelessWidget {
+  const MobileSectionHeader({
     required this.eyebrow,
     required this.title,
     required this.accentTitle,
@@ -86,13 +88,14 @@ class TabletSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
     final alignment = centered
         ? CrossAxisAlignment.center
         : CrossAxisAlignment.start;
     final headingStyle = Theme.of(context).textTheme.displayMedium!.copyWith(
-      fontSize: 42,
+      fontSize: width < 360 ? 31 : 34,
       height: 1.04,
-      letterSpacing: -1.8,
+      letterSpacing: -1.2,
     );
 
     return Column(
@@ -115,7 +118,7 @@ class TabletSectionHeader extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
         Wrap(
           alignment: centered ? WrapAlignment.center : WrapAlignment.start,
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -135,8 +138,8 @@ class TabletSectionHeader extends StatelessWidget {
   }
 }
 
-class TabletSurface extends StatelessWidget {
-  const TabletSurface({
+class MobileSurface extends StatelessWidget {
+  const MobileSurface({
     required this.child,
     super.key,
     this.padding = const EdgeInsets.all(22),
